@@ -13,7 +13,10 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={cn("border-b border-border", className)}
+    className={cn(
+      'rounded-base overflow-x-hidden border-2 border-b border-border dark:border-darkBorder shadow-light dark:shadow-dark',
+      className,
+    )}
     {...props}
   />
 ));
@@ -21,13 +24,13 @@ AccordionItem.displayName = "AccordionItem";
 
 const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & { chevronBefore?: boolean }
 >(({ className, children, chevronBefore, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex w-full">
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex flex-1 items-center justify-between py-4 font-medium transition-all [&[data-state=open]>svg]:rotate-180",
+        'flex flex-1 items-center justify-between text-text border-border dark:border-darkBorder bg-main p-4 font-bold transition-all [&[data-state=open]>svg]:rotate-180 [&[data-state=open]]:rounded-b-none [&[data-state=open]]:border-b-2',
         chevronBefore && "[&[data-state=open]>svg]:rotate-0",
         className,
       )}
@@ -52,12 +55,12 @@ const AccordionContent = React.forwardRef<
   <AccordionPrimitive.Content
     ref={ref}
     className={cn(
-      "overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
+    "overflow-hidden rounded-b-base bg-white dark:bg-secondaryBlack text-sm font-base transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
       className,
     )}
     {...props}
   >
-    <div className="pb-4 pt-0">{children}</div>
+    <div className="p-4">{children}</div>
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;

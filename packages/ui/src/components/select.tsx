@@ -25,7 +25,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "!flex h-9 w-full items-center justify-between whitespace-nowrap border border-border bg-transparent px-3 py-2 text-sm font-normal placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      'flex h-10 w-full items-center text-text dark:text-darkText bg-white dark:bg-secondaryBlack justify-between rounded-base border-2 border-border dark:border-darkBorder px-3 py-2 text-sm font-base ring-offset-white placeholder:text-text/50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
       className,
     )}
     {...props}
@@ -64,7 +64,7 @@ const SelectScrollDownButton = React.forwardRef<
   <SelectPrimitive.ScrollDownButton
     ref={ref}
     className={cn(
-      "flex cursor-default items-center justify-center py-1",
+      'flex cursor-default text-text items-center justify-center py-1 font-base',
       className,
     )}
     {...props}

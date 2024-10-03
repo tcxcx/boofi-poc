@@ -5,6 +5,7 @@ import { Command as CommandPrimitive } from "cmdk";
 import * as React from "react";
 import { cn } from "../utils";
 import { Dialog, DialogContent } from "./dialog";
+import { Search } from 'lucide-react';
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -13,7 +14,7 @@ const Command = React.forwardRef<
   <CommandPrimitive
     ref={ref}
     className={cn(
-      "flex h-full w-full flex-col overflow-hidden text-popover-foreground",
+      'flex h-full w-full flex-col overflow-hidden rounded-base border-2 border-border dark:border-darkBorder bg-main font-base text-black',
       className
     )}
     {...props}
@@ -26,7 +27,7 @@ interface CommandDialogProps extends DialogProps {}
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className="overflow-hidden p-0 max-w-[740px]" hideClose>
+      <DialogContent className="overflow-hidden p-0 max-w-[740px]">
         <Command className="h-[480px] &_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
           {children}
         </Command>
@@ -39,12 +40,15 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center w-full" cmdk-input-wrapper="">
+  <div     
+  className="flex items-center border-b-2 border-border dark:border-darkBorder px-3"
+  cmdk-input-wrapper="">
+ <Search className="mr-2 h-4 w-4 shrink-0" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        "flex h-10 w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
-        className
+        'flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-black/50 disabled:cursor-not-allowed disabled:opacity-50',
+        className,
       )}
       {...props}
     />
