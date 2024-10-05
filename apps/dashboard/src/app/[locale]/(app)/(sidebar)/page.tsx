@@ -15,7 +15,7 @@ import { cookies } from "next/headers";
 export const maxDuration = 30;
 
 export const metadata: Metadata = {
-  title: "Overview | Midday",
+  title: "Overview | BooFi",
 };
 
 const defaultValue = {

@@ -39,7 +39,7 @@ export function DeleteTeam({ teamId }: DeleteTeamProps) {
       <CardHeader>
         <CardTitle>Delete team</CardTitle>
         <CardDescription>
-          Permanently remove your Team and all of its contents from the Midday
+          Permanently remove your Team and all of its contents from the BooFi
           platform. This action is not reversible — please continue with
           caution.
         </CardDescription>

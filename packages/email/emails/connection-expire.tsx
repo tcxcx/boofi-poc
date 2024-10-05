@@ -23,14 +23,14 @@ interface WelcomeProps {
 
 const baseUrl =
   process.env.VERCEL_ENV === "production"
-    ? "https://midday.ai/email"
+    ? "https://boofi.ai/email"
     : "http://localhost:3000/email";
 
 export const ConnectionExpireEmail = ({
   fullName = "Viktor Hofte",
   expiresAt = addDays(new Date(), 4).toISOString(),
   bankName = "Revolut",
-  teamName = "Midday",
+  teamName = "BooFi",
 }: WelcomeProps) => {
   const firstName = fullName.split(" ").at(0);
   const text = `Hi ${firstName}, We wanted to inform you that our connection to your bank ${bankName} for your team ${teamName} will expire in ${formatDistance(new Date(expiresAt), new Date())}.`;
@@ -84,7 +84,7 @@ export const ConnectionExpireEmail = ({
               <strong>{bankName}</strong> for your team{" "}
               <strong>{teamName}</strong> will expire in{" "}
               {formatDistance(new Date(expiresAt), new Date())}. To ensure that
-              Midday continues to run smoothly, please reconnect your bank.
+              BooFi continues to run smoothly, please reconnect your bank.
               <br />
               <br />
               The good news? It only takes 60 seconds to get everything back on
@@ -94,7 +94,7 @@ export const ConnectionExpireEmail = ({
             <Section className="text-center mt-[50px] mb-[50px]">
               <Button
                 className="bg-transparent rounded-md text-primary text-[14px] text-[#121212] font-medium no-underline text-center px-6 py-3 border border-solid border-[#121212]"
-                href="https://go.midday.ai/34Xt7XK"
+                href="https://go.boofi.ai/34Xt7XK"
               >
                 Reconnect
               </Button>

@@ -10,41 +10,41 @@ import type { ReactElement } from "react";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://app.midday.ai"),
-  title: "Midday | Run your business smarter",
+  metadataBase: new URL("https://app.boofi.ai"),
+  title: "BooFi | Run your business smarter",
   description:
     "Automate financial tasks, stay organized, and make informed decisions effortlessly.",
   twitter: {
-    title: "Midday | Run your business smarter",
+    title: "BooFi | Run your business smarter",
     description:
       "Automate financial tasks, stay organized, and make informed decisions effortlessly.",
     images: [
       {
-        url: "https://cdn.midday.ai/opengraph-image.jpg",
+        url: "https://cdn.boofi.ai/opengraph-image.jpg",
         width: 800,
         height: 600,
       },
       {
-        url: "https://cdn.midday.ai/opengraph-image.jpg",
+        url: "https://cdn.boofi.ai/opengraph-image.jpg",
         width: 1800,
         height: 1600,
       },
     ],
   },
   openGraph: {
-    title: "Midday | Run your business smarter",
+    title: "BooFi | Run your business smarter",
     description:
       "Automate financial tasks, stay organized, and make informed decisions effortlessly.",
-    url: "https://app.midday.ai",
-    siteName: "Midday",
+    url: "https://app.boofi.ai",
+    siteName: "BooFi",
     images: [
       {
-        url: "https://cdn.midday.ai/opengraph-image.jpg",
+        url: "https://cdn.boofi.ai/opengraph-image.jpg",
         width: 800,
         height: 600,
       },
       {
-        url: "https://cdn.midday.ai/opengraph-image.jpg",
+        url: "https://cdn.boofi.ai/opengraph-image.jpg",
         width: 1800,
         height: 1600,
       },

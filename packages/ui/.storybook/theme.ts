@@ -7,9 +7,9 @@ export default create({
   fontBase: '"Open Sans", sans-serif',
   fontCode: 'monospace',
 
-  brandTitle: 'Midday | Storybook',
-  brandUrl: 'https://midday.ai',
-  brandImage: 'https://midday.ai/email/logo-footer-dark.png',
+  brandTitle: 'BooFi | Storybook',
+  brandUrl: 'https://boofi.xyz',
+  brandImage: 'https://boofi.xyz/email/logo-footer-dark.png',
   brandTarget: '_self',
 
   //

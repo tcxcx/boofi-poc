@@ -12,7 +12,7 @@ export const unenrollMfaAction = authActionClient
   .action(async ({ parsedInput: { factorId }, ctx: { supabase } }) => {
     const { data, error } = await supabase.auth.mfa.unenroll({
       factorId,
-      issuer: "app.midday.ai",
+      issuer: "app.boofi.ai",
     });
 
     if (error) {

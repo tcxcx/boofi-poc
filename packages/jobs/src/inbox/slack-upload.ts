@@ -157,7 +157,7 @@ client.defineJob({
                       text: "Show receipt",
                       emoji: true,
                     },
-                    url: `https://app.midday.ai/inbox?id=${encodeURIComponent(updatedInbox.id)}`,
+                    url: `https://app.boofi.ai/inbox?id=${encodeURIComponent(updatedInbox.id)}`,
                     action_id: "view_receipt",
                   },
                 ],

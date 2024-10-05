@@ -1,4 +1,4 @@
-import Midday from "@midday-ai/engine";
+import BooFi from "@midday-ai/engine";
 import { revalidateTag } from "next/cache";
 import { client, supabase } from "../client";
 import { Events, Jobs } from "../constants";
@@ -54,7 +54,7 @@ client.defineJob({
           .update({ last_accessed: new Date().toISOString() })
           .eq("id", account.bank_connection.id);
       } catch (error) {
-        if (error instanceof Midday.APIError) {
+        if (error instanceof BooFi.APIError) {
           const parsedError = parseAPIError(error);
 
           await io.supabase.client

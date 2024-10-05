@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 
   if (isDesktop === "true") {
     return NextResponse.redirect(
-      `midday://settings/accounts?id=${id}&step=reconnect`,
+      `boofi://settings/accounts?id=${id}&step=reconnect`,
     );
   }
 

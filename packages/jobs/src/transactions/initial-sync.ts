@@ -1,4 +1,4 @@
-import Midday from "@midday-ai/engine";
+import Boofi from "@midday-ai/engine";
 import { eventTrigger } from "@trigger.dev/sdk";
 import { revalidateTag } from "next/cache";
 import { z } from "zod";
@@ -85,7 +85,7 @@ client.defineJob({
           },
         );
       } catch (error) {
-        if (error instanceof Midday.APIError) {
+        if (error instanceof Boofi.APIError) {
           const parsedError = parseAPIError(error);
 
           await io.supabase.client

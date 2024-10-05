@@ -21,7 +21,7 @@ async function main() {
   });
 
   await object.on("open-github", () => {
-    platform.os.openURL("https://github.com/midday-ai/midday");
+    platform.os.openURL("https://github.com/boofi-ai/boofi");
   });
 
   // Command menu

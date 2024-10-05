@@ -1,10 +1,10 @@
 {
     "$schema": "https://mintlify.com/schema.json",
-    "name": "Midday.ai Docs",
+    "name": "BooFi.ai Docs",
     "logo": {
-      "dark": "/logos/logotype-dark.svg",
-      "light": "/logos/logotype.svg",
-      "href": "https://midday.ai"
+      "dark": "/logos/logotype-dark.png",
+      "light": "/logos/logotype.png",
+      "href": "https://boofi.ai"
     },
     "favicon": "/logos/favicon.png",
     "colors": {
@@ -28,7 +28,7 @@
     ],
     "topbarCtaButton": {
       "name": "Dashboard",
-      "url": "https://app.midday.ai"
+      "url": "https://app.boofi.ai"
     },
     "openapi": "https://engine.midday.ai/openapi",
     "tabs": [
@@ -41,12 +41,12 @@
       {
         "name": "Help Center",
         "icon": "question",
-        "url": "https://midday.ai/support"
+        "url": "https://boofi.ai/support"
       },
       {
         "name": "GitHub",
         "icon": "github",
-        "url": "https://git.new/midday"
+        "url": "https://git.new/boofi"
       }
     ],
     "navigation": [
@@ -91,8 +91,8 @@
     },
     "footerSocials": {
       "twitter": "https://twitter.com/middayai",
-      "github": "https://git.new/midday",
-      "website": "https://midday.ai",
-      "linkedin": "https://www.linkedin.com/company/midday-ai"
+      "github": "https://git.new/boofi",
+      "website": "https://boofi.ai",
+      "linkedin": "https://www.linkedin.com/company/boofi-ai"
     }
   }

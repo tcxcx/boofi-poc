@@ -72,12 +72,12 @@ const defaultTransactions = [
 
 const baseUrl =
   process.env.VERCEL_ENV === "production"
-    ? "https://midday.ai/email"
+    ? "https://boofi.ai/email"
     : "http://localhost:3000/email";
 
 const baseAppUrl =
   process.env.VERCEL_ENV === "production"
-    ? "https://app.midday.ai"
+    ? "https://app.boofi.ai"
     : "http://localhost:3001";
 
 export const TransactionsEmail = ({

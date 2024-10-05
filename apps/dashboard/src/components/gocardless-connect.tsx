@@ -29,7 +29,7 @@ export function GoCardLessConnect({ onSelect, id, availableHistory }: Props) {
     createGoCardLessLink.execute({
       institutionId: id,
       availableHistory: availableHistory,
-      redirectBase: isDesktopApp() ? "midday://" : window.location.origin,
+      redirectBase: isDesktopApp() ? "boofi://" : window.location.origin,
     });
   };
 

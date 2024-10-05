@@ -1,6 +1,6 @@
-import Midday from "@midday-ai/engine";
+import BooFi from "@midday-ai/engine";
 
-export const engine = new Midday({
+export const engine = new BooFi({
   environment: process.env.MIDDAY_ENGINE_ENVIRONMENT as
     | "production"
     | "staging"

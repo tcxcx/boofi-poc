@@ -172,7 +172,7 @@ export class PlaidApi {
     return this.#client.linkTokenCreate({
       client_id: this.#clientId,
       secret: this.#clientSecret,
-      client_name: "Midday",
+      client_name: "BooFi",
       products: [Products.Transactions],
       language,
       access_token: accessToken,

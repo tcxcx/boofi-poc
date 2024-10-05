@@ -4,7 +4,7 @@ logpush = true
 
 [env.production]
 name = "engine"
-route = { pattern = "engine.midday.ai/*", zone_name = "midday.ai" }
+route = { pattern = "engine.midday.ai/*", zone_name = "boofi.ai" }
 
 kv_namespaces = [
   { binding = "KV", id = "1ce9f0355d854a569f72bfccbfbea369" }
@@ -20,7 +20,7 @@ r2_buckets = [
 
 [env.staging]
 name = "engine-staging"
-route = { pattern = "engine-staging.midday.ai/*", zone_name = "midday.ai" }
+route = { pattern = "engine-staging.boofi.ai/*", zone_name = "boofi.ai" }
 
 kv_namespaces = [
   { binding = "KV", id = "825dc18b2a38463492ff0db06ba99fc8" }

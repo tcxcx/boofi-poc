@@ -11,7 +11,7 @@ export function Logo({ baseUrl }: Props) {
         src={`${baseUrl}/logo.png`}
         width="45"
         height="45"
-        alt="Midday"
+        alt="BooFi"
         className="my-0 mx-auto block"
       />
     </Section>

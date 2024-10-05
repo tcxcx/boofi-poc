@@ -20,10 +20,10 @@ type ProviderProps = {
 export function Providers({ locale, children }: ProviderProps) {
   return (
     <I18nProviderClient locale={locale}>
-      <TriggerProvider
+      {/* <TriggerProvider
         publicApiKey={process.env.NEXT_PUBLIC_TRIGGER_API_KEY!}
         apiUrl={process.env.NEXT_PUBLIC_TRIGGER_API_URL}
-      >
+      > */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -32,7 +32,7 @@ export function Providers({ locale, children }: ProviderProps) {
         >
           {children}
         </ThemeProvider>
-      </TriggerProvider>
+      {/* </TriggerProvider> */}
     </I18nProviderClient>
   );
 }

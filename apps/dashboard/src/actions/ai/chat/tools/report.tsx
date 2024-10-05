@@ -57,7 +57,7 @@ export function createReport({
         .single();
 
       const link = await dub.links.create({
-        url: `https://app.midday.ai/report/${data.id}`,
+        url: `https://app.boofi.ai/report/${data.id}`,
         expiresAt,
       });
 

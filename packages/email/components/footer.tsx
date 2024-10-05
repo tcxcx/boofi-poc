@@ -39,7 +39,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/bOp4NOx"
+                href="https://go.boofi.ai/bOp4NOx"
               >
                 Overview
               </Link>
@@ -47,7 +47,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/VFcNsmQ"
+                href="https://go.boofi.ai/VFcNsmQ"
               >
                 Inbox
               </Link>
@@ -55,7 +55,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/uA06kWO"
+                href="https://go.boofi.ai/uA06kWO"
               >
                 Vault
               </Link>
@@ -63,7 +63,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/x7Fow9L"
+                href="https://go.boofi.ai/x7Fow9L"
               >
                 Tracker
               </Link>
@@ -72,7 +72,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/fkYXc95"
+                href="https://go.boofi.ai/fkYXc95"
               >
                 Invoice
               </Link>
@@ -81,7 +81,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/dEnP9h5"
+                href="https://go.boofi.ai/dEnP9h5"
               >
                 Pricing
               </Link>
@@ -90,7 +90,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/E24P3oY"
+                href="https://go.boofi.ai/E24P3oY"
               >
                 Engine
               </Link>
@@ -99,7 +99,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://midday.ai/download"
+                href="https://boofi.ai/download"
               >
                 Download
               </Link>
@@ -115,7 +115,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/fhEy5CL"
+                href="https://go.boofi.ai/fhEy5CL"
               >
                 Homepage
               </Link>
@@ -123,7 +123,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://git.new/midday"
+                href="https://git.new/boofi"
               >
                 Github
               </Link>
@@ -131,7 +131,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/ZrhEMbR"
+                href="https://go.boofi.ai/ZrhEMbR"
               >
                 Support
               </Link>
@@ -139,7 +139,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/rofdWKi"
+                href="https://go.boofi.ai/rofdWKi"
               >
                 Terms of service
               </Link>
@@ -147,7 +147,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/TJIL5mQ"
+                href="https://go.boofi.ai/TJIL5mQ"
               >
                 Privacy policy
               </Link>
@@ -156,7 +156,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/IQ1kcN0"
+                href="https://go.boofi.ai/IQ1kcN0"
               >
                 Branding
               </Link>
@@ -165,7 +165,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/x5ohOs7"
+                href="https://go.boofi.ai/x5ohOs7"
               >
                 Feature Request
               </Link>
@@ -181,7 +181,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/186swoH"
+                href="https://go.boofi.ai/186swoH"
               >
                 Story
               </Link>
@@ -189,7 +189,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/QWyX8Um"
+                href="https://go.boofi.ai/QWyX8Um"
               >
                 Updates
               </Link>
@@ -197,7 +197,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/Dd7M8cl"
+                href="https://go.boofi.ai/Dd7M8cl"
               >
                 Open startup
               </Link>
@@ -205,7 +205,7 @@ export function Footer({ baseUrl }: Props) {
             <Row className="mb-1.5">
               <Link
                 className="text-[#707070] text-[14px]"
-                href="https://go.midday.ai/M2Hv420"
+                href="https://go.boofi.ai/M2Hv420"
               >
                 OSS Friends
               </Link>
@@ -220,44 +220,44 @@ export function Footer({ baseUrl }: Props) {
 
       <Row>
         <Column className="align-middle w-[40px]">
-          <Link href="https://go.midday.ai/lS72Toq">
+          <Link href="https://go.boofi.ai/lS72Toq">
             <Img
               src={`${baseUrl}/x.png`}
               width="22"
               height="22"
-              alt="Midday on X"
+              alt="BooFi on X"
             />
           </Link>
         </Column>
         <Column className="align-middle w-[40px]">
-          <Link href="https://go.midday.ai/7rhA3rz">
+          <Link href="https://go.boofi.ai/7rhA3rz">
             <Img
               src={`${baseUrl}/producthunt.png`}
               width="22"
               height="22"
-              alt="Midday on Producthunt"
+              alt="BooFi on Producthunt"
             />
           </Link>
         </Column>
 
         <Column className="align-middle w-[40px]">
-          <Link href="https://go.midday.ai/anPiuRx">
+          <Link href="https://go.boofi.ai/anPiuRx">
             <Img
               src={`${baseUrl}/discord.png`}
               width="22"
               height="22"
-              alt="Midday on Discord"
+              alt="BooFi on Discord"
             />
           </Link>
         </Column>
 
         <Column className="align-middle">
-          <Link href="https://go.midday.ai/Ct3xybK">
+          <Link href="https://go.boofi.ai/Ct3xybK">
             <Img
               src={`${baseUrl}/linkedin.png`}
               width="22"
               height="22"
-              alt="Midday on LinkedIn"
+              alt="BooFi on LinkedIn"
             />
           </Link>
         </Column>
@@ -268,14 +268,14 @@ export function Footer({ baseUrl }: Props) {
 
       <Row>
         <Text className="text-[#B8B8B8] text-xs">
-          Midday Labs AB - Torsgatan 59 113 37, Stockholm, Sweden.
+          BooFi Labs AB - Torsgatan 59 113 37, Stockholm, Sweden.
         </Text>
       </Row>
 
       <Row>
         <Link
           className="text-[#707070] text-[14px]"
-          href="https://app.midday.ai/settings/notifications"
+          href="https://app.boofi.ai/settings/notifications"
           title="Unsubscribe"
         >
           Notification preferences
@@ -286,11 +286,11 @@ export function Footer({ baseUrl }: Props) {
       <br />
 
       <Row>
-        <Link href="https://go.midday.ai/FZwOHud">
+        <Link href="https://go.boofi.ai/FZwOHud">
           <Img
             src={`${baseUrl}/logo-footer.png`}
             width="100"
-            alt="Midday"
+            alt="BooFi"
             className="block"
           />
         </Link>

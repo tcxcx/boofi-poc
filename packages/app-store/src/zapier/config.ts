@@ -7,7 +7,7 @@ export default {
   active: false,
   logo: Logo,
   short_description:
-    "Zapier lets you connect Midday to other apps and automate powerful workflows.",
+    "Zapier lets you connect BooFi to other apps and automate powerful workflows.",
   description: null,
   images: [],
   onInitialize: () => {},
