@@ -11,9 +11,9 @@ import { Transactions } from "./charts/transactions";
 import { AccountBalance } from "./widgets/account-balance";
 import { Inbox } from "./widgets/inbox";
 import { Insights } from "./widgets/insights";
+import { MoneyMarket } from "./widgets/money-market";
 import { Tracker } from "./widgets/tracker";
 import { Vault } from "./widgets/vault";
-
 type Props = {
   disabled: boolean;
   initialPeriod: Date | string;
@@ -34,6 +34,7 @@ export function Widgets({ disabled, initialPeriod, searchParams }: Props) {
     <Inbox key="inbox" disabled={disabled} />,
     <AccountBalance key="account-balance" />,
     <Vault key="vault" />,
+    <MoneyMarket key="money-market" />,
   ];
 
   return (

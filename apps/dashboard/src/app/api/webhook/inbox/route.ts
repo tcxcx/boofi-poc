@@ -23,7 +23,7 @@ const ipRange = [
   "18.217.206.57",
 ];
 
-const FORWARD_FROM_EMAIL = "inbox@midday.ai";
+const FORWARD_FROM_EMAIL = "inbox@boofi.xyz";
 
 const resend = new Resend(env.RESEND_API_KEY);
 

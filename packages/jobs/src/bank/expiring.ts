@@ -59,7 +59,7 @@ client.defineJob({
         );
 
         return {
-          from: "Middaybot <middaybot@midday.ai>",
+          from: "boofi-bot <boofi-bot@boofi.xyz>",
           to: [user.email],
           subject: "Bank Connection Expiring Soon",
           html,

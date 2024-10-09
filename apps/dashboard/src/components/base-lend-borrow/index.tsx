@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, Name } from "@coinbase/onchainkit/identity";
 import { formatAmount } from "@coinbase/onchainkit/token";
 import {
@@ -14,17 +16,15 @@ import {
 } from "@coinbase/onchainkit/wallet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@midday/ui/tabs";
 import { useToast } from "@midday/ui/use-toast";
-import { ArrowLeft, ArrowRight, InfoIcon, RefreshCw } from "lucide-react";
-import React, { useState, useEffect, useCallback } from "react";
-import { type Abi, type WriteContractParameters, parseUnits } from "viem";
+import React, { useState, useCallback, useEffect } from "react";
 import { base } from "viem/chains";
 import { useAccount } from "wagmi";
 import CurrencyDisplayer from "./currency-displayer";
 import TransactionDetails from "./transaction-component";
 
-// Import your contract ABIs and addresses
-import SpokeABI from "../abis/Spoke.json";
-import { SpokeAddress } from "../config/contracts";
+// Commented out ABI and contract address import until contract deployment
+// import SpokeABI from "../abis/Spoke.json";
+// import { SpokeAddress } from "../config/contracts";
 
 export default function LendBorrow() {
   const [activeTab, setActiveTab] = useState("supply");
@@ -35,7 +35,8 @@ export default function LendBorrow() {
   // Define the chain
   const chain = base; // Default to Base chain
 
-  const [contracts, setContracts] = useState<WriteContractParameters[]>([]);
+  // Commented out contracts state and related code since ABI is not available yet
+  // const [contracts, setContracts] = useState<WriteContractParameters[]>([]);
 
   const availableTokens: { USDC: string } = {
     USDC: "0x833589fCD6eDb6E08f4c7C32d4f71b54bdA02913", // USDC on Base
@@ -64,6 +65,8 @@ export default function LendBorrow() {
     [activeTab, amount, toast],
   );
 
+  // Commenting out contract preparation code until the contract is deployed
+  /*
   const prepareContracts = () => {
     if (!amount || !address) return;
 
@@ -119,6 +122,7 @@ export default function LendBorrow() {
     prepareContracts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, activeTab, address]);
+  */
 
   const renderTabContent = (tabName: string) => {
     let buttonText = "";
@@ -176,8 +180,7 @@ export default function LendBorrow() {
             {address ? (
               <Transaction
                 chainId={chain.id}
-                contracts={contracts}
-                onStatus={handleOnStatus}
+                onStatus={handleOnStatus} // Contracts omitted until deployment
               >
                 <Tabs
                   value={activeTab}
