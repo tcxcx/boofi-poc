@@ -1,3 +1,4 @@
+import '@coinbase/onchainkit/styles.css';
 import "@/styles/globals.css";
 import { cn } from "@midday/ui/cn";
 import "@midday/ui/globals.css";
