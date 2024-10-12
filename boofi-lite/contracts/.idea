@@ -1,0 +1,602 @@
+# Contracts Requiring Deployment Scripts
+
+Here is a comprehensive list of all the contracts that require deployment scripts, along with their script names, parameters to configure for each, and important notes. This information should help another AI assistant or developer to create the necessary deployment scripts.
+
+---
+
+## 1. AssetRegistry.sol
+
+- **Script Name**: `deployAssetRegistry.js`
+- **Parameters to Configure**:
+  - `assetAddress`: (e.g., The address to be checked)
+  - `collateralizationRatioDeposit`: `uint256` (e.g., `1e18`)
+  - `collateralizationRatioBorrow`: `uint256` (e.g., `1e18`)
+  - `interestRateCalculator`: `uint256` (e.g., Address of the interest rate calculator for this asset)
+  - `maxLiquidationPortion`: `uint256` (e.g., the largest percent of that asset that can be liquidated at once)
+  - `maxLiquidationBonus`: `uint256` (e.g., the largest percent that defines how much of that asset can be claimed by a liquidator and how much bonus they get for liquidating)
+  - `WETH_ADDRESS`: `address` (WETH token address on the target network)
+  
+- **Notes**:
+  - The `AssetRegistry` contract manages registered assets and their parameters.
+  - Ensure `WETH_ADDRESS` is correctly set for the deployment network.
+  - The deployed `AssetRegistry` address will be needed when deploying the `Hub`.
+
+---
+
+## 2. LinearInterestRate.sol
+
+- **Script Name**: `deployLinearInterestRate.js`
+- **Parameters to Configure**:
+  - `ratePrecision`: `uint64` (e.g., `1e18`)
+  - `rateIntercept`: `uint64` (e.g., base interest rate, e.g., `0.05 * 1e18` for 5%)
+  - `rateCoefficient`: `uint64` (adjust as needed)
+  - `reserveFactor`: `uint256` (e.g., `0.1 * 1e18` for 10%)
+  - `reservePrecision`: `uint256` (e.g., `1e18`)
+  
+- **Notes**:
+  - Implements a linear interest rate model for the lending protocol.
+  - The deployed address may be required when configuring assets in the `AssetRegistry` or `Hub`.
+
+---
+
+## 3. Hub.sol
+
+- **Script Name**: `deployHub.js`
+- **Parameters to Configure**:
+  - `wormholeRelayer`: `address` (Wormhole Relayer contract address)
+  - `tokenBridge`: `address` (TokenBridge contract address)
+  - `wormhole`: `address` (Wormhole contract address)
+  - `circleMessageTransmitter`: `address` (Circle Message Transmitter address or zero address if not used)
+  - `circleTokenMessenger`: `address` (Circle Token Messenger address or zero address if not used)
+  - `USDC`: `address` (USDC token address or zero address if not used)
+  - `interestAccrualIndexPrecision`: `uint256` (e.g., `1e18`)
+  - `liquidationFee`: `uint256` (e.g., `0.05 * 1e18` for 5%)
+  - `liquidationFeePrecision`: `uint256` (e.g., `1e18`)
+  
+- **Notes**:
+  - Core contract maintaining state and liquidity for the lending protocol.
+  - May require setting the `AssetRegistry` address after deployment if not passed in the constructor.
+  - The `circle` addresses are for CCTP integration; use zero addresses if not applicable.
+
+---
+
+## 4. Spoke.sol
+
+- **Script Name**: `deploySpoke.js`
+- **Parameters to Configure**:
+  - `chainId`: `uint32` (Chain ID where the Spoke is deployed)
+  - `wormhole`: `address` (Wormhole contract address)
+  - `tokenBridge`: `address` (TokenBridge contract address)
+  - `relayer`: `address` (Wormhole Relayer contract address)
+  - `hubChainId`: `uint32` (Chain ID where the Hub is deployed)
+  - `hubContractAddress`: `address` (Deployed Hub contract address)
+  - `circleMessageTransmitter`: `address` (Circle Message Transmitter address or zero address if not used)
+  - `circleTokenMessenger`: `address` (Circle Token Messenger address or zero address if not used)
+  - `USDC`: `address` (USDC token address or zero address if not used)
+
+- **Notes**:
+  - Acts as the entry point for users to interact with the protocol from different chains.
+  - Ensure the `hubContractAddress` is correctly set to enable communication with the Hub.
+  - The `circle` addresses are for CCTP integration; use zero addresses if not applicable.
+
+---
+
+## 5. Liquidator.sol
+
+- **Script Name**: `deployLiquidator.js`
+- **Parameters to Configure**:
+  - `hubAddress`: `address` (Deployed Hub contract address)
+  - `initialLiquidators`: `address[]` (Array of addresses authorized to perform liquidations)
+  
+- **Notes**:
+  - Contract for performing liquidations in the protocol.
+  - Only authorized liquidators can initiate liquidations.
+  - Ensure security by only adding trusted addresses as liquidators.
+
+  **Question to resolve**: Which addresses should be authorized to liquidate loans? A different contract address or some bot we need to set up?
+
+---
+
+## 6. LiquidatorFlashLoan.sol
+
+- **Script Name**: `deployLiquidatorFlashLoan.js`
+- **Parameters to Configure**:
+  - `hubAddress`: `address` (Deployed Hub contract address)
+  - `poolAddress`: `address` (Aave Pool contract address)
+  - `uniswapRouterAddress`: `address` (Uniswap V3 Router contract address)
+  - `priceOracleAddress`: `address` (Deployed `BooFiPriceOracle` contract address)
+  - `profitTokenAddress`: `address` (Token in which profits are received, e.g., WETH)
+  - `profitReceiverAddress`: `address` (Address to receive profits from liquidations)
+  - `initialLiquidators`: `address[]` (Array of addresses authorized to perform liquidations; include addresses of bots or entities that will call `liquidation()`)
+  - `maxSlippage`: `uint256` (Maximum allowable slippage, e.g., `100` for 1% with precision `1e4`)
+  
+- **Notes**:
+  - Extends Liquidator to perform liquidations using flash loans from Aave.
+  - Requires integration with external protocols like Aave and Uniswap.
+  - Ensure the `profitReceiverAddress` is secure and controlled by trusted parties.
+
+---
+
+## Note on Liquidations
+
+Liquidations are performed by the `LiquidatorFlashLoan` contract when its `liquidation()` function is called. However, the `LiquidatorFlashLoan` contract does not autonomously initiate liquidations. You need to set up an external process (e.g., a bot or script) that monitors the protocol for undercollateralized positions and calls the `liquidation()` function on the `LiquidatorFlashLoan` contract when necessary. The addresses of these bots or entities should be included in the `initialLiquidators` array in the `Liquidator.sol` contract script during deployment.
+
+---
+
+## 7. AggregatorV3BooFiPriceSource.sol
+
+- **Script Name**: `deployAggregatorV3BooFiPriceSource.js`
+- **Parameters to Configure**:
+  - `outputAsset`: `string` (e.g., `"USD"` or `"ETH"`)
+
+### Constructor Parameters
+
+- `_outputAsset`: `string` (e.g., `"USD"` or `"ETH"`)
+
+### Post-Deployment Configuration
+
+For each asset (e.g., USDC, WETH):
+
+- **Set the Price Source**: Use `setPriceSource` to associate each asset with its Chainlink aggregator.
+
+  - **Parameters**:
+    - `_asset`: `address` (Address of the asset token)
+    - `_aggregator`: `AggregatorV3Interface` (Address of the Chainlink aggregator for the asset)
+
+**Example**:
+
+```typescript
+await aggregatorV3PriceSource.setPriceSource(
+  usdcAddress,
+  usdcAggregatorAddress
+);
+
+await aggregatorV3PriceSource.setPriceSource(
+  wethAddress,
+  wethAggregatorAddress
+);
+```
+
+### Notes
+
+- The `aggregators` mapping in the contract stores the aggregator for each asset.
+- By calling `setPriceSource` for each asset, you manage multiple assets within the oracle.
+
+### Example Deployment Script Snippet for Setting Price Sources
+
+```typescript
+const assets = [
+  {
+    name: "USDC",
+    address: usdcAddress,
+    aggregator: usdcAggregatorAddress,
+  },
+  {
+    name: "WETH",
+    address: wethAddress,
+    aggregator: wethAggregatorAddress,
+  },
+  // Add more assets as needed
+];
+
+for (const asset of assets) {
+  // Set price source in AggregatorV3BooFiPriceSource
+  await aggregatorV3PriceSource.setPriceSource(
+    asset.address,
+    asset.aggregator
+  );
+
+  // Register asset in AssetRegistry
+  await assetRegistry.registerAsset(
+    asset.address,
+    collateralizationRatioDeposit,
+    collateralizationRatioBorrow,
+    interestRateCalculatorAddress,
+    maxLiquidationPortion,
+    maxLiquidationBonus
+  );
+
+  // Set price source in BooFiPriceOracle
+  await booFiPriceOracle.setPriceSource(
+    asset.address,
+    {
+      priceSource: aggregatorV3PriceSource.address,
+      maxPriceAge: 300, // Example value in seconds
+    }
+  );
+}
+```
+
+### Security Considerations
+
+- Ensure that the `profitReceiverAddress` is secure and controlled by trusted parties.
+- Only authorized addresses should be able to perform sensitive actions like setting price sources or adding liquidators.
+
+---
+
+## 8. PythBooFiPriceSource.sol
+
+- **Script Name**: `deployPythBooFiPriceSource.js`
+- **Parameters to Configure**:
+  - `_pyth`: `address` (Pyth contract address)
+  - `_outputAsset`: `string` (e.g., `"USD"` or `"ETH"`)
+
+### Post-Deployment Configuration
+
+- Use the `setPriceSource` function to set the Pyth price ID for each asset.
+  - **Parameters**:
+    - `_asset`: `address` (Asset address)
+    - `_pythId`: `bytes32` (Pyth price ID for the asset)
+
+- **Notes**:
+  - Provides price feeds using the Pyth Network.
+  - Ensure Pyth is deployed and available on the target network.
+
+---
+
+## 9. ChainedPriceSource.sol
+
+- **Script Name**: `deployChainedPriceSource.js`
+- **Parameters to Configure**:
+  - An array of `ChainedSource` structs, each containing:
+    - `source`: `address` (Address of an `IBooFiPriceSource` contract)
+    - `inputAsset`: `address` (Asset address)
+    - `outputAsset`: `string` (Symbol of the output asset)
+    - `maxPriceAge`: `uint256` (Maximum allowable age of the price in seconds)
+    
+- **Notes**:
+  - Chains multiple price sources to derive prices through a series of conversions.
+  - Useful for assets where direct price feeds are not available.
+  - Ensure each source in the chain is correctly configured and deployed.
+
+---
+
+## 10. BooFiPriceOracle.sol
+
+- **Script Name**: `deployBooFiPriceOracle.js`
+- **Parameters to Configure**:
+  - `_outputAsset`: `string` (e.g., `"USD"` or `"ETH"`)
+  - `_sequencerUptimeFeed`: `address` (Chainlink Sequencer Uptime Feed address)
+  - `_sequencerGracePeriod`: `uint256` (Grace period in seconds, e.g., `3600` for 1 hour)
+
+### Post-Deployment Configuration
+
+- Use the `setPriceSource` function to set the price source for each asset.
+  - **Parameters**:
+    - `_asset`: `address` (Asset address)
+    - `_priceSource`: `PriceSource` struct containing:
+      - `priceSource`: `address` (Deployed price source contract address)
+      - `maxPriceAge`: `uint256` (Maximum allowable age of the price in seconds)
+      
+- **Notes**:
+  - Central oracle aggregating prices from various sources.
+  - Includes checks for sequencer uptime to handle network outages.
+  - For testnets without a real sequencer feed, deploy `TestnetSequencerFeed.sol`.
+
+---
+
+## 11. TestnetSequencerFeed.sol (Testing Purposes)
+
+- **Script Name**: `deployTestnetSequencerFeed.js`
+- **Parameters to Configure**:
+  - None for deployment.
+
+### Post-Deployment Configuration
+
+- Use `setIsDown` function to simulate sequencer status.
+  - **Parameters**:
+    - `_isDown`: `bool` (`true` to simulate down, `false` to simulate up`)
+    
+- **Notes**:
+  - Mock contract to simulate sequencer uptime status on testnets.
+  - Useful for testing the behavior of `BooFiPriceOracle` during sequencer outages.
+  - Should not be used in production environments.
+
+---
+
+## 12. DelegateAddress.sol
+
+- **Script Name**: `deployDelegateAddress.js`
+- **Parameters to Configure**:
+  - `disclaimer`: `string` (The disclaimer message to be set in the contract)
+
+### Post-Deployment Configuration
+
+- Initialize the contract:
+  ```typescript
+  await delegateAddress.initialize(disclaimer);
+  ```
+  
+- **Notes**:
+  - **Purpose**: The `DelegateAddress` contract allows users to delegate their address to another address.
+  - **Initialization**: It uses OpenZeppelin's upgradeable contracts and must be initialized using the `initialize` function with the `disclaimer`.
+  - **Ownership**: Consider ownership transfer if necessary for your application's governance.
+
+---
+
+# Additional Notes
+
+## Deployment Order for Launching Market Maker Borrow/Loan Smart Contracts
+
+Based on your provided `.idea.md` and `.notes.md` files, here's the recommended deployment order for launching your market maker borrow/loan smart contracts. This deployment order ensures that all dependencies are properly handled, and the contracts are correctly initialized.
+
+### Deployment Order
+
+#### 1. **Deploy Price Sources**
+
+##### 1.1 Deploy `AggregatorV3BooFiPriceSource`
+
+- **Script Name**: `deployAggregatorV3BooFiPriceSource.js`
+- **Constructor Parameters**:
+  - `_outputAsset`: `string` (e.g., `"USD"` or `"ETH"`)
+
+- **Notes**:
+  - This contract provides price feeds using Chainlink's `AggregatorV3Interface`.
+  - Ensure the Chainlink aggregators are available on the target network.
+
+##### 1.2 Deploy `PythBooFiPriceSource`
+
+- **Script Name**: `deployPythBooFiPriceSource.js`
+- **Constructor Parameters**:
+  - `_pyth`: `address` (Pyth contract address)
+  - `_outputAsset`: `string` (e.g., `"USD"` or `"ETH"`)
+
+- **Notes**:
+  - This contract provides price feeds using the Pyth Network.
+  - Ensure Pyth is deployed and available on the target network.
+
+#### 2. **Deploy `BooFiPriceOracle`**
+
+- **Script Name**: `deployBooFiPriceOracle.js`
+- **Constructor Parameters**:
+  - `_outputAsset`: `string` (e.g., `"USD"` or `"ETH"`)
+  - `_sequencerUptimeFeed`: `address` (Chainlink Sequencer Uptime Feed address)
+  - `_sequencerGracePeriod`: `uint256` (Grace period in seconds, e.g., `3600` for 1 hour)
+
+- **Notes**:
+  - Central oracle aggregating prices from various sources.
+  - Includes checks for sequencer uptime to handle network outages.
+  - Requires the addresses of the deployed price sources.
+
+#### 3. **Set Price Sources in `BooFiPriceOracle`**
+
+**Post-Deployment Configuration**:
+
+For each asset (e.g., USDC, WETH), perform the following steps:
+
+- **If using Chainlink**:
+
+  - **Set Price Source in `AggregatorV3BooFiPriceSource`**:
+
+    ```typescript
+    await aggregatorV3PriceSource.setPriceSource(
+      assetAddress,
+      aggregatorAddress
+    );
+    ```
+
+  - **Set Price Source in `BooFiPriceOracle`**:
+
+    ```typescript
+    await booFiPriceOracle.setPriceSource(
+      assetAddress,
+      {
+        priceSource: aggregatorV3PriceSource.address,
+        maxPriceAge: maxPriceAge, // e.g., 300 seconds
+      }
+    );
+    ```
+
+- **If using Pyth**:
+
+  - **Set Price Source in `PythBooFiPriceSource`**:
+
+    ```typescript
+    await pythPriceSource.setPriceSource(
+      assetAddress,
+      pythPriceId
+    );
+    ```
+
+  - **Set Price Source in `BooFiPriceOracle`**:
+
+    ```typescript
+    await booFiPriceOracle.setPriceSource(
+      assetAddress,
+      {
+        priceSource: pythPriceSource.address,
+        maxPriceAge: maxPriceAge, // e.g., 300 seconds
+      }
+    );
+    ```
+
+#### 4. **Deploy `LinearInterestRate` Contracts**
+
+- **Script Name**: `deployLinearInterestRate.js`
+- **Constructor Parameters**:
+  - `ratePrecision`: `uint64` (e.g., `1e18`)
+  - `rateIntercept`: `uint64` (e.g., base interest rate, e.g., `0.05 * 1e18` for 5%)
+  - `rateCoefficient`: `uint64` (adjust as needed)
+  - `reserveFactor`: `uint256` (e.g., `0.1 * 1e18` for 10%)
+  - `reservePrecision`: `uint256` (e.g., `1e18`)
+
+- **Notes**:
+  - Deploy separate contracts if different assets require different interest rate models.
+  - The deployed addresses will be used when registering assets in the `AssetRegistry`.
+
+#### 5. **Deploy `AssetRegistry`**
+
+- **Script Name**: `deployAssetRegistry.js`
+- **Constructor Parameters**:
+  - `WETH_ADDRESS`: `address` (WETH token address on the target network)
+
+**Post-Deployment Configuration**:
+
+For each asset (e.g., USDC, WETH), register the asset:
+
+```typescript
+await assetRegistry.registerAsset(
+  assetAddress,
+  collateralizationRatioDeposit,
+  collateralizationRatioBorrow,
+  interestRateCalculatorAddress,
+  maxLiquidationPortion,
+  maxLiquidationBonus
+);
+```
+
+- **Notes**:
+  - Manages registered assets and their parameters.
+  - Ensure `WETH_ADDRESS` is correctly set for the deployment network.
+
+#### 6. **Deploy `Hub`**
+
+- **Script Name**: `deployHub.js`
+- **Constructor Parameters**:
+  - `wormholeRelayer`: `address` (Wormhole Relayer contract address)
+  - `tokenBridge`: `address` (TokenBridge contract address)
+  - `wormhole`: `address` (Wormhole contract address)
+  - `circleMessageTransmitter`: `address` (Circle Message Transmitter address or zero address if not used)
+  - `circleTokenMessenger`: `address` (Circle Token Messenger address or zero address if not used)
+  - `USDC`: `address` (USDC token address or zero address if not used)
+  - `interestAccrualIndexPrecision`: `uint256` (e.g., `1e18`)
+  - `liquidationFee`: `uint256` (e.g., `0.05 * 1e18` for 5%)
+  - `liquidationFeePrecision`: `uint256` (e.g., `1e18`)
+
+**Post-Deployment Configuration**:
+
+- **Set Asset Registry**:
+
+  ```typescript
+  await hub.setAssetRegistry(assetRegistry.address);
+  ```
+
+- **Notes**:
+  - Core contract maintaining state and liquidity for the lending protocol.
+  - May require setting additional parameters depending on implementation.
+
+#### 7. **Deploy `Spoke` Contracts**
+
+- **Script Name**: `deploySpoke.js`
+- **Parameters to Configure**:
+  - `chainId`: `uint32` (Chain ID where the Spoke is deployed)
+  - `wormhole`: `address` (Wormhole contract address)
+  - `tokenBridge`: `address` (TokenBridge contract address)
+  - `relayer`: `address` (Wormhole Relayer contract address)
+  - `hubChainId`: `uint32` (Chain ID where the Hub is deployed)
+  - `hubContractAddress`: `address` (Deployed Hub contract address)
+  - `circleMessageTransmitter`: `address` (Circle Message Transmitter address or zero address if not used)
+  - `circleTokenMessenger`: `address` (Circle Token Messenger address or zero address if not used)
+  - `USDC`: `address` (USDC token address or zero address if not used)
+
+- **Notes**:
+  - Acts as the entry point for users to interact with the protocol from different chains.
+  - Ensure the `hubContractAddress` is correctly set to enable communication with the Hub.
+
+#### 8. **Deploy `Liquidator` Contracts**
+
+##### 8.1 Deploy `Liquidator`
+
+- **Script Name**: `deployLiquidator.js`
+- **Parameters to Configure**:
+  - `hubAddress`: `address` (Deployed Hub contract address)
+  - `initialLiquidators`: `address[]` (Array of addresses authorized to perform liquidations)
+
+- **Notes**:
+  - Contract for performing liquidations in the protocol.
+  - Only authorized liquidators can initiate liquidations.
+  - Ensure security by only adding trusted addresses as liquidators.
+
+##### 8.2 Deploy `LiquidatorFlashLoan`
+
+- **Script Name**: `deployLiquidatorFlashLoan.js`
+- **Parameters to Configure**:
+  - `hubAddress`: `address` (Deployed Hub contract address)
+  - `poolAddress`: `address` (Aave Pool contract address)
+  - `uniswapRouterAddress`: `address` (Uniswap V3 Router contract address)
+  - `priceOracleAddress`: `address` (Deployed `BooFiPriceOracle` contract address)
+  - `profitTokenAddress`: `address` (Token in which profits are received, e.g., WETH)
+  - `profitReceiverAddress`: `address` (Address to receive profits from liquidations)
+  - `initialLiquidators`: `address[]` (Addresses authorized to perform liquidations)
+  - `maxSlippage`: `uint256` (Maximum allowable slippage, e.g., `100` for 1% with precision `1e4`)
+
+- **Notes**:
+  - Extends Liquidator to perform liquidations using flash loans from Aave.
+  - Requires integration with external protocols like Aave and Uniswap.
+  - Ensure the `profitReceiverAddress` is secure and controlled by trusted parties.
+
+#### 9. **Set Up Liquidation Bots**
+
+- **Notes**:
+  - Develop or deploy bots that monitor the protocol for undercollateralized positions.
+  - Bots should call the `liquidation()` function on the `LiquidatorFlashLoan` contract when necessary.
+  - Include the bot addresses in the `initialLiquidators` array during deployment.
+
+#### 10. **Deploy `TestnetSequencerFeed` (If Testing on Testnets)**
+
+- **Script Name**: `deployTestnetSequencerFeed.js`
+- **Parameters to Configure**:
+  - None for deployment.
+
+**Post-Deployment Configuration**:
+
+- Use `setIsDown` function to simulate sequencer status.
+
+  ```typescript
+  await testnetSequencerFeed.setIsDown(false); // or true to simulate downtime
+  ```
+
+- **Notes**:
+  - Mock contract to simulate sequencer uptime status on testnets.
+  - Useful for testing the behavior of `BooFiPriceOracle` during sequencer outages.
+
+#### 11. **Deploy `DelegateAddress` (If Required)**
+
+- **Script Name**: `deployDelegateAddress.js`
+- **Parameters to Configure**:
+  - `disclaimer`: `string` (The disclaimer message to be set in the contract)
+
+**Post-Deployment Configuration**:
+
+- Initialize the contract:
+
+  ```typescript
+  await delegateAddress.initialize(disclaimer);
+  ```
+
+- **Notes**:
+  - Allows users to delegate their address to another address.
+  - Uses OpenZeppelin's upgradeable contracts.
+
+---
+
+## Security Considerations
+
+- **Ownership**:
+  - Manage ownership of contracts carefully. Consider transferring ownership to a multisig wallet or governance contract.
+
+- **Permissions**:
+  - Only authorized addresses should be able to perform sensitive actions like setting price sources or adding liquidators.
+
+- **Testing**:
+  - Thoroughly test deployment scripts on a testnet before deploying to mainnet.
+
+## Network-Specific Addresses
+
+- Update addresses for tokens, oracles, and external contracts based on the deployment network.
+  - For example, WETH addresses, Chainlink aggregator addresses, Pyth contract addresses, etc., vary by network.
+
+
+## Libraries and Abstract Contracts
+
+- The following contracts are libraries or abstract contracts and do **not** require deployment scripts:
+  - `Disclaimer.sol` (Library)
+  - `Interest.sol` (Library)
+  - `SwapAmountsOracle.sol` (Library)
+  - `BaseBooFiPriceSource.sol` (Abstract Contract)
+  - `HubSpokeEvents.sol` (Utility Contract)
+  - `HubSpokeStructs.sol` (Library)
+  - `TokenBridgeUtilities.sol` (Library)
+- These are used internally by the contracts that require deployment.
+
+---

@@ -1,9 +1,0 @@
-[submodule "evm/lib/wormhole-solidity-sdk"]
-	path = evm/lib/wormhole-solidity-sdk
-	url = https://github.com/wormhole-foundation/wormhole-solidity-sdk
-[submodule "evm/lib/upgradeable-wormhole-solidity-sdk"]
-	path = evm/lib/upgradeable-wormhole-solidity-sdk
-	url = https://github.com/SynonymFinance/upgradeable-wormhole-solidity-sdk
-[submodule "evm/lib/solmate"]
-	path = evm/lib/solmate
-	url = https://github.com/transmissions11/solmate

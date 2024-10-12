@@ -1,0 +1,19 @@
+{
+    "maxLiquidationPortion": {
+      "USDC": 0.50,
+      "WETH": 0.40
+    },
+    "maxLiquidationBonus": {
+      "USDC": 1.25,
+      "WETH": 1.30
+    },
+    "maxHealthFactor": {
+      "value": 1.05,
+      "precision": 100
+    },
+    "slippageTolerance": {
+      "value": 0.01,
+      "precision": 100
+    }
+  }
+  

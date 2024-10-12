@@ -1,0 +1,24 @@
+{
+    "contracts": {
+      "LiquidatorFlashLoan": "0x771b6F9abD8f975A17e8683C89E492658852a5A3",
+      "Liquidator": "0x684065E9Cb94B92847776aaFBFDB4027761EF01F",
+      "Hub": "0x7E6D758125045a88b5c5Ed73EC7B92D56500115e",
+      "BooFiPriceOracle": "0x2AA75d47E777562C8b0AFDE3A8ec5ab3D466ef12"
+    },
+    "services": {
+      "AavePool": "0xbE781D7Bdf469f3d94a62Cdcc407aCe106AEcA74",
+      "UniswapRouter": "0xd0872d928672ae2ff74bdb2f5130ac12229cafaf",
+      "ProfitReceiver": "0x720447Cc33691D167D14e472bf5Ae38E8a220aF7"
+    },
+    "assets": {
+      "USDC": {
+        "address": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+        "priceSource": "0xeaa020c61cc479712813461ce153894a96a6c00b21ed0cfc2798d1f9a9e9c94a"
+      },
+      "WETH": {
+        "address": "0x1BDD24840e119DC2602dCC587Dd182812427A5Cc",
+        "priceSource": "0x9d4294bbcd1174d6f2003ec365831e64cc31d9f6f15a2b85399db8d5000960f6"
+      }
+    }
+  }
+  
