@@ -1,0 +1,278 @@
+{
+    "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_hub",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "assetAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "vaultOwner",
+              "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "deposit",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minHealth",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minHealthPrecision",
+              "type": "uint256"
+            }
+          ],
+          "name": "calculateMaxWithdrawableAndBorrowableAmounts",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "assetAddress",
+              "type": "address"
+            }
+          ],
+          "name": "getCurrentInterestRate",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "depositRate",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "borrowRate",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "precision",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct IInterestRateCalculator.InterestRates",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "assetAddress",
+              "type": "address"
+            }
+          ],
+          "name": "getGlobalBalance",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "deposited",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "borrowed",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct HubSpokeStructs.DenormalizedVaultAmount",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "vaultOwner",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "assetAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minHealth",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minHealthPrecision",
+              "type": "uint256"
+            }
+          ],
+          "name": "getMaxBorrowableAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "vaultOwner",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "assetAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minHealth",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minHealthPrecision",
+              "type": "uint256"
+            }
+          ],
+          "name": "getMaxWithdrawableAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "maxWithdrawableAmount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "assetAddress",
+              "type": "address"
+            }
+          ],
+          "name": "getReserveAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "asset",
+              "type": "address"
+            }
+          ],
+          "name": "getReserveFactor",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "vaultOwner",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "assetAddress",
+              "type": "address"
+            }
+          ],
+          "name": "getUserBalance",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "deposited",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "borrowed",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct HubSpokeStructs.DenormalizedVaultAmount",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        }
+      ]
+}

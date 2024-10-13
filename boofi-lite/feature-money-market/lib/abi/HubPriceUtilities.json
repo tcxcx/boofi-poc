@@ -1,0 +1,715 @@
+{
+    "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_hub",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_priceOracle",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_priceStandardDeviations",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_priceStandardDeviationsPrecision",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "DepositLimitExceeded",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NoZeroOrNegativePrices",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "ERROR_DEPOSIT_LIMIT_EXCEEDED",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ERROR_VAULT_INSUFFICIENT_BORROWS",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ERROR_VAULT_UNDER_COLLAT",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.NotionalVaultAmount",
+          "name": "vaultAmount",
+          "type": "tuple"
+        }
+      ],
+      "name": "applyCollateralizationRatios",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.NotionalVaultAmount",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.DenormalizedVaultAmount",
+          "name": "vaultAmount",
+          "type": "tuple"
+        }
+      ],
+      "name": "calculateEffectiveNotionals",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.NotionalVaultAmount",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.DenormalizedVaultAmount",
+          "name": "vaultAmount",
+          "type": "tuple"
+        }
+      ],
+      "name": "calculateNotionals",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.NotionalVaultAmount",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "vaultOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "assetAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "assetAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "shouldRevert",
+          "type": "bool"
+        }
+      ],
+      "name": "checkAllowedToBorrow",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "error",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "assetAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "assetAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "shouldRevert",
+          "type": "bool"
+        }
+      ],
+      "name": "checkAllowedToDeposit",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "error",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "vaultOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "assetAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "assetAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "shouldRevert",
+          "type": "bool"
+        }
+      ],
+      "name": "checkAllowedToRepay",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "error",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "vaultOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "assetAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "assetAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "shouldRevert",
+          "type": "bool"
+        }
+      ],
+      "name": "checkAllowedToWithdraw",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "error",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAssetRegistry",
+      "outputs": [
+        {
+          "internalType": "contract IAssetRegistry",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getHub",
+      "outputs": [
+        {
+          "internalType": "contract IHub",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPriceOracle",
+      "outputs": [
+        {
+          "internalType": "contract IBooFiPriceOracle",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPriceStandardDeviations",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "assetAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getPrices",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "truePrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceCollateral",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceDebt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pricePrecision",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "vaultOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "collateralizationRatios",
+          "type": "bool"
+        }
+      ],
+      "name": "getVaultEffectiveNotionals",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.NotionalVaultAmount",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.NotionalVaultAmount",
+          "name": "realValues",
+          "type": "tuple"
+        }
+      ],
+      "name": "invertNotionals",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.DenormalizedVaultAmount",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.NotionalVaultAmount",
+          "name": "vaultAmount",
+          "type": "tuple"
+        }
+      ],
+      "name": "removeCollateralizationRatios",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "deposited",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowed",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HubSpokeStructs.NotionalVaultAmount",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IHub",
+          "name": "_hub",
+          "type": "address"
+        }
+      ],
+      "name": "setHub",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IBooFiPriceOracle",
+          "name": "_priceOracle",
+          "type": "address"
+        }
+      ],
+      "name": "setPriceOracle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_priceStandardDeviations",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_precision",
+          "type": "uint256"
+        }
+      ],
+      "name": "setPriceStandardDeviations",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+}
