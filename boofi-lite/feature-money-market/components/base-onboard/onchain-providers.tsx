@@ -17,7 +17,7 @@ function OnchainProviders({ children }: Props) {
   const wagmiConfig = useWagmiConfig();
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiConfig as any}>
       <QueryClientProvider client={queryClient}>
         <OnchainKitProvider apiKey={NEXT_PUBLIC_CDP_API_KEY} chain={base}>
           {children}

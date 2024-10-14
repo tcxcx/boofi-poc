@@ -7,7 +7,18 @@ import {
 } from '@rainbow-me/rainbowkit/wallets';
 import { useMemo } from 'react';
 import { http, createConfig } from 'wagmi';
-import { base, baseSepolia } from 'wagmi/chains';
+import {
+  mainnet,
+  optimism,
+  optimismSepolia,
+  celo,
+  celoAlfajores,
+  base,
+  baseSepolia,
+  mode,
+  modeTestnet,
+  sepolia,
+} from "wagmi/chains";
 import { NEXT_PUBLIC_WC_PROJECT_ID } from './config';
 
 export function useWagmiConfig() {
@@ -37,17 +48,41 @@ export function useWagmiConfig() {
     );
 
     const wagmiConfig = createConfig({
-      chains: [base, baseSepolia],
-      // turn off injected provider discovery
+      chains: [
+        mainnet,
+        sepolia,
+        optimism,
+        optimismSepolia,
+        celo,
+        celoAlfajores,
+        base,
+        baseSepolia,
+        mode,
+        modeTestnet,
+      ],
       multiInjectedProviderDiscovery: false,
       connectors,
       ssr: true,
       transports: {
+        [mainnet.id]: http(),
+        [sepolia.id]: http(),
+        [optimism.id]: http(),
+        [optimismSepolia.id]: http(),
+        [celo.id]: http(),
+        [celoAlfajores.id]: http(),
         [base.id]: http(),
         [baseSepolia.id]: http(),
+        [mode.id]: http(),
+        [modeTestnet.id]: http(),
       },
     });
 
     return wagmiConfig;
   }, [projectId]);
+}
+
+declare module "wagmi" {
+  interface Register {
+    config: typeof config;
+  }
 }

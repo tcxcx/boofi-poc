@@ -1,34 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  ChevronDownIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-  CopyIcon,
-  XIcon,
-} from "lucide-react";
-import { Chain } from "viem/chains";
+import { useState } from "react";
+import { ChevronRightIcon, CopyIcon, XIcon } from "lucide-react";
 import CurrencyDisplayer from "@/components/currency";
 import { Button } from "@/components/ui/button";
-import { FadeText } from "@/components/magicui/fade-text";
+import { FadeText } from "@/components/fade-text";
 import { AnimatePresence, motion } from "framer-motion";
 import { QRCode } from "react-qrcode-logo";
 import SentTable from "@/components/tables/sent-table";
 import { useDeezNuts } from "@/hooks/use-peanut";
-import { useMiniPayDeezNuts } from "@/hooks/use-minipay-links";
 import { useWindowSize } from "@/hooks/use-window-size";
-import { currencyAddresses } from "@/utils/currencyAddresses";
-import { getNetwork, useUserWallets } from "@dynamic-labs/sdk-react-core";
+import { currencyAddresses } from "@/lib/currencyAddresses";
 import Link from "next/link";
-import { getBlockExplorerUrl } from "@/utils/index";
-import { config } from "@/store/wagmi";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
-import { ToastAction } from "@/components/ui/toast";
 import confetti from "canvas-confetti";
-import { celo, celoAlfajores } from "viem/chains";
-import { useAuthStore } from "@/store/authStore";
+import { useAccount, useBalance, useChainId, useSwitchChain } from "wagmi";
 
 interface TransactionDetails {
   transactionHash: string;
@@ -37,69 +24,42 @@ interface TransactionDetails {
 }
 
 export default function LinkForm() {
-  const { isMiniPay, setCurrentChainId } = useAuthStore();
-
-  const { createPayLink, isLoading: isPeanutLoading } = isMiniPay
-    ? useMiniPayDeezNuts()
-    : useDeezNuts();
-
-  const { copyToClipboard, truncateHash } = useDeezNuts();
+  const { createPayLink, isLoading: isPeanutLoading, copyToClipboard, truncateHash } = useDeezNuts();
 
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [usdAmount, setUsdAmount] = useState<number>(0);
   const [tokenAmount, setTokenAmount] = useState<number>(0);
-  const [transactionDetails, setTransactionDetails] =
-    useState<TransactionDetails | null>(null);
+  const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
   const [showSentTable, setShowSentTable] = useState(false);
-  const [isMultiChain, setIsMultiChain] = useState(false);
   const [selectedToken, setSelectedToken] = useState<string>("ETH");
-  const [currentNetwork, setCurrentNetwork] = useState<Chain | null>(null);
-  const { width } = useWindowSize();
-  const userWallets = useUserWallets();
-  const isMobile = width && width <= 768;
-  const { toast } = useToast();
   const [currentText, setCurrentText] = useState<string>("");
-  const [destinationChainId, setDestinationChainId] = useState<string | null>(
-    null
-  );
-  const [destinationToken, setDestinationToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchNetwork = async () => {
-      if (isMiniPay) {
-        const celoNetwork =
-          process.env.NEXT_PUBLIC_USE_TESTNET === "true" ? celoAlfajores : celo;
-        setCurrentNetwork(celoNetwork);
-        setCurrentChainId(celoNetwork.id);
-        console.log("Setting network for MiniPay:", celoNetwork);
-      } else if (userWallets.length > 0) {
-        const networkId = await getNetwork(userWallets[0].connector);
-        if (networkId) {
-          const chain = config.chains.find((chain) => chain.id === networkId);
-          if (chain) {
-            setCurrentNetwork(chain);
-            setCurrentChainId(chain.id);
-          }
-        }
-      }
-    };
-    fetchNetwork();
-  }, [userWallets, isMiniPay, setCurrentChainId]);
+  const { address } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+  const { data: balance } = useBalance({
+    address,
+    chainId,
+  });
 
-  const handleCreateLinkClick = async (e: any) => {
+  const { width } = useWindowSize();
+  const { toast } = useToast();
+
+  const isMobile = width && width <= 768;
+
+  const handleCreateLinkClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOverlayVisible(true);
 
-    if (!currentNetwork) {
+    if (!chainId) {
       console.error("No network selected");
       return;
     }
 
     try {
-      let tokenAddress = "0x0000000000000000000000000000000000000000";
+      let tokenAddress = "0x0000000000000000000000000000000000000000"; // Default to ETH if no token selected
       if (selectedToken !== "ETH") {
-        tokenAddress =
-          currencyAddresses[currentNetwork.id]?.[selectedToken] || tokenAddress;
+        tokenAddress = currencyAddresses[chainId]?.[selectedToken] || tokenAddress;
       }
 
       setCurrentText("In Progress...");
@@ -113,7 +73,7 @@ export default function LinkForm() {
       );
       setTransactionDetails(link as TransactionDetails);
 
-      // Trigger confetti emoji animation
+      // Trigger confetti animation
       const scalar = 4;
       const unicorn = confetti.shapeFromText({ text: "👻", scalar });
 
@@ -170,15 +130,9 @@ export default function LinkForm() {
   const handleShare = (platform: string) => {
     const url = transactionDetails?.paymentLink;
     if (platform === "whatsapp") {
-      window.open(
-        `https://wa.me/?text=${encodeURIComponent(url || "")}`,
-        "_blank"
-      );
+      window.open(`https://wa.me/?text=${encodeURIComponent(url || "")}`, "_blank");
     } else if (platform === "telegram") {
-      window.open(
-        `https://t.me/share/url?url=${encodeURIComponent(url || "")}`,
-        "_blank"
-      );
+      window.open(`https://t.me/share/url?url=${encodeURIComponent(url || "")}`, "_blank");
     }
   };
 
@@ -225,7 +179,6 @@ export default function LinkForm() {
     toast({
       title: "Copied to clipboard!",
       description: `${label} has been copied to clipboard.`,
-      action: <ToastAction altText="Spooky">👻</ToastAction>,
     });
   };
 
@@ -240,12 +193,9 @@ export default function LinkForm() {
           <CurrencyDisplayer
             tokenAmount={tokenAmount}
             onValueChange={handleValueChange}
-            availableTokens={
-              currentNetwork ? currencyAddresses[currentNetwork.id] : {}
-            }
+            availableTokens={currencyAddresses[chainId] || {}}
             onTokenSelect={setSelectedToken}
-            currentNetwork={currentNetwork?.id || null}
-            isMiniPay={isMiniPay}
+            currentNetwork={chainId}
           />
         </div>
       </div>
@@ -263,10 +213,7 @@ export default function LinkForm() {
       {overlayVisible && (
         <div className="animate-in fade-in-0 fixed inset-0 z-50 bg-white/90">
           <div className="relative flex size-full items-center justify-center">
-            <button
-              className="absolute right-4 top-4"
-              onClick={handleCloseOverlay}
-            >
+            <button className="absolute right-4 top-4" onClick={handleCloseOverlay}>
               <XIcon className="size-6" />
             </button>
             <div className="flex flex-col items-center gap-10">
@@ -286,15 +233,10 @@ export default function LinkForm() {
                   transition={{ duration: 1 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="flex w-full  flex-col justify-between rounded-2xl border bg-white p-5">
+                  <div className="flex w-full flex-col justify-between rounded-2xl border bg-white p-5">
                     <div
                       className="flex justify-center mb-4 cursor-pointer"
-                      onClick={() =>
-                        handleCopy(
-                          transactionDetails.paymentLink,
-                          "Payment Link"
-                        )
-                      }
+                      onClick={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
                     >
                       <QRCode
                         value={transactionDetails.paymentLink}
@@ -305,7 +247,6 @@ export default function LinkForm() {
                     </div>
 
                     <div className="flex justify-center text-xs text-primary mb-4">
-                      {" "}
                       Share crypto with a link to your friends and family
                     </div>
                     <div className="flex justify-center gap-4 mb-4 mx-2">
@@ -315,12 +256,7 @@ export default function LinkForm() {
                         onClick={() => handleShare("whatsapp")}
                         className="text-xs px-4"
                       >
-                        <Image
-                          src="/icons/whatsapp.svg"
-                          alt="WhatsApp"
-                          width={24}
-                          height={24}
-                        />
+                        <Image src="/icons/whatsapp.svg" alt="WhatsApp" width={24} height={24} />
                         Share on Whatsapp
                       </Button>
                       <Button
@@ -329,55 +265,31 @@ export default function LinkForm() {
                         onClick={() => handleShare("telegram")}
                         className="text-xs px-4"
                       >
-                        <Image
-                          src="/icons/telegram.png"
-                          alt="Telegram"
-                          width={24}
-                          height={24}
-                        />
+                        <Image src="/icons/telegram.png" alt="Telegram" width={24} height={24} />
                         Share on Telegram
                       </Button>
                     </div>
 
-                    {isMultiChain && destinationChainId && (
-                      <div className="flex justify-center text-xs text-primary mb-4">
-                        <span>Destination Chain: {destinationChainId}</span>
-                      </div>
-                    )}
-
                     <div className="mt-2 flex h-16 items-center border-t text-xs">
                       <div className="mx-5 flex w-full items-center justify-between">
                         <div className="flex flex-col">
-                          <span className="font-semibold flex items-center">
-                            Transaction Hash:
-                          </span>
+                          <span className="font-semibold flex items-center">Transaction Hash:</span>
                           <Button
                             size="sm"
                             variant="link"
-                            onClick={() =>
-                              handleCopy(
-                                transactionDetails.transactionHash,
-                                "Transaction Hash"
-                              )
-                            }
+                            onClick={() => handleCopy(transactionDetails.transactionHash, "Transaction Hash")}
                           >
                             {truncateHash(transactionDetails.transactionHash)}
                           </Button>
                         </div>
-                        {currentNetwork && transactionDetails && (
+                        {chainId && transactionDetails && (
                           <div className="flex items-center">
                             <Link
-                              href={`${getBlockExplorerUrl(
-                                currentNetwork
-                              )}/tx/${transactionDetails.transactionHash}`}
+                              href={`https://etherscan.io/tx/${transactionDetails.transactionHash}`}
                               target="_blank"
                             >
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="px-2"
-                              >
-                                View in Blockscout
+                              <Button size="sm" variant="ghost" className="px-2">
+                                View in Block Explorer
                                 <ChevronRightIcon className="ml-1 size-4" />
                               </Button>
                             </Link>
@@ -390,12 +302,7 @@ export default function LinkForm() {
                     <Button
                       size={"lg"}
                       className="flex items-center gap-2"
-                      onClick={() =>
-                        handleCopy(
-                          transactionDetails.paymentLink,
-                          "Payment Link"
-                        )
-                      }
+                      onClick={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
                     >
                       Copy Link
                       <CopyIcon className="size-4" />

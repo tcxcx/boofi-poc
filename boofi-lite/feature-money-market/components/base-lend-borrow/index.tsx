@@ -20,7 +20,6 @@ import React, { useState, useCallback, useEffect } from "react";
 import { base } from "viem/chains";
 import { useAccount } from "wagmi";
 import CurrencyDisplayer from "./currency-displayer";
-import TransactionDetails from "./transaction-component";
 import { InfoIcon } from 'lucide-react'
 
 // Commented out ABI and contract address import until contract deployment
@@ -138,6 +137,7 @@ export default function LendBorrow() {
     }
 
     return (
+
       <div className="space-y-6">
         <CurrencyDisplayer
           tokenAmount={Number.parseFloat(amount)}
@@ -173,7 +173,19 @@ export default function LendBorrow() {
 
   return (
     <div className="min-h-screen bg-darkBg text-darkText p-6 font-neue">
+      <div className="mt-8 bg-main p-4 rounded-none border-2 border-black">
+        <h3 className="text-xl font-nupower mb-2 flex items-center text-black">
+          <InfoIcon className="mr-2" />
+          New to DeFi?
+        </h3>
+        <p className="text-sm text-black">
+          DeFi (Decentralized Finance) allows you to lend, borrow, and earn
+          interest on your crypto assets without traditional banks. Start
+          small, learn as you go, and always research before investing.
+        </p>
+      </div>
       <div className="max-w-6xl mx-auto">
+
         <h1 className="text-5xl font-nupower text-main mb-8">Supply USDC</h1>
 
         <div className="flex flex-col lg:flex-row gap-6">
@@ -222,25 +234,6 @@ export default function LendBorrow() {
               </WalletComponent>
             )}
           </div>
-
-          <div className="w-full lg:w-2/5">
-            <h2 className="text-2xl sm:text-3xl font-nupower text-main mb-4 sm:mb-6">
-              Transaction Details
-            </h2>
-            <TransactionDetails amount={amount} action={activeTab} />
-          </div>
-        </div>
-
-        <div className="mt-8 bg-main p-4 rounded-none border-2 border-black">
-          <h3 className="text-xl font-nupower mb-2 flex items-center text-black">
-            <InfoIcon className="mr-2" />
-            New to DeFi?
-          </h3>
-          <p className="text-sm text-black">
-            DeFi (Decentralized Finance) allows you to lend, borrow, and earn
-            interest on your crypto assets without traditional banks. Start
-            small, learn as you go, and always research before investing.
-          </p>
         </div>
       </div>
     </div>

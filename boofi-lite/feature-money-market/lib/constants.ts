@@ -2,9 +2,6 @@ import { baseSepolia } from "viem/chains";
 
 export const EXPECTED_CHAIN = baseSepolia;
 
-export const isDev = process.env.NODE_ENV === "development";
-export const isProd = process.env.NODE_ENV === "production";
-
 export const isClient = typeof document !== "undefined";
 export const isServer = !isClient;
 export const githubUrl = "https://github.com/hackathon-2024";
@@ -24,13 +21,15 @@ if (typeof process.env.NEXT_PUBLIC_SITE_URL !== "string") {
   );
 }
 
-export const siteURL =
-  new URL(process.env.NEXT_PUBLIC_SITE_URL) || "https://boofi.xyz";
+// Determine the site URL
+export const siteURL = new URL(process.env.NEXT_PUBLIC_SITE_URL);
 export const siteOrigin = siteURL.origin;
 
-// we like putting this in the JavaScript console,
-// as our signature.
-// you can delete it if not needed.
+// Determine the environment based on site URL
+export const isProd = siteOrigin === "https://boofi.xyz";
+export const isDev = !isProd;
+
+// The basementLog is a fun signature for the JavaScript console
 export const basementLog = `
 🐱‍💻👻
 
@@ -43,11 +42,10 @@ export const basementLog = `
 88b,   ,a8" "8a,   ,a8" "8a,   ,a8"  88    88  
 8Y"Ybbd8"'   ""YbbdP""   ""YbbdP""   88    88  
                                                
-                                                
+                                               
 `;
-// **********************************************************************
 
-//change this to the correct contract address and abi
+// Change this to the correct contract address and ABI
 export const linksContractABI = [
   {
     inputs: [
