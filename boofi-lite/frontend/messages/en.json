@@ -1,0 +1,20 @@
+{
+  "NotFound": {
+    "title": "404: Not Found"
+  },
+  "Home": {
+    "welcome": "Welcome",
+    "to": "to",
+    "slogan": {
+      "part1": "Web3",
+      "part2": "neo-",
+      "part3": "banking",
+      "part4": "for everyone"
+    },
+    "logoAlt": "BooFi logo",
+    "neoMatrixAlt": "Neo matrix image",
+    "pillGifAlt": "Matrix pill gif",
+    "boofiMatrixAlt": "BooFi matrix gif",
+    "matrixMemeAlt": "Matrix crypto meme"
+  }
+}
