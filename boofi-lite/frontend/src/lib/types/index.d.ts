@@ -85,4 +85,35 @@ export interface TransactionWrapperProps {
     chainId: number;
     onSuccess: (hash: string) => void;
     onError: (error: TransactionError) => void;
+    children: any;
   }
+
+export interface AuroraTitleProps {
+  text: string;
+  size?: string;
+  letterSpacing?: string;
+  backgroundColor?: string;
+}
+
+export interface MarketStore {
+  currentViewTab: ViewTab;
+  setCurrentViewTab: (tab: ViewTab) => void;
+}
+
+export interface AssetData {
+  assetName: string;
+  chains: string[];
+  totalSupplied: number;
+  totalSupplyAPY: number;
+  // Add other properties if necessary
+}
+export interface TabState {
+  activeTab: 'moneyMarket' | 'paymentLink';
+  setActiveTab: (tab: 'moneyMarket' | 'paymentLink') => void;
+}
+
+export interface APYData {
+  baseAPY: number;
+  bonusAPY: number;
+  totalAPY: number;
+}

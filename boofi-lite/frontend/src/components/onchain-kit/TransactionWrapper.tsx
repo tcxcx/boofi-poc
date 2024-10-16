@@ -24,6 +24,7 @@ export const TransactionWrapper: React.FC<TransactionWrapperProps> = ({
   chainId,
   onSuccess,
   onError,
+  children,
 }) => {
   const contracts: ContractFunctionParameters[] = [
     {
@@ -78,6 +79,7 @@ export const TransactionWrapper: React.FC<TransactionWrapperProps> = ({
         <TransactionStatusLabel />
         <TransactionStatusAction />
       </TransactionStatus>
+      {children}
     </Transaction>
   );
 };

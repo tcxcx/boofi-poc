@@ -58,8 +58,7 @@ const Header: React.FC = () => {
           <span className="h-px flex-grow bg-black"></span>
           <Suspense fallback={<Skeleton className="h-4 w-[250px]" />}>
             <div className="flex items-center gap-3">
-              <SignupButton />
-              {!address && <LoginButton />}
+              <LoginButton />
             </div>    
           </Suspense>
         </div>
