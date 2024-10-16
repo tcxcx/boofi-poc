@@ -59,7 +59,10 @@ export default function LinkForm() {
     try {
       let tokenAddress = "0x0000000000000000000000000000000000000000"; // Default to ETH if no token selected
       if (selectedToken !== "ETH") {
-        tokenAddress = currencyAddresses[chainId]?.[selectedToken] || tokenAddress;
+        const addressInfo = currencyAddresses[chainId]?.[selectedToken];
+        if (typeof addressInfo === 'string') {
+          tokenAddress = addressInfo;
+        }
       }
 
       setCurrentText("In Progress...");
@@ -193,12 +196,13 @@ export default function LinkForm() {
           <CurrencyDisplayer
             tokenAmount={tokenAmount}
             onValueChange={handleValueChange}
-            availableTokens={currencyAddresses[chainId] || {}}
+            availableTokens={Object.fromEntries(Object.entries(currencyAddresses[chainId] || {}).map(([key, value]) => [key, value.toString()]))}
             onTokenSelect={setSelectedToken}
             currentNetwork={chainId}
           />
-        </div>
       </div>
+      </div>
+
       <div className="flex justify-between w-full space-x-2">
         <Button
           size={"lg"}

@@ -22,11 +22,12 @@ interface Position {
   apy: number;
 }
 
-const UserPositions: React.FC = () => {
+const PositionSummary: React.FC = () => {
   const currentViewTab = useMarketStore((state) => state.currentViewTab);
   const [positions, setPositions] = useState<Position[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [ensName, setEnsName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -43,6 +44,7 @@ const UserPositions: React.FC = () => {
             ]
           : [];
         setPositions(mockPositions);
+        setEnsName("user.eth"); // Mock ENS name - replace with actual ENS resolution
       } catch (error) {
         console.error("Error fetching positions:", error);
         setError("Failed to load positions.");
@@ -73,29 +75,9 @@ const UserPositions: React.FC = () => {
     <div className={cn("rounded-lg shadow p-2 space-y-2 text-xs", getBgColorClass(currentViewTab))}>
       <div className="flex justify-between items-center">
         <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-24" />
       </div>
-      <ScrollArea className="h-24 w-full">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-xs"><Skeleton className="h-3 w-12" /></TableHead>
-              <TableHead className="text-xs"><Skeleton className="h-3 w-12" /></TableHead>
-              <TableHead className="text-xs"><Skeleton className="h-3 w-12" /></TableHead>
-              <TableHead className="text-xs"><Skeleton className="h-3 w-12" /></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {[1, 2].map((_, index) => (
-              <TableRow key={index}>
-                <TableCell className="text-xs"><Skeleton className="h-3 w-16" /></TableCell>
-                <TableCell className="text-xs"><Skeleton className="h-3 w-16" /></TableCell>
-                <TableCell className="text-xs"><Skeleton className="h-3 w-16" /></TableCell>
-                <TableCell className="text-xs"><Skeleton className="h-3 w-16" /></TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </ScrollArea>
+      <Skeleton className="h-20 w-full" />
     </div>
   );
 
@@ -109,12 +91,14 @@ const UserPositions: React.FC = () => {
 
   return (
     <div className={cn("rounded-lg shadow p-4 space-y-4 text-xs", getBgColorClass(currentViewTab))}>
-      <h2 className="text-sm font-medium text-left justify-start">Your Positions</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-sm font-medium">Your Positions</h2>
+        {ensName && <span className="text-xs text-muted-foreground">{ensName}</span>}
+      </div>
 
       {positions.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-500">You don't have any open positions.</p>
-          <p className="text-gray-500">Start {currentViewTab}ing to see your positions here!</p>
+        <div className="text-center py-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
+          <p className="text-gray-500">No positions</p>
         </div>
       ) : (
         <ScrollArea className="h-32 w-full">
@@ -122,18 +106,18 @@ const UserPositions: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-xs">Asset</TableHead>
-                <TableHead className="text-xs">Amount</TableHead>
-                <TableHead className="text-xs">Value</TableHead>
-                <TableHead className="text-xs">APY</TableHead>
+                <TableHead className="text-xs text-right">Amount</TableHead>
+                <TableHead className="text-xs text-right">Value</TableHead>
+                <TableHead className="text-xs text-right">APY</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {positions.map((position) => (
                 <TableRow key={position.asset}>
-                  <TableCell className="text-xs">{position.asset}</TableCell>
-                  <TableCell className="text-xs">{position.amount.toFixed(2)}</TableCell>
-                  <TableCell className="text-xs">${position.value.toFixed(2)}</TableCell>
-                  <TableCell className="text-xs">{position.apy.toFixed(2)}%</TableCell>
+                  <TableCell className="text-xs font-medium">{position.asset}</TableCell>
+                  <TableCell className="text-xs text-right">{position.amount.toFixed(2)}</TableCell>
+                  <TableCell className="text-xs text-right">${position.value.toFixed(2)}</TableCell>
+                  <TableCell className="text-xs text-right">{position.apy.toFixed(2)}%</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -141,19 +125,19 @@ const UserPositions: React.FC = () => {
         </ScrollArea>
       )}
 
-      <Separator />
-
-      <div className="flex justify-between items-start">
-        <div className="justify-start text-left">
-          <h3 className="text-sm font-medium">Total Value</h3>
-          <p className="text-xs text-muted-foreground">Across all positions</p>
-        </div>
-        <span className="font-bold text-2xl">
-          ${positions.reduce((sum, pos) => sum + pos.value, 0).toFixed(2)}
-        </span>
-      </div>
+      {positions.length > 0 && (
+        <>
+          <Separator />
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium">Total Value</span>
+            <span className="text-sm font-bold">
+              ${positions.reduce((sum, pos) => sum + pos.value, 0).toFixed(2)}
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default UserPositions;
+export default PositionSummary;

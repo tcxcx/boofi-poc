@@ -41,15 +41,17 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
   }
 
   return (
-    <>
-      <div className="w-full flex justify-center">
-        <Tabs defaultValue="moneyMarket" className="w-full justify-center" onValueChange={handleTabChange}>
-          <TabsList className="flex justify-center w-full m-4 gap-4 max-w-md">
+    <div className="w-full flex flex-col items-center">
+      <Tabs defaultValue="moneyMarket" className="w-full max-w-5xl" onValueChange={handleTabChange}>
+        <div className="flex justify-center w-full">
+          <TabsList className="flex justify-center gap-4 m-4">
             <TabsTriggerAlt value="moneyMarket">
               <Button
                 size="lg"
                 className="flex items-center gap-2 w-full"
                 variant="charly"
+                tabValue="moneyMarket"
+                storeType="tab"
               >
                 <span>Money Markets 🏦</span>
               </Button>
@@ -59,46 +61,48 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
                 size="lg"
                 className="flex items-center gap-2 w-full"
                 variant="charly"
+                tabValue="paymentLink"
+                storeType="tab"
               >
                 <span>Payment Links 💸</span>
               </Button>
             </TabsTriggerAlt>
           </TabsList>
+        </div>
 
-          <div className="p-4 overflow-hidden flex flex-col items-center justify-center w-full">
-            <div className="relative flex flex-col items-center justify-center w-full">
-              <div
-                className={`relative z-1 text-center bg-background dark:bg-background rounded-lg shadow-lg p-8 w-full border-2 border-black dark:border-white transition-all duration-300 ease-in-out ${
-                  activeTab === 'paymentLink' ? 'max-w-md' : 'max-w-5xl'
-                }`}
-              >
-                {isTransitioning ? (
-                  activeTab === 'paymentLink' ? (
-                    <PaymentLinkSkeleton />
-                  ) : (
-                    <MoneyMarketBentoSkeleton />
-                  )
+        <div className="p-4 overflow-hidden flex flex-col items-center justify-center w-full">
+          <div className="relative flex flex-col items-center justify-center w-full">
+            <div
+              className={`relative z-1 text-center bg-background dark:bg-background rounded-lg shadow-lg p-8 w-full border-2 border-black dark:border-white transition-all duration-300 ease-in-out ${
+                activeTab === 'paymentLink' ? 'max-w-md' : 'max-w-5xl'
+              }`}
+            >
+              {isTransitioning ? (
+                activeTab === 'paymentLink' ? (
+                  <PaymentLinkSkeleton />
                 ) : (
-                  <>
-                    <TabsContent value="moneyMarket" className="transition-opacity duration-300 ease-in-out">
+                  <MoneyMarketBentoSkeleton />
+                )
+              ) : (
+                <>
+                  <TabsContent value="moneyMarket" className="transition-opacity duration-300 ease-in-out">
                     <GridSmall>
                       <Suspense fallback={<MoneyMarketBentoSkeleton />}>
                         <MoneyMarketBentoGrid />
                       </Suspense>
-                      </GridSmall>
-                    </TabsContent>
-                    <TabsContent value="paymentLink" className="transition-opacity duration-300 ease-in-out">
-                      <Suspense fallback={<PaymentLinkSkeleton />}>
-                        <PaymentLinkTabContent translations={translations} />
-                      </Suspense>
-                    </TabsContent>
-                  </>
-                )}
-              </div>
+                    </GridSmall>
+                  </TabsContent>
+                  <TabsContent value="paymentLink" className="transition-opacity duration-300 ease-in-out">
+                    <Suspense fallback={<PaymentLinkSkeleton />}>
+                      <PaymentLinkTabContent translations={translations} />
+                    </Suspense>
+                  </TabsContent>
+                </>
+              )}
             </div>
           </div>
-        </Tabs>
-      </div>
-    </>
+        </div>
+      </Tabs>
+    </div>
   )
 }

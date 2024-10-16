@@ -17,18 +17,18 @@ export async function GET(request: Request) {
     // Replace with actual data fetching logic
     const mockData: Record<ViewTab, AssetData[]> = {
       borrow: [
-        { assetName: 'USDC', amount: 5000, value: 5000 },
-        { assetName: 'ETH', amount: 2, value: 6000 },
+        { assetName: 'USDC', amount: 5000, value: 5000, chains: ['evm'], totalSupplied: 10000, totalSupplyAPY: 0.01 },
+        { assetName: 'ETH', amount: 2, value: 6000, chains: ['evm'], totalSupplied: 10000, totalSupplyAPY: 0.01 },
       ],
       lend: [
-        { assetName: 'USDC', amount: 8000, value: 8000 },
-        { assetName: 'DAI', amount: 10000, value: 10000 },
+        { assetName: 'USDC', amount: 8000, value: 8000, chains: ['evm'], totalSupplied: 10000, totalSupplyAPY: 0.01 },
+          { assetName: 'DAI', amount: 10000, value: 10000, chains: ['evm'], totalSupplied: 10000, totalSupplyAPY: 0.01 },
       ],
       withdraw: [
-        { assetName: 'USDC', amount: 10000, value: 10000 },
+        { assetName: 'USDC', amount: 10000, value: 10000, chains: ['evm'], totalSupplied: 10000, totalSupplyAPY: 0.01 },
       ],
       repay: [
-        { assetName: 'USDC', amount: 2000, value: 2000 },
+        { assetName: 'USDC', amount: 2000, value: 2000, chains: ['evm'], totalSupplied: 10000, totalSupplyAPY: 0.01 },
       ],
     };
 

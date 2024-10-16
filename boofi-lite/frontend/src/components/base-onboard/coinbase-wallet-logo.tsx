@@ -3,6 +3,7 @@ import React from 'react';
 const defaultContainerStyles
  = {
   paddingTop: 2,
+  paddingRight: 10,
 };
  
 export function CoinbaseWalletLogo({

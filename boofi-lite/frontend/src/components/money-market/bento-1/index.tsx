@@ -28,22 +28,22 @@ function LendBorrowActionCard() {
     >
       <TabsList className="gap-2">
         <TabsTriggerAlt value="lend">
-          <Button size="sm" variant="paez">
+          <Button size="sm" variant="paez" tabValue="lend" storeType="market">
             Lend
           </Button>
         </TabsTriggerAlt>
         <TabsTriggerAlt value="borrow">
-          <Button size="sm" variant="paez">
+          <Button size="sm" variant="paez" tabValue="borrow" storeType="market">
             Borrow
           </Button>
         </TabsTriggerAlt>
         <TabsTriggerAlt value="withdraw">
-          <Button size="sm" variant="paez">
+          <Button size="sm" variant="paez" tabValue="withdraw" storeType="market">
             Withdraw
           </Button>
         </TabsTriggerAlt>
         <TabsTriggerAlt value="repay">
-          <Button size="sm" variant="paez">
+          <Button size="sm" variant="paez" tabValue="repay" storeType="market">
             Repay
           </Button>
         </TabsTriggerAlt>

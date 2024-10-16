@@ -1,57 +1,27 @@
 "use client";
 
 import React from "react";
-import { useTokenBalances } from "@dynamic-labs/sdk-react-core";
-import { calculateChainBalances } from "./multiChainBalance";
+import { useAccount, useBalance } from "wagmi";
 
 const UseTokenBalances: React.FC = () => {
-  const { tokenBalances, isLoading, isError, error } = useTokenBalances({
-    includeFiat: true,
-    includeNativeBalance: true,
+  const { address, isConnecting, isDisconnected } = useAccount();
+  const { data: balance, isLoading, isError, error } = useBalance({
+    address,
   });
 
-  const { chainBalances, totalBalanceUSD } = React.useMemo(
-    () => calculateChainBalances(tokenBalances),
-    [tokenBalances]
-  );
+  if (isConnecting) return <p>Connecting...</p>;
+  if (isDisconnected) return <p>Disconnected</p>;
 
   return (
     <div className="relative z-20">
       <>
-        {isLoading && <p>Loading balances...</p>}
-        {isError && <p>Error fetching balances: {String(error)}</p>}
-        {tokenBalances && (
+        {isLoading && <p>Loading balance...</p>}
+        {isError && <p>Error fetching balance: {String(error)}</p>}
+        {balance && (
           <div>
             <h2>
-              Total Balance Across All Chains: ${totalBalanceUSD.toFixed(2)}
+              Total Balance: {balance.formatted} {balance.symbol}
             </h2>
-            {Object.entries(chainBalances).map(([chainKey, chainData]) => (
-              <div key={chainKey}>
-                <h3>
-                  {chainData.chainName} - Total: $
-                  {chainData.totalUSD.toFixed(2)}
-                </h3>
-                <ul>
-                  {chainData.tokens.map((token) => (
-                    <li key={`${token.networkId}-${token.address}`}>
-                      <strong>
-                        {token.name} ({token.symbol}):
-                      </strong>
-                      <ul>
-                        <li>Balance: {token.balance.toFixed(4)}</li>
-                        <li>Raw Balance: {token.rawBalance.toString()}</li>
-                        <li>
-                          USD Value: ${token.marketValue?.toFixed(2) || "N/A"}
-                        </li>
-                        <li>Price: ${token.price?.toFixed(6) || "N/A"}</li>
-                        <li>Token Address: {token.address}</li>
-                        <li>Decimals: {token.decimals}</li>
-                      </ul>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
           </div>
         )}
       </>

@@ -1,23 +1,21 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "@/utils";
+import { useTabStore } from "@/store/tabStore";
+import { useMarketStore } from "@/store/marketStore";
+import { usePaymentStore } from "@/store/paymentStore";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center cursor-pointer whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
         brutalism: "bg-main border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none",
-        destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+        destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: " text-secondary-foreground hover:text-primary underline-offset-4 hover:underline transition-color",
         fito: "group relative overflow-hidden border border-input focus:outline-none focus:ring",
@@ -43,13 +41,23 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  tabValue?: string;
+  storeType?: 'market' | 'payment' | 'tab';
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, tabValue, storeType, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
+    const { activeTab } = useTabStore();
+    const { currentViewTab: marketTab } = useMarketStore();
+    const { currentPaymentTab } = usePaymentStore();
     
-    // For 'fito' variant with hover animation
+    const isActive = tabValue && (
+      (storeType === 'market' && tabValue === marketTab) ||
+      (storeType === 'payment' && tabValue === currentPaymentTab) ||
+      (storeType === 'tab' && tabValue === activeTab)
+    );
+
     if (variant === "fito") {
       return (
         <Comp
@@ -65,25 +73,32 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       );
     }
 
-    // For 'paez' variant with hover effect
     if (variant === "paez") {
-      return (
-        <div className={cn(buttonVariants({ variant, size, className }))}>
-          <span className="block rounded-md bg-background px-4 py-2 font-medium group-hover:bg-transparent border border-input shadow-sm hover:bg-accent hover:text-accent-foreground">
-            {props.children}
-          </span>
-        </div>
-      );
-    }
-    // For 'charly' variant with full background color when selected
-    if (variant === "charly") {
-      const isActive = props["aria-selected"]; // Detect selected state, replace with your state logic
-
       return (
         <Comp
           className={cn(
             buttonVariants({ variant, size, className }),
-            isActive ? "bg-yellow-300 text-black" : "" // Apply background when active
+            isActive ? "bg-gradient-to-r from-indigo-200 via-pink-200 to-purple-200" : ""
+          )}
+          ref={ref}
+          {...props}
+        >
+          <span className={cn(
+            "block rounded-md px-4 py-2 font-medium transition-colors",
+            isActive ? "bg-transparent text-accent-foreground" : "bg-background hover:bg-transparent hover:text-accent-foreground"
+          )}>
+            {props.children}
+          </span>
+        </Comp>
+      );
+    }
+
+    if (variant === "charly") {
+      return (
+        <Comp
+          className={cn(
+            buttonVariants({ variant, size, className }),
+            isActive ? "bg-yellow-300 text-black" : ""
           )}
           ref={ref}
           {...props}
@@ -91,13 +106,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <span
             className={cn(
               "absolute inset-y-0 left-0 w-[3px] bg-yellow-300 transition-all group-hover:w-full group-active:bg-yellow-400",
-              isActive ? "w-full" : "" // Ensure full width when active
+              isActive ? "w-full" : ""
             )}
           ></span>
           <span
             className={cn(
               "relative transition-colors",
-              isActive ? "text-black" : "group-hover:text-black" // Adjust text color based on active state
+              isActive ? "text-black" : "group-hover:text-black"
             )}
           >
             {props.children}
@@ -106,7 +121,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       );
     }
 
-    // Default button handling for other variants
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}

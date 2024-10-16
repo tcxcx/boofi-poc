@@ -105,7 +105,8 @@ export interface AssetData {
   chains: string[];
   totalSupplied: number;
   totalSupplyAPY: number;
-  // Add other properties if necessary
+  amount: number;
+  value: number;
 }
 export interface TabState {
   activeTab: 'moneyMarket' | 'paymentLink';
