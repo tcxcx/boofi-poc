@@ -25,17 +25,20 @@ export const BentoGridItem = ({
   description,
   header,
   icon,
+  isSkeleton = false,
 }: {
   className?: string;
   title?: string | React.ReactNode;
   description?: string | React.ReactNode;
   header?: React.ReactNode;
   icon?: React.ReactNode;
+  isSkeleton?: boolean;
 }) => {
   return (
     <div
       className={cn(
         "row-span-1 rounded-xl group/bento transition duration-200 shadow-input dark:shadow-none p-4 dark:border-white/[0.2] border border-transparent justify-between flex flex-col space-y-4",
+        isSkeleton && "border-2 border-mainAccent",
         className
       )}
     >

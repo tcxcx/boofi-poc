@@ -109,12 +109,20 @@ export interface AssetData {
   value: number;
 }
 export interface TabState {
-  activeTab: 'moneyMarket' | 'paymentLink';
-  setActiveTab: (tab: 'moneyMarket' | 'paymentLink') => void;
+  activeTab: 'moneyMarket' | 'paymentLink' | 'tokenSwap';
+  setActiveTab: (tab: 'moneyMarket' | 'paymentLink' | 'tokenSwap') => void;
 }
 
 export interface APYData {
   baseAPY: number;
   bonusAPY: number;
   totalAPY: number;
+}
+
+export interface CurrencyInfo {
+  address: string;
+  hubContract?: string;
+  spokeContract?: string;
+  hubABI?: any[];
+  spokeABI?: any[];
 }

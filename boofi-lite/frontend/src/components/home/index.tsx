@@ -12,6 +12,8 @@ import { useTabStore } from "@/store/tabStore"
 import { PaymentLinkSkeleton } from "@/components/tab-content/money-market/payment-skeleton"
 import { MoneyMarketBentoSkeleton } from "@/components/tab-content/money-market/money-market-skeleton"
 import { GridSmall } from "../ui/bg-dot"
+import TokenSwap from "@/components/token-swap"
+import TokenSwapSkeleton from "@/components/token-swap/token-swap-skeleton"
 
 interface HomeContentProps {
   translations: Translations["Home"]
@@ -37,7 +39,7 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
 
   const handleTabChange = (value: string) => {
     setIsTransitioning(true)
-    setActiveTab(value as "paymentLink" | "moneyMarket")
+    setActiveTab(value as "paymentLink" | "moneyMarket" | "tokenSwap")
   }
 
   return (
@@ -67,6 +69,17 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
                 <span>Payment Links 💸</span>
               </Button>
             </TabsTriggerAlt>
+            <TabsTriggerAlt value="tokenSwap">
+              <Button
+                size="lg"
+                className="flex items-center gap-2 w-full"
+                variant="charly"
+                tabValue="tokenSwap"
+                storeType="tab"
+              >
+                <span>Token Swap 🔄</span>
+              </Button>
+            </TabsTriggerAlt>
           </TabsList>
         </div>
 
@@ -74,12 +87,12 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
           <div className="relative flex flex-col items-center justify-center w-full">
             <div
               className={`relative z-1 text-center bg-background dark:bg-background rounded-lg shadow-lg p-8 w-full border-2 border-black dark:border-white transition-all duration-300 ease-in-out ${
-                activeTab === 'paymentLink' ? 'max-w-md' : 'max-w-5xl'
+                activeTab === 'paymentLink' ? 'max-w-md' : activeTab === 'tokenSwap' ? 'max-w-lg' : 'max-w-5xl'
               }`}
             >
               {isTransitioning ? (
-                activeTab === 'paymentLink' ? (
-                  <PaymentLinkSkeleton />
+                activeTab === 'paymentLink' || activeTab === 'tokenSwap' ? (
+                  activeTab === 'paymentLink' ? <PaymentLinkSkeleton /> : <TokenSwapSkeleton />
                 ) : (
                   <MoneyMarketBentoSkeleton />
                 )
@@ -95,6 +108,11 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
                   <TabsContent value="paymentLink" className="transition-opacity duration-300 ease-in-out">
                     <Suspense fallback={<PaymentLinkSkeleton />}>
                       <PaymentLinkTabContent translations={translations} />
+                    </Suspense>
+                  </TabsContent>
+                  <TabsContent value="tokenSwap" className="transition-opacity duration-300 ease-in-out">
+                    <Suspense fallback={<TokenSwapSkeleton />}>
+                      <TokenSwap/>
                     </Suspense>
                   </TabsContent>
                 </>

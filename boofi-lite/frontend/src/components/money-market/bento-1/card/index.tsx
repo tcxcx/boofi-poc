@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount, useBalance } from 'wagmi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,9 @@ import { useMarketStore } from '@/store/marketStore';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getFromChains, getToChains } from '@/utils/chainMarket';
+import { chains } from '@/utils/contracts';
+import { ETHToken, USDCToken, AvaxToken, BaseSepoliaToken } from '@/utils/tokens'; // Updated token list
 
 interface Transaction {
   date: string;
@@ -18,15 +21,9 @@ interface Transaction {
   status: string;
 }
 
-const chains = [
-  { id: 'arbitrum', name: 'Arbitrum', chainId: 42161 },
-  { id: 'optimism', name: 'Optimism', chainId: 10 },
-  { id: 'base', name: 'Base', chainId: 8453 },
-];
-
 export function MoneyMarketCard() {
   const { address } = useAccount();
-  const { data: balance } = useBalance({ address, token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' }); // USDC address
+  const { data: balance } = useBalance({ address, token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' });
   const { currentViewTab } = useMarketStore();
 
   const [amount, setAmount] = useState('');
@@ -36,9 +33,30 @@ export function MoneyMarketCard() {
   // Define the correct type for transaction history
   const [transactionHistory, setTransactionHistory] = useState<Transaction[]>([]);
 
+  useEffect(() => {
+    // Set default options for selects when the component renders
+    const defaultFromChain = getFromChains(currentViewTab, chains)[0]?.id || chains[0].id;
+    const defaultToChain = getToChains(currentViewTab, chains)[0]?.id || chains[0].id;
+
+    setFromChain(defaultFromChain);
+    setToChain(defaultToChain);
+  }, [currentViewTab]);
+
   const getChainId = (chainIdStr: string): number => {
     const chain = chains.find((c) => c.id === chainIdStr);
-    return chain ? chain.chainId : 1;
+    return chain ? parseInt(chain.chainId, 84532) : 1;
+  };
+
+  const getTokenByChain = (chainId: string) => {
+    switch (chainId) {
+      case 'base-sepolia':
+        return BaseSepoliaToken;
+      case 'avax-fuji':
+        return AvaxToken;
+      // Add more cases as per your chains
+      default:
+        return ETHToken; // Fallback token
+    }
   };
 
   const handleTransactionSuccess = (txHash: string) => {
@@ -49,81 +67,98 @@ export function MoneyMarketCard() {
     console.error('Transaction failed:', error);
   };
 
+  const renderChainOption = (chainId: string) => {
+    const token = getTokenByChain(chainId);
+    const chain = chains.find((c) => c.id === chainId);
+    return (
+      <div className="flex items-center space-x-2">
+        <img
+          src={token.image || ''}
+          alt={token.symbol}
+          className="h-6 w-6 rounded-full"
+        />
+        <span className="font-clash text-sm">{chain?.name}</span>
+      </div>
+    );
+  };
+
   const renderFromToSection = () => {
-    const actionLabel = currentViewTab.charAt(0).toUpperCase() + currentViewTab.slice(1);
-    let fromLabel, toLabel, fromSelect, toSelect;
+    const fromChains = getFromChains(currentViewTab, chains);
+    const toChains = getToChains(currentViewTab, chains);
+
+    let fromLabel, toLabel;
+    let fromSelect = true;
+    let toSelect = true;
 
     switch (currentViewTab) {
       case 'lend':
-        fromLabel = 'Supply from';
-        toLabel = 'Supply to';
-        fromSelect = true;
-        toSelect = false;
+        fromLabel = 'from';
+        toLabel = 'to';
+        toSelect = false; // "Supply To" should always be fixed to the hub (Base Sepolia)
         break;
       case 'withdraw':
-        fromLabel = 'Withdraw from';
-        toLabel = 'Withdraw to';
-        fromSelect = false;
-        toSelect = true;
+        fromLabel = 'from';
+        toLabel = 'to';
+        fromSelect = false; // "Withdraw From" should always be fixed to the hub (Base Sepolia)
         break;
       case 'borrow':
-        fromLabel = 'Borrow from';
-        toLabel = 'Borrow to';
-        fromSelect = false;
-        toSelect = true;
+        fromLabel = 'from';
+        toLabel = 'to';
+        fromSelect = false; // "Borrow From" should always be fixed to the hub (Base Sepolia)
         break;
       case 'repay':
-        fromLabel = 'Repay from';
-        toLabel = 'Repay to';
-        fromSelect = true;
-        toSelect = false;
+        fromLabel = 'from';
+        toLabel = 'to';
+        toSelect = false; // "Repay To" should always be fixed to the hub (Base Sepolia)
         break;
       default:
-        fromLabel = `${actionLabel} from`;
-        toLabel = `${actionLabel} to`;
-        fromSelect = true;
-        toSelect = true;
+        fromLabel = 'From';
+        toLabel = 'To';
     }
 
     return (
       <div className="flex items-center justify-between">
         <div className="flex-1 flex items-center space-x-2">
-          <span className="text-sm text-gray-500 uppercase">{fromLabel}</span>
+          <span className="text-xs text-gray-500 uppercase">{fromLabel}</span>
           {fromSelect ? (
             <Select value={fromChain} onValueChange={setFromChain}>
-              <SelectTrigger className="w-auto">
+              <SelectTrigger className="w-auto flex items-center">
                 <SelectValue placeholder="From" />
               </SelectTrigger>
               <SelectContent>
-                {chains.map((chain) => (
+                {fromChains.map((chain) => (
                   <SelectItem key={chain.id} value={chain.id}>
-                    {chain.name}
+                    {renderChainOption(chain.id)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           ) : (
-            <span className="font-medium">{chains.find((c) => c.id === fromChain)?.name}</span>
+            <div className="flex items-center space-x-2">
+              {renderChainOption(fromChain)}
+            </div>
           )}
         </div>
         <Separator orientation="vertical" className="h-8 mx-4" />
         <div className="flex-1 flex items-center space-x-2 justify-end">
-          <span className="text-sm text-gray-500 uppercase">{toLabel}</span>
+          <span className="text-xs text-gray-500 uppercase">{toLabel}</span>
           {toSelect ? (
             <Select value={toChain} onValueChange={setToChain}>
-              <SelectTrigger className="w-auto">
+              <SelectTrigger className="w-auto flex items-center">
                 <SelectValue placeholder="To" />
               </SelectTrigger>
               <SelectContent>
-                {chains.map((chain) => (
+                {toChains.map((chain) => (
                   <SelectItem key={chain.id} value={chain.id}>
-                    {chain.name}
+                    {renderChainOption(chain.id)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           ) : (
-            <span className="font-medium">{chains.find((c) => c.id === toChain)?.name}</span>
+            <div className="flex items-center space-x-2">
+              {renderChainOption(toChain)}
+            </div>
           )}
         </div>
       </div>
@@ -158,7 +193,6 @@ export function MoneyMarketCard() {
       </ScrollArea>
     );
   };
-
   const renderContent = () => {
     return (
       <div className="flex flex-col space-y-4 w-full">
@@ -179,7 +213,7 @@ export function MoneyMarketCard() {
               </span>
             </div>
             <div className="w-1/2 pl-2">
-              <TransactionWrapper
+              {/* <TransactionWrapper
                 contractAddress={'0xYourContractAddressHere' as `0x${string}`}
                 abi={null}
                 functionName={currentViewTab}
@@ -187,14 +221,14 @@ export function MoneyMarketCard() {
                 chainId={getChainId(fromChain)}
                 onSuccess={handleTransactionSuccess}
                 onError={handleTransactionError}
-              >
+              > */}
                 <Button
                   variant="brutalism"
                   className="h-16 w-full text-lg bg-yellow-400 hover:bg-yellow-500 text-black font-bold"
                 >
                   {currentViewTab.charAt(0).toUpperCase() + currentViewTab.slice(1)}
                 </Button>
-              </TransactionWrapper>
+              {/* </TransactionWrapper> */}
             </div>
           </div>
         ) : (

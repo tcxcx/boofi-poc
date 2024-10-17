@@ -42,6 +42,7 @@ export const MoneyMarketBentoSkeleton: React.FC = () => {
           }
           header={<Skeleton />}
           className={item.className}
+          isSkeleton={true}
         />
       ))}
     </BentoGrid>

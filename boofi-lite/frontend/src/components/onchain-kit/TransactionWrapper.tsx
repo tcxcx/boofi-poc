@@ -1,6 +1,4 @@
-// frontend/src/components/onchain-kit/TransactionWrapper.tsx
-
-"use client";
+'use client';
 
 import React from "react";
 import {
@@ -13,8 +11,13 @@ import type {
   TransactionError,
   TransactionResponse,
 } from "@coinbase/onchainkit/transaction";
-import type { Address, ContractFunctionParameters } from "viem";
+import type { ContractFunctionParameters } from "viem";
 import { TransactionWrapperProps } from "@/lib/types";
+
+/**
+ * @component TransactionWrapper
+ * @description A wrapper component for Coinbase's Transaction component, handling success and error callbacks.
+ */
 
 export const TransactionWrapper: React.FC<TransactionWrapperProps> = ({
   contractAddress,
@@ -26,6 +29,11 @@ export const TransactionWrapper: React.FC<TransactionWrapperProps> = ({
   onError,
   children,
 }) => {
+  if (!abi) {
+    console.error("ABI is required for TransactionWrapper.");
+    return null;
+  }
+
   const contracts: ContractFunctionParameters[] = [
     {
       address: contractAddress,

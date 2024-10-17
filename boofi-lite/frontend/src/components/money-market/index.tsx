@@ -10,7 +10,7 @@ import PositionSummary from './bento-4/market-positions-table/index';
 export default function MoneyMarketBentoGrid() {
   return (
 
-    <BentoGrid className="max-w-7xl mx-auto ">
+    <BentoGrid className="max-w-8xl mx-auto ">
       <BentoGridItem
         className="md:col-span-2"
         title={null}
