@@ -1,0 +1,41 @@
+.shuffleItem {
+  position: relative;
+  padding: 0.5em 0;
+  cursor: pointer;
+}
+
+.itemLink {
+  position: relative;
+}
+
+.itemLink a {
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  font-size: 48px;
+  font-family: "ABC Whyte Inktrap Unlicensed Trial", sans-serif;
+  letter-spacing: -2px;
+  font-weight: bold;
+  padding-left: 10px;
+  z-index: 2;
+}
+
+.bgHover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #fff;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%, 0% 50%);
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.shuffleItem:hover .bgHover {
+  opacity: 1;
+}
+
+.shuffleItem:hover .itemLink a {
+  color: #000;
+}

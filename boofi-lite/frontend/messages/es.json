@@ -1,0 +1,25 @@
+{
+  "NotFound": {
+    "title": "404: No encontrado"
+  },
+  "Home": {
+    "welcome": "Bienvenido",
+    "to": "a",
+    "slogan": {
+      "part1": "neo-",
+      "part2": "banca",
+      "part3": "Web3",
+      "part4": "para todos"
+    },
+    "logoAlt": "Logo de BooFi",
+    "neoMatrixAlt": "Imagen de Neo Matrix",
+    "pillGifAlt": "GIF de la píldora de Matrix",
+    "boofiMatrixAlt": "GIF de BooFi Matrix",
+    "matrixMemeAlt": "Meme cripto de Matrix",
+    "title": "Bienvenido a BooFi",
+    "description": "¡Finanzas cripto espeluznantes hechas fáciles!",
+    "incrementButton": "Incrementar",
+    "glowButton": "Brillar",
+    "scrollContent": "Este es un contenido desplazable para probar la barra de desplazamiento personalizada. Se repite para asegurar que haya suficiente contenido para desplazarse."
+  }
+}
