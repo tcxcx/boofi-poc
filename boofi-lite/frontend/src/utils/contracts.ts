@@ -1,5 +1,3 @@
-// src/utils/contracts.ts
-
 import HubAbi from '@/lib/abi/Hub.json';
 import SpokeAbiBaseSepolia from '@/lib/abi/Spoke.json';
 import SpokeAbiAvaxFuji from '@/lib/abi/Spoke.json';

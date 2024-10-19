@@ -1,19 +1,40 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount, useBalance, useContractRead } from 'wagmi';
+import { encodeFunctionData, parseUnits, Address } from 'viem';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { TransactionWrapper } from '@/components/onchain-kit/TransactionWrapper';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { useMarketStore } from '@/store/marketStore';
 import { Separator } from '@/components/ui/separator';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { currencyAddresses } from '@/utils/currencyAddresses';
 import { getFromChains, getToChains } from '@/utils/chainMarket';
+import type { TransactionError } from '@coinbase/onchainkit/transaction';
 import { chains } from '@/utils/contracts';
-import { ETHToken, USDCToken, AvaxToken, BaseSepoliaToken } from '@/utils/tokens'; // Updated token list
+import {
+  ETHToken,
+  USDCToken,
+  AvaxToken,
+  BaseSepoliaToken,
+} from '@/utils/tokens';
 
 interface Transaction {
   date: string;
@@ -23,7 +44,10 @@ interface Transaction {
 
 export function MoneyMarketCard() {
   const { address } = useAccount();
-  const { data: balance } = useBalance({ address, token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' });
+  const { data: balance } = useBalance({
+    address,
+    token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+  });
   const { currentViewTab } = useMarketStore();
 
   const [amount, setAmount] = useState('');
@@ -33,10 +57,18 @@ export function MoneyMarketCard() {
   // Define the correct type for transaction history
   const [transactionHistory, setTransactionHistory] = useState<Transaction[]>([]);
 
+  const functionNameMap: { [key: string]: string } = {
+    lend: 'depositCollateral',
+    withdraw: 'withdrawCollateral',
+    borrow: 'borrow',
+    repay: 'repay',
+  };
+
   useEffect(() => {
-    // Set default options for selects when the component renders
-    const defaultFromChain = getFromChains(currentViewTab, chains)[0]?.id || chains[0].id;
-    const defaultToChain = getToChains(currentViewTab, chains)[0]?.id || chains[0].id;
+    const defaultFromChain =
+      getFromChains(currentViewTab, chains)[0]?.id || chains[0].id;
+    const defaultToChain =
+      getToChains(currentViewTab, chains)[0]?.id || chains[0].id;
 
     setFromChain(defaultFromChain);
     setToChain(defaultToChain);
@@ -44,7 +76,113 @@ export function MoneyMarketCard() {
 
   const getChainId = (chainIdStr: string): number => {
     const chain = chains.find((c) => c.id === chainIdStr);
-    return chain ? parseInt(chain.chainId, 84532) : 1;
+    return chain ? parseInt(chain.chainId, 10) : 1;
+  };
+
+  const getAssetAddress = (chainId: number, tokenSymbol: string): Address => {
+    const chainCurrencies = currencyAddresses[chainId];
+    const currencyInfo = chainCurrencies[tokenSymbol];
+    if (typeof currencyInfo === 'string') {
+      return currencyInfo as Address;
+    } else if (currencyInfo && typeof currencyInfo.address === 'string') {
+      return currencyInfo.address as Address;
+    } else {
+      throw new Error(`Token ${tokenSymbol} not found on chain ${chainId}`);
+    }
+  };
+
+  const getContractInfo = (
+    chainId: number,
+    contractType: 'hub' | 'spoke'
+  ) => {
+    const chainCurrencies = currencyAddresses[chainId];
+    const currencyInfo = chainCurrencies['USDC']; // Assuming USDC is used
+    if (currencyInfo && typeof currencyInfo !== 'string') {
+      if (
+        contractType === 'hub' &&
+        currencyInfo.hubContract &&
+        currencyInfo.hubABI
+      ) {
+        return {
+          address: currencyInfo.hubContract as Address,
+          abi: currencyInfo.hubABI,
+        };
+      } else if (
+        contractType === 'spoke' &&
+        currencyInfo.spokeContract &&
+        currencyInfo.spokeABI
+      ) {
+        return {
+          address: currencyInfo.spokeContract as Address,
+          abi: currencyInfo.spokeABI,
+        };
+      }
+    }
+    throw new Error(
+      `Contract info not found for chain ${chainId} and contract type ${contractType}`
+    );
+  };
+  
+
+  const chainId = getChainId(fromChain);
+  const functionName = functionNameMap[currentViewTab];
+  const assetAddress = getAssetAddress(chainId, 'USDC');
+
+  const { address: hubContractAddress, abi: hubAbi } = getContractInfo(
+    chainId,
+    'hub'
+  );
+  const { address: spokeContractAddress, abi: spokeAbi } = getContractInfo(
+    chainId,
+    'spoke'
+  );
+
+  const { data: costForReturnDelivery } = useContractRead({
+    address: hubContractAddress,
+    abi: hubAbi,
+    functionName: 'getCostForReturnDelivery',
+    chainId: chainId,
+  });
+
+  const isSendingTokens = ['depositCollateral', 'repay'].includes(functionName);
+
+  const { data: msgValueData } = useContractRead({
+    address: spokeContractAddress,
+    abi: spokeAbi,
+    functionName: 'getDeliveryCostRoundtrip',
+    args: [costForReturnDelivery || BigInt(0), isSendingTokens],
+    chainId: chainId,
+  });
+
+  // Helper function to extract bigint from data
+  function extractBigInt(data: any): bigint {
+    if (typeof data === 'bigint') {
+      return data;
+    } else if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'bigint') {
+      return data[0];
+    } else {
+      return BigInt(0);
+    }
+  }
+
+  const finalCostForReturnDelivery = extractBigInt(costForReturnDelivery);
+  const finalMsgValue = extractBigInt(msgValueData);
+
+  const tokenDecimals = 6; // For USDC
+  const assetAmount = parseUnits(amount || '0', tokenDecimals);
+
+  const args = [assetAddress, assetAmount, finalCostForReturnDelivery];
+
+  const data = encodeFunctionData({
+    abi: spokeAbi,
+    functionName: functionName,
+    args: args,
+  });
+
+  const call = {
+    to: spokeContractAddress,
+    data: data,
+    value: finalMsgValue,
   };
 
   const getTokenByChain = (chainId: string) => {
@@ -63,7 +201,7 @@ export function MoneyMarketCard() {
     console.log('Transaction successful:', txHash);
   };
 
-  const handleTransactionError = (error: any) => {
+  const handleTransactionError = (error: TransactionError) => {
     console.error('Transaction failed:', error);
   };
 
@@ -119,7 +257,9 @@ export function MoneyMarketCard() {
     return (
       <div className="flex items-center justify-between">
         <div className="flex-1 flex items-center space-x-2">
-          <span className="text-xs text-gray-500 uppercase">{fromLabel}</span>
+          <span className="text-xs text-gray-500 uppercase">
+            {fromLabel}
+          </span>
           {fromSelect ? (
             <Select value={fromChain} onValueChange={setFromChain}>
               <SelectTrigger className="w-auto flex items-center">
@@ -167,7 +307,11 @@ export function MoneyMarketCard() {
 
   const renderTransactionHistory = () => {
     if (transactionHistory.length === 0) {
-      return <div className="text-center text-gray-500 py-4">You have no {currentViewTab} history.</div>;
+      return (
+        <div className="text-center text-gray-500 py-4">
+          You have no {currentViewTab} history.
+        </div>
+      );
     }
 
     return (
@@ -193,47 +337,46 @@ export function MoneyMarketCard() {
       </ScrollArea>
     );
   };
+
   const renderContent = () => {
     return (
       <div className="flex flex-col space-y-4 w-full">
+        <Separator />
         {renderFromToSection()}
         <Separator />
-        {currentViewTab === 'lend' ? (
-          <div className="flex items-start justify-between">
-            <div className="w-1/2 pr-2 pt-2">
-              <Input
-                type="number"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="text-4xl font-bold h-16 w-full"
-              />
-              <span className="text-sm text-gray-500 mt-2 block justify-start text-left">
-                BALANCE: {formatCurrency(Number(balance?.formatted ?? 0))} USDC
-              </span>
-            </div>
-            <div className="w-1/2 pl-2">
-              {/* <TransactionWrapper
-                contractAddress={'0xYourContractAddressHere' as `0x${string}`}
-                abi={null}
-                functionName={currentViewTab}
-                args={[parseFloat(amount)]}
-                chainId={getChainId(fromChain)}
-                onSuccess={handleTransactionSuccess}
-                onError={handleTransactionError}
-              > */}
-                <Button
-                  variant="brutalism"
-                  className="h-16 w-full text-lg bg-yellow-400 hover:bg-yellow-500 text-black font-bold"
-                >
-                  {currentViewTab.charAt(0).toUpperCase() + currentViewTab.slice(1)}
-                </Button>
-              {/* </TransactionWrapper> */}
-            </div>
+        <div className="flex items-start justify-between">
+          <div className="w-1/2 pr-2 pt-2">
+            <Input
+              type="number"
+              placeholder="0.00"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="text-4xl font-bold h-16 w-full"
+            />
+            <span className="text-sm text-gray-500 mt-2 block justify-start text-left">
+              BALANCE: {formatCurrency(Number(balance?.formatted ?? 0))} USDC
+            </span>
           </div>
-        ) : (
-          renderTransactionHistory()
-        )}
+          <div className="w-1/2 pl-2">
+            <TransactionWrapper
+              call={call}
+              chainId={chainId}
+              onSuccess={handleTransactionSuccess}
+              onError={handleTransactionError}
+            >
+              <Button
+                variant="brutalism"
+                className="h-16 w-full text-lg bg-yellow-400 hover:bg-yellow-500 text-black font-bold"
+                disabled={
+                  finalMsgValue === BigInt(0) || parseFloat(amount) <= 0
+                }
+              >
+                {currentViewTab.charAt(0).toUpperCase() +
+                  currentViewTab.slice(1)}
+              </Button>
+            </TransactionWrapper>
+          </div>
+        </div>
       </div>
     );
   };

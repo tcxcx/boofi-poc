@@ -50,10 +50,10 @@ contract Hub is
     error InvalidPayloadOrVaa();
 
     /**
-     * @notice Hub constructor; prevent initialize() from being invoked on the implementation contract
+     * @notice Hub constructor; prevent initialize() from being invoked on the implementation contract, we change this to a constructor
      */
-    constructor() {
-        _disableInitializers();
+    constructor(HubSpokeStructs.ConstructorArgs memory args) {
+        initialize(args);
     }
 
     /**

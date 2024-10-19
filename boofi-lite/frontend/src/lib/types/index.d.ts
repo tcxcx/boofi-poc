@@ -1,9 +1,14 @@
+import type { Abi, Address, Hex } from 'viem';
+import type { TransactionError } from '@coinbase/onchainkit/transaction';
+import React from 'react';
+
 export interface CurrencyInfo {
     address: string;
     borrowContract?: string;
     lendContract?: string;
     borrowABI?: any[];
     lendABI?: any[];
+    decimals?: any;
   }
 
 export interface FooterProps {
@@ -77,16 +82,36 @@ export interface PaymentInfoProps {
   }
 
 
-export interface TransactionWrapperProps {
-    contractAddress: Address;
-    abi: any;
-    functionName: string;
-    args: any[];
-    chainId: number;
-    onSuccess: (hash: string) => void;
-    onError: (error: TransactionError) => void;
-    children: any;
-  }
+type Call = {
+  to: Address;
+  data?: Hex;
+  value?: bigint;
+};
+
+export interface TransactionWrapperPropsBase {
+  chainId: number;
+  onSuccess: (txHash: string) => void;
+  onError: (error: TransactionError) => void;
+  children: React.ReactNode;
+}
+
+export interface TransactionWrapperPropsWithCall
+  extends TransactionWrapperPropsBase {
+  call: Call;
+}
+
+export interface TransactionWrapperPropsWithContract
+  extends TransactionWrapperPropsBase {
+  contractAddress: `0x${string}`;
+  abi: Abi;
+  functionName: string;
+  args: any[];
+}
+
+export type TransactionWrapperProps =
+  | TransactionWrapperPropsWithCall
+  | TransactionWrapperPropsWithContract;
+
 
 export interface AuroraTitleProps {
   text: string;
@@ -98,6 +123,9 @@ export interface AuroraTitleProps {
 export interface MarketStore {
   currentViewTab: ViewTab;
   setCurrentViewTab: (tab: ViewTab) => void;
+  
+  selectedAsset: CurrencyInfo | null; 
+  setSelectedAsset: (asset: CurrencyInfo) => void;
 }
 
 export interface AssetData {
