@@ -52,8 +52,9 @@ contract Hub is
     /**
      * @notice Hub constructor; prevent initialize() from being invoked on the implementation contract
      */
-    constructor() {
-        _disableInitializers();
+     constructor(HubSpokeStructs.ConstructorArgs memory args) {
+        // Initialize the contract during deployment
+        initialize(args);
     }
 
     /**
