@@ -1,0 +1,16 @@
+{
+  "name": "upgradeable-wormhole-solidity-sdk",
+  "version": "1.0.0",
+  "description": "The purpose of this SDK is to provide helpers to take your existing single-chain solidity application cross-chain",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

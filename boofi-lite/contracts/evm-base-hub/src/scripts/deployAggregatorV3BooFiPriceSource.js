@@ -22,7 +22,7 @@ async function main() {
   const assets = [
     {
       name: "USDC",
-      address: process.env.BASE_SEPOLIA_USDC_ADDRESS,
+      address: process.env.AVALANCHE_FUJI_USDC_ADDRESS,
       aggregator: process.env.USDC_CHAINLINK_AGGREGATOR_BASE_SEPOLIA,
     },
     {

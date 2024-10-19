@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title TestnetSequencerFeed
- * @notice An mock feed to be deployed in Arb Sepolia testnet
+ * @notice An mock feed to be deployed in Avax Fuji testnet
  */
 contract TestnetSequencerFeed is AggregatorV3Interface, Ownable {
     int256 isDown;
