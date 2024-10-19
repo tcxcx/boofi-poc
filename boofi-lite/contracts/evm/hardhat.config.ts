@@ -14,7 +14,7 @@ const PRIVATE_KEY_baseSepolia = process.env.PRIVATE_KEY_baseSepolia || "";
 const PRIVATE_KEY_opSepolia = process.env.PRIVATE_KEY_opSepolia || "";
 const PRIVATE_KEY_sepolia = process.env.PRIVATE_KEY_sepolia || "";
 const PRIVATE_KEY_arbitrumSepolia = process.env.PRIVATE_KEY_arbitrumSepolia || "";
-const PRIVATE_KEY_avalanche_fuji = process.env.PRIVATE_KEY_avalanche_fuji || "c2d37b4d296048a0696e3960d9f2637308f1804a122479fafee3850ebdd4842e";
+const PRIVATE_KEY_avalanche_fuji = process.env.PRIVATE_KEY_avalanche_fuji || "";
 
 // Validate private keys
 if (!PRIVATE_KEY_baseSepolia) {

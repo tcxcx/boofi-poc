@@ -9,7 +9,7 @@ async function main() {
   const collateralizationRatioPrecision = hre.ethers.utils.parseUnits("1", 18);
   const maxLiquidationPortionPrecision = hre.ethers.utils.parseUnits("1", 18);
 
-  const WETH_ADDRESS = process.env.WETH_ADDRESS_BASE_SEPOLIA;
+  const WETH_ADDRESS = process.env.WETH_ADDRESS_FUJI;
   if (!WETH_ADDRESS) {
     throw new Error("Please set your WETH_ADDRESS in the .env file");
   }
@@ -27,8 +27,8 @@ async function main() {
   await assetRegistry.deployed();
   console.log("AssetRegistry deployed to:", assetRegistry.address);
 
-  const USDC_ADDRESS = process.env.BASE_SEPOLIA_USDC_ADDRESS;
-  const INTEREST_RATE_CALCULATOR_ADDRESS = process.env.INTEREST_RATE_CALCULATOR_ADDRESS_BASE_SEPOLIA;
+  const USDC_ADDRESS = process.env.AVALANCHE_FUJI_USDC_ADDRESS;
+  const INTEREST_RATE_CALCULATOR_ADDRESS = process.env.INTEREST_RATE_CALCULATOR_ADDRESS_FUJI;
   
   if (!USDC_ADDRESS) {
     throw new Error("Please set your USDC_ADDRESS in the .env file");

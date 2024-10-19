@@ -10,8 +10,8 @@ async function main() {
 
   // Retrieve constructor parameters from environment variables
   const hub = process.env.HUB_CONTRACT_ADDRESS;
-  const pool = process.env.AAVE_POOL_ADDRESS;
-  const uniswapRouter = process.env.UNISWAP_ROUTER_ADDRESS;
+  const pool = process.env.FUJI_AAVE_POOL_ADDRESS;
+  const uniswapRouter = process.env.FUJI_UNISWAP_ROUTER_ADDRESS;
   const priceOracle = process.env.BOOFI_PRICE_ORACLE;
   const profitToken = process.env.PROFIT_TOKEN_ADDRESS;
   const profitReceiver = process.env.PROFIT_RECEIVER_ADDRESS;
@@ -20,7 +20,7 @@ async function main() {
 
   // Validate required addresses
   if (!hub || !pool || !uniswapRouter || !priceOracle || !profitToken || !profitReceiver) {
-    throw new Error("Please set HUB_CONTRACT_ADDRESS, AAVE_POOL_ADDRESS, UNISWAP_ROUTER_ADDRESS, BOOFI_PRICE_ORACLE, PROFIT_TOKEN_ADDRESS, and PROFIT_RECEIVER_ADDRESS in the .env file");
+    throw new Error("Please set HUB_CONTRACT_ADDRESS, FUJI_AAVE_POOL_ADDRESS, UNISWAP_ROUTER_ADDRESS, BOOFI_PRICE_ORACLE, PROFIT_TOKEN_ADDRESS, and PROFIT_RECEIVER_ADDRESS in the .env file");
   }
 
   if (initialLiquidators.length === 0) {

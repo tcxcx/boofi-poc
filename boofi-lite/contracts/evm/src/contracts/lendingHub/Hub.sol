@@ -52,12 +52,8 @@ contract Hub is
     /**
      * @notice Hub constructor; prevent initialize() from being invoked on the implementation contract, we change this to a constructor
      */
-<<<<<<<< HEAD:boofi-lite/contracts/evm-base-hub/src/contracts/lendingHub/Hub.sol
-     constructor(HubSpokeStructs.ConstructorArgs memory args) {
-        // Initialize the contract during deployment
-========
+
     constructor(HubSpokeStructs.ConstructorArgs memory args) {
->>>>>>>> 10b5f0db3731f8a9dab4cb76ea14e5c5856c065e:boofi-lite/contracts/hardhat/src/contracts/lendingHub/Hub.sol
         initialize(args);
     }
 

@@ -9,11 +9,11 @@ async function main() {
   console.log("Account balance:", hre.ethers.utils.formatEther(await deployer.getBalance()), "ETH");
 
   // Retrieve constructor parameters from environment variables
-  const pythAddress = process.env.PYTH_ADDRESS_BASE_SEPOLIA_CONTRACT;
+  const pythAddress = process.env.PYTH_ADDRESS_AVAX_FUJI_CONTRACT;
   const outputAsset = process.env.OUTPUT_ASSET || "USD";
 
   if (!pythAddress) {
-    throw new Error("Please set PYTH_ADDRESS_BASE_SEPOLIA_CONTRACT in the .env file");
+    throw new Error("Please set PYTH_ADDRESS_AVAX_FUJI_CONTRACT in the .env file");
   }
 
   // Deploy PythBooFiPriceSource

@@ -22,17 +22,6 @@ async function main() {
         USDC: process.env.BASE_SEPOLIA_USDC_ADDRESS,
       };
       break;
-    case "fuji":
-      envVariables = {
-        chainId: parseInt(process.env.AVALANCHE_FUJI_CHAIN_ID, 10),
-        wormhole: process.env.AVALANCHE_FUJI_WORMHOLE_ADDRESS,
-        tokenBridge: process.env.AVALANCHE_FUJI_TOKEN_BRIDGE_ADDRESS,
-        relayer: process.env.AVALANCHE_FUJI_WORMHOLE_RELAYER_ADDRESS,
-        circleMessageTransmitter: process.env.AVALANCHE_FUJI_CIRCLE_MESSAGE_TRANSMITTER,
-        circleTokenMessenger: process.env.AVALANCHE_FUJI_CIRCLE_TOKEN_MESSENGER,
-        USDC: process.env.AVALANCHE_FUJI_USDC_ADDRESS,
-      };
-      break;
     default:
       throw new Error(`Unsupported network: ${network}`);
   }
@@ -40,7 +29,7 @@ async function main() {
   const { chainId, wormhole, tokenBridge, relayer, circleMessageTransmitter, circleTokenMessenger, USDC } = envVariables;
 
   // Common Hub parameters (consistent across networks)
-  const hubChainId = parseInt(process.env.BASE_SEPOLIA_CHAIN_ID, 10);  // Hub is on Base Sepolia
+  const hubChainId = parseInt(process.env.AVALANCHE_FUJI_CHAIN_ID, 10);  // Hub is on Base Sepolia
   const hubContractAddress = process.env.HUB_CONTRACT_ADDRESS;
   const hubTokenUtilitiesAddress = process.env.HUB_TOKEN_UTILITIES; // Add this line to use the HUB_TOKEN_UTILITIES
 

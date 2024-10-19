@@ -7,12 +7,12 @@ async function main() {
   console.log("Account balance:", hre.ethers.utils.formatEther(await deployer.getBalance()), "ETH");
 
   // Retrieve constructor parameters
-  const wormholeRelayer = process.env.BASE_SEPOLIA_WORMHOLE_ADDRESS || '0x79A1027a6A159502049F10906D333EC57E95F083';
-  const tokenBridge = process.env.BASE_SEPOLIA_TOKEN_BRIDGE_ADDRESS || '0x86F55A04690fd7815A3D802bD587e83eA888B239';
-  const wormhole = process.env.BASE_SEPOLIA_WORMHOLE_RELAYER_ADDRESS || '0x93BAD53DDfB6132b0aC8E37f6029163E63372cEE';
-  const circleMessageTransmitter = process.env.BASE_SEPOLIA_CIRCLE_MESSAGE_TRANSMITTER || hre.ethers.constants.AddressZero;
-  const circleTokenMessenger = process.env.BASE_SEPOLIA_CIRCLE_TOKEN_MESSENGER || hre.ethers.constants.AddressZero;
-  const USDC = process.env.BASE_SEPOLIA_USDC_ADDRESS || hre.ethers.constants.AddressZero;
+  const wormholeRelayer = process.env.AVALANCHE_FUJI_WORMHOLE_ADDRESS || '0x79A1027a6A159502049F10906D333EC57E95F083';
+  const tokenBridge = process.env.AVALANCHE_FUJI_TOKEN_BRIDGE_ADDRESS || '0x86F55A04690fd7815A3D802bD587e83eA888B239';
+  const wormhole = process.env.AVALANCHE_FUJI_WORMHOLE_RELAYER_ADDRESS || '0x93BAD53DDfB6132b0aC8E37f6029163E63372cEE';
+  const circleMessageTransmitter = process.env.AVALANCHE_FUJI_CIRCLE_MESSAGE_TRANSMITTER || hre.ethers.constants.AddressZero;
+  const circleTokenMessenger = process.env.AVALANCHE_FUJI_CIRCLE_TOKEN_MESSENGER || hre.ethers.constants.AddressZero;
+  const USDC = process.env.AVALANCHE_FUJI_USDC_ADDRESS || hre.ethers.constants.AddressZero;
 
   const interestAccrualIndexPrecision = hre.ethers.utils.parseUnits("1", 18); // 1e18
   const liquidationFee = hre.ethers.utils.parseUnits("0.05", 18); // 5%

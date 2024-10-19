@@ -12,10 +12,6 @@ async function main() {
             chainId: process.env.BASE_SEPOLIA_CHAIN_ID,
             address: process.env.BASE_SEPOLIA_SPOKE_ADDRESS
         },
-        avalancheFuji: {
-            chainId: process.env.AVALANCHE_FUJI_CHAIN_ID,
-            address: process.env.AVALANCHE_FUJI_SPOKE_ADDRESS
-        },
     };
 
     if (!hubAddress) {

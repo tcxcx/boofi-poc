@@ -23,12 +23,12 @@ async function main() {
     {
       name: "USDC",
       address: process.env.AVALANCHE_FUJI_USDC_ADDRESS,
-      aggregator: process.env.USDC_CHAINLINK_AGGREGATOR_BASE_SEPOLIA,
+      aggregator: process.env.USDC_CHAINLINK_AGGREGATOR_AVAX_FUJI,
     },
     {
       name: "WETH",
-      address: process.env.WETH_ADDRESS_BASE_SEPOLIA,
-      aggregator: process.env.ETH_CHAINLINK_AGGREGATOR_BASE_SEPOLIA,
+      address: process.env.WETH_ADDRESS_FUJI,
+      aggregator: process.env.ETH_CHAINLINK_AGGREGATOR_AVAX_FUJI,
     },
     // Add more assets as needed
   ];

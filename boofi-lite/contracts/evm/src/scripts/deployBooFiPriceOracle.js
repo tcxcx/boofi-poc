@@ -31,7 +31,7 @@ async function main() {
   // Define price sources to set
   const priceSources = [
     {
-      asset: process.env.BASE_SEPOLIA_USDC_ADDRESS,
+      asset: process.env.AVALANCHE_FUJI_USDC_ADDRESS,
       priceSource: process.env.AGGREGATORV3_PRICE_SOURCE_ADDRESS, // AggregatorV3BooFiPriceSource address
       maxPriceAge: 300, // Example: 300 seconds
     },
