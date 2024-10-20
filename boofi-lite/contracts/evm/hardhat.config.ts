@@ -36,7 +36,17 @@ if (!PRIVATE_KEY_avalanche_fuji) {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.20",
+    compilers: [
+      {
+        version: "0.8.20",
+      },
+      {
+        version: "0.8.19",
+      },
+      {
+        version: "0.8.25",
+      },
+    ],
     settings: {
       optimizer: {
         enabled: true,
@@ -75,6 +85,11 @@ const config: HardhatUserConfig = {
     "fuji": {
       url: process.env.AVALANCHE_FUJI_RPC_URL || "",
       chainId: 43113,
+      accounts: [PRIVATE_KEY_avalanche_fuji],
+    },
+    "privateBlockchain": {
+      url: "http://127.0.0.1:9650/ext/bc/privateBlockchain/rpc",
+      chainId: 1996,
       accounts: [PRIVATE_KEY_avalanche_fuji],
     },
     hardhat: {

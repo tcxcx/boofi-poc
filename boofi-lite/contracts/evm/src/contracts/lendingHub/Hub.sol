@@ -13,6 +13,8 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import "../../teleporter/interface/ITeleporterMessenger.sol";
+
 import "./HubInterestUtilities.sol";
 import "../HubSpokeEvents.sol";
 import "../wormhole/TokenReceiverWithCCTP.sol";
@@ -33,6 +35,10 @@ contract Hub is
     HubInterestUtilities
 {
     using SafeERC20 for IERC20;
+    ITeleporterMessenger public messenger = ITeleporterMessenger(0x253b2784c75e510dD0fF1da844684a1aC0aa5fcf);
+
+    bytes32 public destinationBlockchainID;
+    address public destinationAddress;
 
     string private constant ERROR_UNREGISTERED_ASSET = "UnregisteredAsset";
     string private constant ERROR_VAULT_INSUFFICIENT_ASSETS = "VaultInsufficientAssets";
@@ -48,21 +54,38 @@ contract Hub is
     error UnusedParameterMustBeZero();
     error InsufficientMsgValue();
     error InvalidPayloadOrVaa();
+    
+    
+    event MessageSentToPrivateChain(
+        string actionType,
+        address indexed vault,
+        address indexed assetAddress,
+        uint256 amount,
+        uint256 timestamp
+    );
 
-    /**
+     /**
      * @notice Hub constructor; prevent initialize() from being invoked on the implementation contract, we change this to a constructor
      */
 
-    constructor(HubSpokeStructs.ConstructorArgs memory args) {
-        initialize(args);
+    constructor(HubSpokeStructs.ConstructorArgs memory args, address _messengerAddress, bytes32 _destinationBlockchainID, address _destinationAddress) {
+        initialize(args, _messengerAddress, _destinationBlockchainID, _destinationAddress);
     }
 
     /**
      * @notice Hub initializer - Initializes a new hub with given parameters
      *
      * @param args struct with constructor arguments
+     *
+     * @param _messengerAddress - The address of the Teleporter messenger contract
      */
-    function initialize(HubSpokeStructs.ConstructorArgs memory args) public initializer {
+     
+function initialize(
+        HubSpokeStructs.ConstructorArgs memory args,
+        address _messengerAddress,
+        bytes32 _destinationBlockchainID,
+        address _destinationAddress
+    ) public initializer {
         OwnableUpgradeable.__Ownable_init(msg.sender);
         PausableUpgradeable.__Pausable_init();
         CCTPBase.__CCTPBase_init(
@@ -83,6 +106,11 @@ contract Hub is
         _state.refundGasLimit = 60_000;
         setLiquidationFee(args.liquidationFee, args.liquidationFeePrecision);
         _state.isUsingCCTP = args.circleMessageTransmitter != address(0); // zero address would indicate not using
+
+        // Initialize the TeleporterMessenger and destination info
+        messenger = ITeleporterMessenger(_messengerAddress);
+        destinationBlockchainID = _destinationBlockchainID;
+        destinationAddress = _destinationAddress;
     }
 
     function getVaultAmounts(address vaultOwner, address assetAddress) public view returns (HubSpokeStructs.DenormalizedVaultAmount memory) {
@@ -590,16 +618,22 @@ contract Hub is
             globalAmounts.deposited += amount;
 
             emit Deposit(vault, assetAddress, amount, vaultAmounts.deposited);
+            _sendMessageToPrivateChain("Deposit", vault, assetAddress, amount);
+
         } else if (action == HubSpokeStructs.Action.Withdraw) {
             vaultAmounts.deposited -= amount;
             globalAmounts.deposited -= amount;
 
             emit Withdraw(vault, assetAddress, amount, vaultAmounts.deposited);
+            _sendMessageToPrivateChain("Withdraw", vault, assetAddress, amount);
+
         } else if (action == HubSpokeStructs.Action.Borrow) {
             vaultAmounts.borrowed += amount;
             globalAmounts.borrowed += amount;
 
             emit Borrow(vault, assetAddress, amount, vaultAmounts.borrowed);
+            _sendMessageToPrivateChain("Borrow", vault, assetAddress, amount);
+
         } else if (action == HubSpokeStructs.Action.Repay || action == HubSpokeStructs.Action.RepayNative) {
             if (amount > vaultAmounts.borrowed) {
                 amount = vaultAmounts.borrowed;
@@ -608,10 +642,54 @@ contract Hub is
             globalAmounts.borrowed -= amount;
 
             emit Repay(vault, assetAddress, amount, vaultAmounts.borrowed);
+            _sendMessageToPrivateChain("Repay", vault, assetAddress, amount);
+
         }
 
         setVaultAmounts(vault, assetAddress, vaultAmounts);
         setGlobalAmounts(assetAddress, globalAmounts);
+    }
+
+
+    /**
+     * @dev Sends a message to the private blockchain via the Teleporter Messenger
+     *
+     * @param actionType - The type of action (e.g., "Deposit", "Withdraw", etc.)
+     *
+     * @param vault - The address of the user's vault
+     *
+     * @param assetAddress - The address of the asset involved
+     *
+     * @param amount - The amount involved in the action
+     *
+     **/
+
+    function _sendMessageToPrivateChain(
+        string memory actionType,
+        address vault,
+        address assetAddress,
+        uint256 amount
+    ) internal {
+        bytes memory message = abi.encode(
+            actionType,
+            vault,
+            assetAddress,
+            amount,
+            block.timestamp
+        );
+
+        messenger.sendCrossChainMessage(
+            TeleporterMessageInput({
+                destinationBlockchainID: bytes32(hex"586e7956654d7532714834516233754e70676b4d"),
+                destinationAddress: destinationAddress,    // Replace with your receiver contract address
+                feeInfo: TeleporterFeeInfo({feeTokenAddress: address(0), amount: 0}),
+                requiredGasLimit: 100000,
+                allowedRelayerAddresses: new address[](0),
+                message: message
+            })
+        );
+
+        emit MessageSentToPrivateChain(actionType, vault, assetAddress, amount, block.timestamp);
     }
 
     /**
