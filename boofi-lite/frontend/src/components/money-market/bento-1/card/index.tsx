@@ -122,7 +122,6 @@ export function MoneyMarketCard() {
       `Contract info not found for chain ${chainId} and contract type ${contractType}`
     );
   };
-  
 
   const chainId = getChainId(fromChain);
   const functionName = functionNameMap[currentViewTab];
@@ -145,7 +144,6 @@ export function MoneyMarketCard() {
   });
 
   const isSendingTokens = ['depositCollateral', 'repay'].includes(functionName);
-
   const { data: msgValueData } = useContractRead({
     address: spokeContractAddress,
     abi: spokeAbi,
@@ -328,7 +326,7 @@ export function MoneyMarketCard() {
             {transactionHistory.map((tx, index) => (
               <TableRow key={index}>
                 <TableCell>{tx.date}</TableCell>
-                <TableCell>{tx.amount}</TableCell>
+                <TableCell>{tx.amount} USDC</TableCell>
                 <TableCell>{tx.status}</TableCell>
               </TableRow>
             ))}
@@ -368,7 +366,8 @@ export function MoneyMarketCard() {
                 variant="brutalism"
                 className="h-16 w-full text-lg bg-yellow-400 hover:bg-yellow-500 text-black font-bold"
                 disabled={
-                  finalMsgValue === BigInt(0) || parseFloat(amount) <= 0
+                  finalMsgValue === BigInt(0) ||
+                  parseFloat(amount) <= 0
                 }
               >
                 {currentViewTab.charAt(0).toUpperCase() +
@@ -377,6 +376,8 @@ export function MoneyMarketCard() {
             </TransactionWrapper>
           </div>
         </div>
+        <Separator />
+        {renderTransactionHistory()}
       </div>
     );
   };

@@ -13,7 +13,7 @@ contract SenderOnCChain {
     function sendMessage(address destinationAddress, string calldata message) external {
         messenger.sendCrossChainMessage(
             TeleporterMessageInput({
-                destinationBlockchainID: bytes32(hex"586e7956654d7532714834516233754e70676b4d"),
+                destinationBlockchainID: bytes32(hex"316fcc2056528c25a652ac1bdc12cd26d4e11631fd1225c23586be268b02885a"),
                 destinationAddress: destinationAddress,
                 feeInfo: TeleporterFeeInfo({feeTokenAddress: address(0), amount: 0}),
                 requiredGasLimit: 100000,

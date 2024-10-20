@@ -48,7 +48,7 @@ async function main() {
 
   const messengerAddress = "0x253b2784c75e510dD0fF1da844684a1aC0aa5fcf"; // contract address of the messenger on SenderOnCChain.sol on C-Chain
 
-  const destinationBlockchainID = hre.ethers.utils.hexZeroPad('0x586e7956654d7532714834516233754e70676b4d', 32);
+  const destinationBlockchainID = hre.ethers.utils.hexZeroPad('0x316fcc2056528c25a652ac1bdc12cd26d4e11631fd1225c23586be268b02885a', 32);
   const destinationAddress = '0xYourDestinationContractAddress';
 
   const hub = await upgrades.deployProxy(

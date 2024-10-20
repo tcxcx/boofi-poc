@@ -88,7 +88,7 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY_avalanche_fuji],
     },
     "privateBlockchain": {
-      url: "http://127.0.0.1:9650/ext/bc/privateBlockchain/rpc",
+      url: "​http://127.0.0.1:9650/ext/bc/boofiTest/rpc",
       chainId: 1996,
       accounts: [PRIVATE_KEY_avalanche_fuji],
     },
