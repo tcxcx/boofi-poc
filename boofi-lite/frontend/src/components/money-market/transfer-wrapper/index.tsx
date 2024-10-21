@@ -55,7 +55,7 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
     // Define the contract call parameters
     const call: ContractFunctionParameters = {
         address: hubContract as Address,
-        abi: HubAbi,
+        abi: HubAbi as unknown as Abi,
         functionName: functionName,
         args: args,
     };

@@ -10,12 +10,23 @@ import { QRCode } from "react-qrcode-logo";
 import SentTable from "@/components/tables/sent-table";
 import { useDeezNuts } from "@/hooks/use-peanut";
 import { useWindowSize } from "@/hooks/use-window-size";
-import { currencyAddresses } from "@/utils/currencyAddresses";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import confetti from "canvas-confetti";
 import { useAccount, useBalance, useChainId, useSwitchChain } from "wagmi";
+
+// Define the structure for currencyAddresses
+const currencyAddresses: Record<string, { address: string; hubContract: string; hubABI: any; spokeContract: string; spokeABI: any }> = {
+  USDC: {
+    address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    hubContract: "0x...",
+    hubABI: {},
+    spokeContract: "0x...",
+    spokeABI: {},
+  },
+  // Add more tokens as needed
+};
 
 interface TransactionDetails {
   transactionHash: string;
@@ -31,7 +42,7 @@ export default function LinkForm() {
   const [tokenAmount, setTokenAmount] = useState<number>(0);
   const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
   const [showSentTable, setShowSentTable] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<string>("ETH");
+  const [selectedToken, setSelectedToken] = useState<string>("USDC");
   const [currentText, setCurrentText] = useState<string>("");
 
   const { address } = useAccount();
@@ -59,8 +70,8 @@ export default function LinkForm() {
     try {
       let tokenAddress = "0x0000000000000000000000000000000000000000"; // Default to ETH if no token selected
       if (selectedToken !== "ETH") {
-        const addressInfo = currencyAddresses[chainId]?.[selectedToken];
-        if (typeof addressInfo === 'string') {
+        const addressInfo = currencyAddresses[selectedToken]?.address;
+        if (typeof addressInfo === "string") {
           tokenAddress = addressInfo;
         }
       }
@@ -71,7 +82,7 @@ export default function LinkForm() {
         tokenAddress,
         () => setCurrentText("In Progress..."),
         () => setCurrentText("Success!"),
-        (error) => setCurrentText(`Failed: ${error.message}`),
+        (error: Error) => setCurrentText(`Failed: ${error.message}`),
         () => setCurrentText("Spooky Crypto Finance Made Easy!")
       );
       setTransactionDetails(link as TransactionDetails);
@@ -91,22 +102,9 @@ export default function LinkForm() {
       };
 
       const shoot = () => {
-        confetti({
-          ...defaults,
-          particleCount: 30,
-        });
-
-        confetti({
-          ...defaults,
-          particleCount: 5,
-        });
-
-        confetti({
-          ...defaults,
-          particleCount: 15,
-          scalar: scalar / 2,
-          shapes: ["circle"],
-        });
+        confetti({ ...defaults, particleCount: 30 });
+        confetti({ ...defaults, particleCount: 5 });
+        confetti({ ...defaults, particleCount: 15, scalar: scalar / 2, shapes: ["circle"] });
       };
 
       setTimeout(shoot, 0);
@@ -157,22 +155,9 @@ export default function LinkForm() {
     };
 
     const shoot = () => {
-      confetti({
-        ...defaults,
-        particleCount: 30,
-      });
-
-      confetti({
-        ...defaults,
-        particleCount: 5,
-      });
-
-      confetti({
-        ...defaults,
-        particleCount: 15,
-        scalar: scalar / 2,
-        shapes: ["circle"],
-      });
+      confetti({ ...defaults, particleCount: 30 });
+      confetti({ ...defaults, particleCount: 5 });
+      confetti({ ...defaults, particleCount: 15, scalar: scalar / 2, shapes: ["circle"] });
     };
 
     setTimeout(shoot, 0);
@@ -196,11 +181,13 @@ export default function LinkForm() {
           <CurrencyDisplayer
             tokenAmount={tokenAmount}
             onValueChange={handleValueChange}
-            availableTokens={Object.fromEntries(Object.entries(currencyAddresses[chainId] || {}).map(([key, value]) => [key, value.toString()]))}
+            availableTokens={Object.fromEntries(
+              Object.entries(currencyAddresses[chainId] || {}).map(([key, value]) => [key, value.address])
+            )}
             onTokenSelect={setSelectedToken}
             currentNetwork={chainId}
           />
-      </div>
+        </div>
       </div>
 
       <div className="flex justify-between w-full space-x-2">
@@ -242,12 +229,7 @@ export default function LinkForm() {
                       className="flex justify-center mb-4 cursor-pointer"
                       onClick={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
                     >
-                      <QRCode
-                        value={transactionDetails.paymentLink}
-                        qrStyle="fluid"
-                        eyeRadius={100}
-                        size={200}
-                      />
+                      <QRCode value={transactionDetails.paymentLink} qrStyle="fluid" eyeRadius={100} size={200} />
                     </div>
 
                     <div className="flex justify-center text-xs text-primary mb-4">
@@ -288,10 +270,7 @@ export default function LinkForm() {
                         </div>
                         {chainId && transactionDetails && (
                           <div className="flex items-center">
-                            <Link
-                              href={`https://etherscan.io/tx/${transactionDetails.transactionHash}`}
-                              target="_blank"
-                            >
+                            <Link href={`https://etherscan.io/tx/${transactionDetails.transactionHash}`} target="_blank">
                               <Button size="sm" variant="ghost" className="px-2">
                                 View in Block Explorer
                                 <ChevronRightIcon className="ml-1 size-4" />
