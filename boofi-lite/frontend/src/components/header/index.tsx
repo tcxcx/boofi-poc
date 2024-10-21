@@ -74,7 +74,7 @@ const Header: React.FC = () => {
           <span className="h-px flex-grow bg-black"></span>
           <Suspense fallback={<Skeleton className="h-4 w-[250px]" />}>
             <div className="flex items-center gap-3 z-100">
-              <LoginButton className='bg-background text-black dark:text-black hover:bg-clr-blue border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none' />
+              <LoginButton className='bg-clr-blue text-black dark:text-black hover:bg-clr-blue/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none' />
             </div>
           </Suspense>
         </div>
