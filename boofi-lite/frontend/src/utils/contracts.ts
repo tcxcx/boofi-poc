@@ -1,6 +1,5 @@
-import HubAbi from '@/lib/abi/Hub.json';
-import SpokeAbiBaseSepolia from '@/lib/abi/Spoke.json';
-import SpokeAbiAvaxFuji from '@/lib/abi/Spoke.json';
+import { hubAbi } from '@/lib/abi/Hub';
+import { spokeAbi } from '@/lib/abi/Spoke';
 
 /**
  * @interface ChainConfig
@@ -9,7 +8,7 @@ import SpokeAbiAvaxFuji from '@/lib/abi/Spoke.json';
 export interface ChainConfig {
   id: string;
   name: string;
-  chainId: string; // Decimal chain ID as string
+  chainId: number; // Decimal chain ID as string
   isHub: boolean;
 }
 
@@ -22,7 +21,7 @@ export interface ContractConfig {
   abi: any;
   functionName: string;
   args: any[];
-  chainId: string; // Decimal chain ID as string
+  chainId: number;
 }
 
 /**
@@ -31,8 +30,8 @@ export interface ContractConfig {
  * An array of chain configurations indicating whether each chain is a hub or a spoke.
  */
 export const chains: ChainConfig[] = [
-  { id: 'base-sepolia', name: 'Base Sepolia', chainId: '84532', isHub: true }, // Hub
-  { id: 'avax-fuji', name: 'Avalanche Fuji', chainId: '43113', isHub: false }, // Spoke
+  { id: 'base-sepolia', name: 'Base Sepolia', chainId: 84532, isHub: true }, // Hub
+  { id: 'avax-fuji', name: 'Avalanche Fuji', chainId: 43113, isHub: false }, // Spoke
 ];
 
 /**
@@ -43,19 +42,19 @@ export const chains: ChainConfig[] = [
 export const contracts: ContractConfig[] = [
   {
     address: '0x1e3f1f1cA8C62aABCB3B78D87223E988Dfa3780E', // Hub Address on Base Sepolia
-    abi: HubAbi,
+    abi: hubAbi,
     functionName: 'userActions', // Function to handle user actions like deposit, borrow, etc.
     args: [], // Dynamic arguments to be set based on user interactions
-    chainId: '84532', // Base Sepolia (Decimal: 84532)
+    chainId: 84532, // Base Sepolia (Decimal: 84532)
   },
   
   // Spoke Contract on Avalanche Fuji Testnet
   {
     address: '0x84eee5Ac39Bd10E3bD2324940206628E5174AC17', // Spoke_AvaxFuji Address
-    abi: SpokeAbiAvaxFuji,
+    abi: spokeAbi,
     functionName: 'userActions',
     args: [],
-    chainId: '43113',
+    chainId: 43113,
   },
 ];
 

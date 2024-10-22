@@ -1,9 +1,7 @@
 
-import HubAbi from "@/lib/abi/Hub.json";
-import SpokeAbi from "@/lib/abi/Spoke.json";
-
-import type { Abi } from 'viem';
+import { hubAbi } from "@/lib/abi/Hub";
+import { spokeAbi } from "@/lib/abi/Spoke";
 
 
-export { HubAbi, SpokeAbi };
+export { hubAbi, spokeAbi };
 

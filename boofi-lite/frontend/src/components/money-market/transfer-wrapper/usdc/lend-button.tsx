@@ -1,17 +1,18 @@
-
 'use client';
 
 import TransferWrapper from '@/components/money-market/transfer-wrapper/index';
 import { TransactionError } from '@coinbase/onchainkit/transaction';
 
-interface TransferLoanWrapperProps {
+interface TransferDepositWrapperProps {
     amount: string;
+    costForReturnDelivery: string;
     onSuccess: (txHash: string) => void;
     onError: (error: TransactionError) => void;
 }
 
-const TransferLoanWrapper: React.FC<TransferLoanWrapperProps> = ({
+const TransferLoanWrapper: React.FC<TransferDepositWrapperProps> = ({
     amount,
+    costForReturnDelivery,
     onSuccess,
     onError,
 }) => {
@@ -21,7 +22,8 @@ const TransferLoanWrapper: React.FC<TransferLoanWrapperProps> = ({
             onSuccess={onSuccess}
             onError={onError}
             functionName="depositCollateral"
-            buttonText="Repay Loan"
+            buttonText="Deposit USDC"
+            argsExtra={[costForReturnDelivery]}
         />
     );
 };

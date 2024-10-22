@@ -11,20 +11,30 @@ import type {
     TransactionError,
     TransactionResponse,
 } from '@coinbase/onchainkit/transaction';
-import type { Address, ContractFunctionParameters } from 'viem';
-import { parseUnits } from 'viem';
-import { HubAbi } from '@/utils/abis';
-import type { Abi } from 'viem';
+import { parseUnits, encodeFunctionData } from 'viem';
+import { spokeAbi } from '@/utils/abis';
+import type { Abi, Address, Hex } from 'viem';
 import { chains } from '@/utils/contracts';
 import { currencyAddresses } from '@/utils/currencyAddresses';
+
+// Define valid function names as a union type
+type ValidFunctionNames =
+    | 'depositCollateral'
+    | 'depositCollateralNative'
+    | 'withdrawCollateral'
+    | 'withdrawCollateralNative'
+    | 'borrow'
+    | 'borrowNative'
+    | 'repay'
+    | 'repayNative';
 
 interface TransferWrapperProps {
     amount: string;
     onSuccess: (txHash: string) => void;
     onError: (error: TransactionError) => void;
-    functionName: string; // e.g., 'depositCollateral', 'withdrawCollateral', 'borrow', 'repay'
-    buttonText: string;   // e.g., 'Lend USDC', 'Withdraw USDC', etc.
-    argsExtra?: any[];    // Additional arguments if required by the function
+    functionName: ValidFunctionNames;  // Use the restricted type here
+    buttonText: string;
+    argsExtra?: any[];
 }
 
 const TransferWrapper: React.FC<TransferWrapperProps> = ({
@@ -37,47 +47,59 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
 }) => {
     // Find the chain object for 'Base Sepolia'
     const chain = chains.find(c => c.name === 'Base Sepolia');
-    const chainId = chain?.id || 'base-sepolia';
+    if (!chain) {
+        console.error("Chain 'Base Sepolia' not found in chains configuration.");
+        return null;
+    }
+
+    const chainId = chain.chainId; // Use the correct number `chainId`
 
     // Retrieve spoke contract address
-    const hubContract = currencyAddresses[chainId].USDC.hubContract;
+    const spokeContract = currencyAddresses[chainId]?.USDC?.spokeContract;
+    if (!spokeContract) {
+        console.error(`Spoke contract address for chain ID ${chainId} not found.`);
+        return null;
+    }
 
-    // Define the asset address and amount
     const assetAddress = currencyAddresses[chainId].USDC.address as Address;
     const assetAmount = parseUnits(amount || '0', 6);
 
-    // Define the arguments based on the function
-    let args: any[] = [assetAddress, assetAmount];
-    if (argsExtra.length > 0) {
-        args = [...args, ...argsExtra];
+    // Ensure that the costForReturnDelivery is calculated properly
+    let costForReturnDelivery: bigint | undefined;
+    if (argsExtra.length > 0 && argsExtra[0]) {
+        costForReturnDelivery = BigInt(parseUnits(argsExtra[0].toString(), 18).toString());
     }
 
-    // Define the contract call parameters
-    const call: ContractFunctionParameters = {
-        address: hubContract as Address,
-        abi: HubAbi as unknown as Abi,
-        functionName: functionName,
-        args: args,
-    };
+    // Encode function data for the contract call
+    const encodedData = encodeFunctionData({
+        abi: spokeAbi,
+        functionName: functionName,  // Now functionName is restricted to valid values
+        args: [assetAddress, assetAmount, costForReturnDelivery || 0n],
+    });
+
+    const calls = [{
+        to: spokeContract as Hex,
+        data: encodedData,
+        value: costForReturnDelivery || 0n,
+    }];
 
     return (
         <div className="flex w-full">
             <Transaction
-                contracts={[call]}
-                className="w-full"
-                chainId={parseInt(chainId, 10)} // Ensure chainId is a number
+                chainId={chainId}
+                calls={calls}  // Use the `calls` prop instead of `contracts`
                 onError={onError}
                 onSuccess={(response: TransactionResponse) => {
-                    // Extract the first transaction receipt and its hash
                     const transactionHash = response?.transactionReceipts?.[0]?.transactionHash;
-
-                    // Ensure that transactionHash is defined and pass it to onSuccess
                     if (transactionHash) {
                         onSuccess(transactionHash);
                     }
                 }}
             >
-                <TransactionButton text={buttonText} className='bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none' />
+                <TransactionButton
+                    text={buttonText}
+                    className='bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none'
+                />
                 <TransactionStatus>
                     <TransactionStatusLabel />
                     <TransactionStatusAction />
