@@ -16,26 +16,7 @@ import { spokeAbi } from '@/utils/abis';
 import type { Abi, Address, Hex } from 'viem';
 import { chains } from '@/utils/contracts';
 import { currencyAddresses } from '@/utils/currencyAddresses';
-
-// Define valid function names as a union type
-type ValidFunctionNames =
-    | 'depositCollateral'
-    | 'depositCollateralNative'
-    | 'withdrawCollateral'
-    | 'withdrawCollateralNative'
-    | 'borrow'
-    | 'borrowNative'
-    | 'repay'
-    | 'repayNative';
-
-interface TransferWrapperProps {
-    amount: string;
-    onSuccess: (txHash: string) => void;
-    onError: (error: TransactionError) => void;
-    functionName: ValidFunctionNames;  // Use the restricted type here
-    buttonText: string;
-    argsExtra?: any[];
-}
+import type { TransferWrapperProps, ValidFunctionNames } from '@/lib/types';
 
 const TransferWrapper: React.FC<TransferWrapperProps> = ({
     amount,
@@ -52,7 +33,7 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
         return null;
     }
 
-    const chainId = chain.chainId; // Use the correct number `chainId`
+    const chainId = chain.chainId;
 
     // Retrieve spoke contract address
     const spokeContract = currencyAddresses[chainId]?.USDC?.spokeContract;
@@ -73,7 +54,7 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
     // Encode function data for the contract call
     const encodedData = encodeFunctionData({
         abi: spokeAbi,
-        functionName: functionName,  // Now functionName is restricted to valid values
+        functionName: functionName,
         args: [assetAddress, assetAmount, costForReturnDelivery || 0n],
     });
 
@@ -87,7 +68,7 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
         <div className="flex w-full">
             <Transaction
                 chainId={chainId}
-                calls={calls}  // Use the `calls` prop instead of `contracts`
+                calls={calls}
                 onError={onError}
                 onSuccess={(response: TransactionResponse) => {
                     const transactionHash = response?.transactionReceipts?.[0]?.transactionHash;

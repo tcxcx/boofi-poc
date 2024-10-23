@@ -154,3 +154,23 @@ export interface CurrencyInfo {
   hubABI?: any[];
   spokeABI?: any[];
 }
+
+
+type ValidFunctionNames =
+    | 'depositCollateral'
+    | 'depositCollateralNative'
+    | 'withdrawCollateral'
+    | 'withdrawCollateralNative'
+    | 'borrow'
+    | 'borrowNative'
+    | 'repay'
+    | 'repayNative';
+
+interface TransferWrapperProps {
+    amount: string;
+    onSuccess: (txHash: string) => void;
+    onError: (error: TransactionError) => void;
+    functionName: ValidFunctionNames;
+    buttonText: string;
+    argsExtra?: any[];
+}
