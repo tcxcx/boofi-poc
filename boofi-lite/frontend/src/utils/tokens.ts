@@ -3,7 +3,7 @@ import type { Token } from '@coinbase/onchainkit/token';
 // Base Sepolia
   export const ETHToken: Token = {
     address: "",
-    chainId: 8453,
+    chainId: 84532,
     decimals: 18,
     name: "Ethereum",
     symbol: "ETH",
@@ -13,7 +13,7 @@ import type { Token } from '@coinbase/onchainkit/token';
   // Base Sepolia
   export const BaseSepoliaToken: Token = {
     address: "",
-    chainId: 8453,
+    chainId: 84532,
     decimals: 18,
     name: "Base Sepolia",
     symbol: "BASE SEPOLIA",
@@ -21,8 +21,8 @@ import type { Token } from '@coinbase/onchainkit/token';
   };
   
   export const USDCToken: Token = {
-    address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-    chainId: 8453,
+    address: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+    chainId: 84532,
     decimals: 6,
     name: "USDC",
     symbol: "USDC",
@@ -41,7 +41,7 @@ import type { Token } from '@coinbase/onchainkit/token';
   };
 
   export const USDCAvaxToken: Token = {
-    address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    address: "0x5425890298aed601595a70ab815c96711a31bc65",
     chainId: 43113,
     decimals: 6,
     name: "USDC",

@@ -126,6 +126,12 @@ export interface MarketStore {
   
   selectedAsset: CurrencyInfo | null; 
   setSelectedAsset: (asset: CurrencyInfo) => void;
+
+  fromChain: string;
+  setFromChain: (chainId: string) => void;
+
+  toChain: string;
+  setToChain: (chainId: string) => void;
 }
 
 export interface AssetData {
@@ -176,34 +182,42 @@ export interface TransactionHistoryItem {
   status: string;
 }
 
-interface TransferLendWrapperProps {
-  amount: string;
-  onSuccess: (txHash: string) => void;
-  onError: (error: TransactionError) => void;
-  functionName: LendFunctionNames;
-  buttonText: string;
+
+export interface UseTokenBalanceProps {
+  tokenAddress: Address;
+  chainId: number;
+  accountAddress: Address;
+  decimals: number;
 }
 
-interface TransferWithdrawWrapperProps {
-  amount: string;
-  onSuccess: (txHash: string) => void;
-  onError: (error: TransactionError) => void;
-  functionName: WithdrawFunctionNames;
-  buttonText: string;
+export interface BalanceDisplayProps {
+  balance: string;
+  isLoading: boolean;
+  symbol: string;
 }
 
-interface TransferBorrowWrapperProps {
-  amount: string;
-  onSuccess: (txHash: string) => void;
-  onError: (error: TransactionError) => void;
-  functionName: BorrowFunctionNames;
-  buttonText: string;
+export interface ChainContextProps {
+  fromChain: string;
+  toChain: string;
+  setFromChain: (chainId: string) => void;
+  setToChain: (chainId: string) => void;
 }
 
-interface TransferRepayWrapperProps {
-  amount: string;
-  onSuccess: (txHash: string) => void;
-  onError: (error: TransactionError) => void;
-  functionName: RepayFunctionNames;
-  buttonText: string;
+export interface Token {
+  address: string;
+  chainId: number;
+  decimals: number;
+  name: string;
+  symbol: string;
+  image: string;
 }
+
+export interface ChainSelectProps {
+  value: string;
+  onChange: (value: string) => void;
+  chains: ChainConfig[];
+  label: string;
+}
+
+
+export type { TransactionError };
