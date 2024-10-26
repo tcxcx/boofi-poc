@@ -1,37 +1,23 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@tenderly/hardhat-tenderly";
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 import "@nomiclabs/hardhat-ethers";
 
 dotenv.config();
-require('@nomiclabs/hardhat-ethers');
-require('@openzeppelin/hardhat-upgrades');
-
+require("@nomiclabs/hardhat-ethers");
+require("@openzeppelin/hardhat-upgrades");
 
 // Network-specific private keys
 const PRIVATE_KEY_baseSepolia = process.env.PRIVATE_KEY_baseSepolia || "";
-const PRIVATE_KEY_opSepolia = process.env.PRIVATE_KEY_opSepolia || "";
-const PRIVATE_KEY_sepolia = process.env.PRIVATE_KEY_sepolia || "";
-const PRIVATE_KEY_arbitrumSepolia = process.env.PRIVATE_KEY_arbitrumSepolia || "";
 const PRIVATE_KEY_avalanche_fuji = process.env.PRIVATE_KEY_avalanche_fuji || "";
 
 // Validate private keys
-if (!PRIVATE_KEY_baseSepolia) {
-  throw new Error("Please set your PRIVATE_KEY_baseSepolia in the .env file");
-}
-if (!PRIVATE_KEY_opSepolia) {
-  throw new Error("Please set your PRIVATE_KEY_opSepolia in the .env file");
-}
-if (!PRIVATE_KEY_sepolia) {
-  throw new Error("Please set your PRIVATE_KEY_sepolia in the .env file");
-}
-if (!PRIVATE_KEY_arbitrumSepolia) {
-  throw new Error("Please set your PRIVATE_KEY_arbitrumSepolia in the .env file");
-}
 
 if (!PRIVATE_KEY_avalanche_fuji) {
-  throw new Error("Please set your PRIVATE_KEY_avalanche_fuji in the .env file");
+  throw new Error(
+    "Please set your PRIVATE_KEY_avalanche_fuji in the .env file"
+  );
 }
 
 const config: HardhatUserConfig = {
@@ -55,7 +41,7 @@ const config: HardhatUserConfig = {
     },
   },
   paths: {
-    sources: "./src/contracts", 
+    sources: "./src/contracts",
     tests: "./test",
     cache: "./cache",
     artifacts: "./artifacts",
@@ -67,27 +53,13 @@ const config: HardhatUserConfig = {
       chainId: 84532,
       accounts: [PRIVATE_KEY_baseSepolia],
     },
-    "op-sepolia": {
-      url: process.env.OP_SEPOLIA_RPC_URL || "",
-      chainId: 11155420,
-      accounts: [PRIVATE_KEY_opSepolia],
-    },
-    "sepolia": {
-      url: process.env.ETHEREUM_SEPOLIA_RPC_URL || "",
-      chainId: 11155111,
-      accounts: [PRIVATE_KEY_sepolia],
-    },
-    "arb-sepolia": {
-      url: process.env.ARB_SEPOLIA_RPC_URL || "",
-      chainId: 421614,
-      accounts: [PRIVATE_KEY_arbitrumSepolia],
-    },
-    "fuji": {
+
+    fuji: {
       url: process.env.AVALANCHE_FUJI_RPC_URL || "",
       chainId: 43113,
       accounts: [PRIVATE_KEY_avalanche_fuji],
     },
-    "privateBlockchain": {
+    privateBlockchain: {
       url: "​http://127.0.0.1:9650/ext/bc/boofiTest/rpc",
       chainId: 1996,
       accounts: [PRIVATE_KEY_avalanche_fuji],
