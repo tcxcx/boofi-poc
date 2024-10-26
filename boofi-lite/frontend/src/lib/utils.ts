@@ -7,6 +7,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const getSlicedAddress = (address: Address) => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
 // FORMAT DATE TIME
 export const formatDateTime = (dateString: Date) => {
   const dateTimeOptions: Intl.DateTimeFormatOptions = {

@@ -30,8 +30,8 @@ export interface ContractConfig {
  * An array of chain configurations indicating whether each chain is a hub or a spoke.
  */
 export const chains: ChainConfig[] = [
-  { id: 'base-sepolia', name: 'Base Sepolia', chainId: 84532, isHub: true }, // Hub
-  { id: 'avax-fuji', name: 'Avalanche Fuji', chainId: 43113, isHub: false }, // Spoke
+  { id: 'base-sepolia', name: 'Base Sepolia', chainId: 84532, isHub: false }, // Hub
+  { id: 'avax-fuji', name: 'Avalanche Fuji', chainId: 43113, isHub: true }, // Spoke
 ];
 
 /**

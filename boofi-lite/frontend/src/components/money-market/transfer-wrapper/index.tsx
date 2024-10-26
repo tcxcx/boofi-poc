@@ -16,7 +16,7 @@ import { spokeAbi } from '@/utils/abis';
 import type { Abi, Address, Hex } from 'viem';
 import { chains } from '@/utils/contracts';
 import { currencyAddresses } from '@/utils/currencyAddresses';
-import type { TransferWrapperProps, ValidFunctionNames } from '@/lib/types';
+import type { TransferWrapperProps } from '@/lib/types';
 
 const TransferWrapper: React.FC<TransferWrapperProps> = ({
     amount,

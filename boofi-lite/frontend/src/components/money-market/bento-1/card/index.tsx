@@ -1,11 +1,8 @@
-// boofi-lite/frontend/src/components/money-market/bento-1/card/index.tsx
-
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useBalance } from 'wagmi';
-import { parseUnits, Address } from 'viem';
-import { Button } from '@/components/ui/button';
+import { useAccount, useBalance, useSwitchChain } from 'wagmi';
+import { Address } from 'viem';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -17,69 +14,65 @@ import {
 import { formatCurrency } from '@/utils/formatCurrency';
 import { useMarketStore } from '@/store/marketStore';
 import { Separator } from '@/components/ui/separator';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { currencyAddresses } from '@/utils/currencyAddresses';
 import { getFromChains, getToChains } from '@/utils/chainMarket';
 import { chains } from '@/utils/contracts';
-import {
-  ETHToken,
-  USDCToken,
-  AvaxToken,
-  BaseSepoliaToken,
-} from '@/utils/tokens';
-
-import TransferLendWrapper from '@/components/money-market/transfer-wrapper/usdc/lend-button';
-import TransferWithdrawWrapper from '@/components/money-market/transfer-wrapper/usdc/withdraw-button';
-import TransferBorrowWrapper from '@/components/money-market/transfer-wrapper/usdc/borrow-button';
-import TransferRepayWrapper from '@/components/money-market/transfer-wrapper/usdc/repay-button';
-import { TransactionError } from '@coinbase/onchainkit/transaction';
-
-interface TransactionHistoryItem {
-  date: string;
-  amount: number;
-  status: string;
-}
+import TransferWrapper from '@/components/money-market/transfer-wrapper/index';
+import { TransactionHistoryItem } from '@/lib/types';
 
 export function MoneyMarketCard() {
   const { address } = useAccount();
-  const { data: balance } = useBalance({
-    address,
-    token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC address
-  });
   const { currentViewTab } = useMarketStore();
-
+  const { switchChain } = useSwitchChain();
   const [amount, setAmount] = useState('');
-  const [fromChain, setFromChain] = useState(chains[0].id);
-  const [toChain, setToChain] = useState(chains[1].id);
+  const [fromChain, setFromChain] = useState<string>('');
+  const [toChain, setToChain] = useState<string>('');
   const [transactionHistory, setTransactionHistory] = useState<TransactionHistoryItem[]>([]);
 
   useEffect(() => {
-    const defaultFromChain =
-      getFromChains(currentViewTab, chains)[0]?.id || chains[0].id;
-    const defaultToChain =
-      getToChains(currentViewTab, chains)[0]?.id || chains[0].id;
-
-    setFromChain(defaultFromChain);
-    setToChain(defaultToChain);
+    // Set default fromChain and toChain based on current view tab
+    const fromChains = getFromChains(currentViewTab, chains);
+    const toChains = getToChains(currentViewTab, chains);
+    
+    // Set the first available chains as defaults if they exist
+    setFromChain(fromChains[0]?.id || '');
+    setToChain(toChains[0]?.id || '');
   }, [currentViewTab]);
 
-  const getTokenByChain = (chainId: string) => {
-    switch (chainId) {
-      case 'base-sepolia':
-        return BaseSepoliaToken;
-      case 'avax-fuji':
-        return AvaxToken;
-      // Add more cases as per your chains
-      default:
-        return ETHToken; // Fallback token
+  const usdcAddress = currencyAddresses[Number(fromChain)]?.USDC?.address || '';
+  const { data: balance } = useBalance({ address, token: usdcAddress as Address });
+
+  const transferActions = {
+    lend: { functionName: 'depositCollateral', buttonText: 'Deposit USDC' },
+    withdraw: { functionName: 'withdrawCollateral', buttonText: 'Withdraw USDC' },
+    borrow: { functionName: 'borrow', buttonText: 'Borrow USDC' },
+    repay: { functionName: 'repay', buttonText: 'Repay USDC' },
+  };
+
+  const action = transferActions[currentViewTab as keyof typeof transferActions] || {};
+  const { functionName, buttonText } = action;
+
+  const handleTransactionSuccess = (txHash: string) => {
+    console.log('Transaction successful:', txHash);
+    setTransactionHistory((prev) => [
+      ...prev,
+      { date: new Date().toLocaleString(), amount: parseFloat(amount), status: 'Success' },
+    ]);
+  };
+
+  const handleTransactionError = (error: Error) => {
+    console.error('Transaction failed:', error);
+    setTransactionHistory((prev) => [
+      ...prev,
+      { date: new Date().toLocaleString(), amount: parseFloat(amount), status: 'Failed' },
+    ]);
+  };
+
+  const handleButtonClick = async () => {
+    try {
+      await switchChain({ chainId: Number(fromChain) });
+    } catch (error) {
+      console.error('Failed to switch chain:', error);
     }
   };
 
@@ -98,177 +91,56 @@ export function MoneyMarketCard() {
     );
   };
 
+  const getTokenByChain = (chainId: string) => {
+    switch (chainId) {
+      case 'base-sepolia':
+        return { symbol: 'BS', image: '' };
+      case 'avax-fuji':
+        return { symbol: 'AF', image: '' };
+      default:
+        return { symbol: 'ETH', image: '' };
+    }
+  };
+
   const renderFromToSection = () => {
     const fromChains = getFromChains(currentViewTab, chains);
     const toChains = getToChains(currentViewTab, chains);
 
-    let fromLabel, toLabel;
-    let fromSelect = true;
-    let toSelect = true;
-
-    switch (currentViewTab) {
-      case 'lend':
-        fromLabel = 'From';
-        toLabel = 'To';
-        toSelect = false; // "Supply To" fixed to Hub
-        break;
-      case 'withdraw':
-        fromLabel = 'From';
-        toLabel = 'To';
-        fromSelect = false; // "Withdraw From" fixed to Hub
-        break;
-      case 'borrow':
-        fromLabel = 'From';
-        toLabel = 'To';
-        fromSelect = false; // "Borrow From" fixed to Hub
-        break;
-      case 'repay':
-        fromLabel = 'From';
-        toLabel = 'To';
-        toSelect = false; // "Repay To" fixed to Hub
-        break;
-      default:
-        fromLabel = 'From';
-        toLabel = 'To';
-    }
-
     return (
       <div className="flex items-center justify-between">
         <div className="flex-1 flex items-center space-x-2">
-          <span className="text-xs text-gray-500 uppercase">{fromLabel}</span>
-          {fromSelect ? (
-            <Select value={fromChain} onValueChange={setFromChain}>
-              <SelectTrigger className="w-auto flex items-center">
-                <SelectValue placeholder="From" />
-              </SelectTrigger>
-              <SelectContent>
-                {fromChains.map((chain) => (
-                  <SelectItem key={chain.id} value={chain.id}>
-                    {renderChainOption(chain.id)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          ) : (
-            <div className="flex items-center space-x-2">
-              {renderChainOption(fromChain)}
-            </div>
-          )}
+          <span className="text-xs text-gray-500 uppercase">From</span>
+          <Select value={fromChain} onValueChange={setFromChain}>
+            <SelectTrigger className="w-auto flex items-center">
+              <SelectValue placeholder="From" />
+            </SelectTrigger>
+            <SelectContent>
+              {fromChains.map((chain) => (
+                <SelectItem key={chain.id} value={chain.id}>
+                  {renderChainOption(chain.id)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Separator orientation="vertical" className="h-8 mx-4" />
         <div className="flex-1 flex items-center space-x-2 justify-end">
-          <span className="text-xs text-gray-500 uppercase">{toLabel}</span>
-          {toSelect ? (
-            <Select value={toChain} onValueChange={setToChain}>
-              <SelectTrigger className="w-auto flex items-center">
-                <SelectValue placeholder="To" />
-              </SelectTrigger>
-              <SelectContent>
-                {toChains.map((chain) => (
-                  <SelectItem key={chain.id} value={chain.id}>
-                    {renderChainOption(chain.id)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          ) : (
-            <div className="flex items-center space-x-2">
-              {renderChainOption(toChain)}
-            </div>
-          )}
+          <span className="text-xs text-gray-500 uppercase">To</span>
+          <Select value={toChain} onValueChange={setToChain}>
+            <SelectTrigger className="w-auto flex items-center">
+              <SelectValue placeholder="To" />
+            </SelectTrigger>
+            <SelectContent>
+              {toChains.map((chain) => (
+                <SelectItem key={chain.id} value={chain.id}>
+                  {renderChainOption(chain.id)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
     );
-  };
-
-  const handleTransactionSuccess = (txHash: string) => {
-    console.log('Transaction successful:', txHash);
-    // Optionally, update transaction history
-    setTransactionHistory((prev) => [
-      ...prev,
-      { date: new Date().toLocaleString(), amount: parseFloat(amount), status: 'Success' },
-    ]);
-  };
-
-  const handleTransactionError = (error: TransactionError) => {
-    console.error('Transaction failed:', error);
-    // Optionally, update transaction history
-    setTransactionHistory((prev) => [
-      ...prev,
-      { date: new Date().toLocaleString(), amount: parseFloat(amount), status: 'Failed' },
-    ]);
-  };
-
-  const renderTransactionHistory = () => {
-    if (transactionHistory.length === 0) {
-      return (
-        <div className="text-center text-gray-500 py-4">
-          You have no {currentViewTab} history.
-        </div>
-      );
-    }
-
-    return (
-      <ScrollArea className="h-40 w-full">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {transactionHistory.map((tx, index) => (
-              <TableRow key={index}>
-                <TableCell>{tx.date}</TableCell>
-                <TableCell>{tx.amount} USDC</TableCell>
-                <TableCell>{tx.status}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </ScrollArea>
-    );
-  };
-
-  const renderActionButton = () => {
-    switch (currentViewTab) {
-      case 'lend':
-        return (
-          <TransferLendWrapper
-            amount={amount}
-            onSuccess={handleTransactionSuccess}
-            onError={handleTransactionError}
-          />
-        );
-      case 'withdraw':
-        return (
-          <TransferWithdrawWrapper
-            amount={amount}
-            onSuccess={handleTransactionSuccess}
-            onError={handleTransactionError}
-          />
-        );
-      case 'borrow':
-        return (
-          <TransferBorrowWrapper
-            amount={amount}
-            onSuccess={handleTransactionSuccess}
-            onError={handleTransactionError}
-          />
-        );
-      case 'repay':
-        return (
-          <TransferRepayWrapper
-            amount={amount}
-            onSuccess={handleTransactionSuccess}
-            onError={handleTransactionError}
-          />
-        );
-      default:
-        return null;
-    }
   };
 
   return (
@@ -291,11 +163,16 @@ export function MoneyMarketCard() {
             </span>
           </div>
           <div className="w-1/2 pl-2">
-            {renderActionButton()}
+            <TransferWrapper
+              amount={amount}
+              onSuccess={handleTransactionSuccess}
+              onError={(error) => handleTransactionError(error as any)}
+              functionName={functionName}
+              buttonText={buttonText}
+            />
           </div>
         </div>
         <Separator />
-        {/* {renderTransactionHistory()} */}
       </div>
     </div>
   );

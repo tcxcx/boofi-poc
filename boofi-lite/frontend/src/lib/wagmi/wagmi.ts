@@ -8,9 +8,7 @@ import {
 import { useMemo } from 'react';
 import { http, createConfig } from 'wagmi';
 import {
-  optimismSepolia,
   baseSepolia,
-  sepolia,
   avalancheFuji
 } from "wagmi/chains";
 import { NEXT_PUBLIC_WC_PROJECT_ID } from './config';
@@ -43,8 +41,6 @@ export function useWagmiConfig() {
 
     const wagmiConfig = createConfig({
       chains: [
-        sepolia,
-        optimismSepolia,
         baseSepolia,
         avalancheFuji
       ],
@@ -52,9 +48,7 @@ export function useWagmiConfig() {
       connectors,
       ssr: true,
       transports: {
-        [sepolia.id]: http(),
         [avalancheFuji.id]: http(),
-        [optimismSepolia.id]: http(),
         [baseSepolia.id]: http(),
       },
     });
