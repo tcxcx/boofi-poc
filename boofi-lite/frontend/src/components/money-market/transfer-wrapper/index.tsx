@@ -17,7 +17,7 @@ import type { Address, Hex } from "viem";
 import { chains } from "@/utils/contracts";
 import { currencyAddresses } from "@/utils/currencyAddresses";
 import type { TransferWrapperProps } from "@/lib/types";
-import { useConfig, useReadContract, useWriteContract } from "wagmi";
+import { useReadContract, useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
 import { useWagmiConfig } from "@/lib/wagmi/wagmi";
 
@@ -29,9 +29,7 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
   buttonText,
   argsExtra = [],
 }) => {
-  const config = useWagmiConfig();
   const { writeContract, error, data, isIdle, isError } = useWriteContract();
-  console.log({ error, data, isIdle, isError });
   // Find the chain object for 'Base Sepolia'
   const chain = chains.find((c) => c.name === "Base Sepolia");
   if (!chain) {
