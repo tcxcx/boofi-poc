@@ -1,22 +1,35 @@
-import { CurrencyInfo } from "@/lib/types";
-import HubAbi from "@/lib/abi/Hub.json";
-import SpokeAbiAvaxFuji from "@/lib/abi/Spoke.json";
+// utils/currencyAddresses.ts
+import { hubAbi } from "@/utils/abis";
+import { spokeAbi } from "@/utils/abis";
 
-export const currencyAddresses: Record<number, Record<string, string | CurrencyInfo>> = {
-  84532: {
-    // Base Sepolia (Hub)
+export const currencyAddresses: {
+  [chainId: number]: {
     USDC: {
-      address: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-      hubContract: "0xHubContractAddress", 
-      hubABI: HubAbi as any,
+      address: string;
+      hubContract: string;
+      hubABI: any;
+      spokeContract: string;
+      spokeABI: any;
+    };
+  };
+} = {
+  84532: { // Base Sepolia chainId as number
+    USDC: {
+      address: '0x036cbd53842c5426634e7929541ec2318f3dcf7e',
+      hubContract: '',
+      hubABI: hubAbi,
+      spokeContract: '0xA8f6Db88D79bcA5F1990C93b6a6eA5866722d198',
+      spokeABI: spokeAbi,
     },
   },
-  43113: {
-    // Avalanche Fuji (Spoke)
+  43113: { // Avalanche Fuji chainId as number
     USDC: {
-      address: "0xAvalancheFujiUSDCAddress",
-      spokeContract: "0xSpokeContractAddress", 
-      spokeABI: SpokeAbiAvaxFuji as any,
+      address: '0x5425890298aed601595a70ab815c96711a31bc65',
+      hubContract: '0x283801Dc7D4624ef155a99B0CA93f3dB58818c90',
+      hubABI: hubAbi,
+      spokeContract: '',
+      spokeABI: spokeAbi,
     },
   },
+  // Add more chains as needed
 };

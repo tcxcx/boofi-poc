@@ -39,9 +39,9 @@ const PositionSummary: React.FC = () => {
         // Mock data - replace with actual API call
         const mockPositions: Position[] = currentViewTab === 'lend' || currentViewTab === 'withdraw'
           ? [
-              { asset: "USDC", amount: 1000, value: 1000, apy: 5.2 },
-              { asset: "ETH", amount: 0.5, value: 1250, apy: 3.8 },
-            ]
+            { asset: "USDC", amount: 1000, value: 1000, apy: 5.2 },
+            { asset: "ETH", amount: 0.5, value: 1250, apy: 3.8 },
+          ]
           : [];
         setPositions(mockPositions);
         setEnsName("user.eth"); // Mock ENS name - replace with actual ENS resolution
@@ -101,7 +101,7 @@ const PositionSummary: React.FC = () => {
           <p className="text-gray-500">No positions</p>
         </div>
       ) : (
-        <ScrollArea className="h-32 w-full">
+        <ScrollArea className="h-24s w-full">
           <Table>
             <TableHeader>
               <TableRow>

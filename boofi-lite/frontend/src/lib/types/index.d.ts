@@ -154,3 +154,56 @@ export interface CurrencyInfo {
   hubABI?: any[];
   spokeABI?: any[];
 }
+
+    // Specific function names for each action
+export type LendFunctionNames = 'depositCollateral' | 'depositCollateralNative';
+export type WithdrawFunctionNames = 'withdrawCollateral' | 'withdrawCollateralNative';
+export type BorrowFunctionNames = 'borrow' | 'borrowNative';
+export type RepayFunctionNames = 'repay' | 'repayNative';
+
+export interface TransferWrapperProps {
+    amount: string;
+    onSuccess: (txHash: string) => void;
+    onError: (error: TransactionError) => void;
+    functionName: ValidFunctionNames;
+    buttonText: string;
+    argsExtra?: any[];
+}
+
+export interface TransactionHistoryItem {
+  date: string;
+  amount: number;
+  status: string;
+}
+
+interface TransferLendWrapperProps {
+  amount: string;
+  onSuccess: (txHash: string) => void;
+  onError: (error: TransactionError) => void;
+  functionName: LendFunctionNames;
+  buttonText: string;
+}
+
+interface TransferWithdrawWrapperProps {
+  amount: string;
+  onSuccess: (txHash: string) => void;
+  onError: (error: TransactionError) => void;
+  functionName: WithdrawFunctionNames;
+  buttonText: string;
+}
+
+interface TransferBorrowWrapperProps {
+  amount: string;
+  onSuccess: (txHash: string) => void;
+  onError: (error: TransactionError) => void;
+  functionName: BorrowFunctionNames;
+  buttonText: string;
+}
+
+interface TransferRepayWrapperProps {
+  amount: string;
+  onSuccess: (txHash: string) => void;
+  onError: (error: TransactionError) => void;
+  functionName: RepayFunctionNames;
+  buttonText: string;
+}

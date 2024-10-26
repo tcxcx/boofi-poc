@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from "react";
 import { useMarketStore } from "@/store/marketStore";
@@ -66,7 +66,7 @@ const MarketInfo: React.FC = () => {
         <Skeleton className="h-4 w-24" />
       </div>
 
-      <ScrollArea className="h-24 w-full">
+      <ScrollArea className="h-24 w-full" style={{ overflowX: 'hidden' }}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -76,7 +76,7 @@ const MarketInfo: React.FC = () => {
               <TableHead className="text-xs"><Skeleton className="h-3 w-24" /></TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="overflow-hidden">
             {[1, 2, 3].map((_, index) => (
               <TableRow key={index} className="font-nupower">
                 <TableCell className="text-xs"><Skeleton className="h-3 w-16" /></TableCell>
@@ -119,7 +119,7 @@ const MarketInfo: React.FC = () => {
     <div className={cn("rounded-lg shadow p-4 space-y-4 text-xs", getBgColorClass(currentViewTab))}>
       <h2 className="text-sm font-medium text-left justify-start">Market Info</h2>
 
-      <ScrollArea className="h-32 w-full">
+      <ScrollArea className="h-24 w-full" style={{ overflowX: 'hidden' }}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -161,7 +161,7 @@ const MarketInfo: React.FC = () => {
           <p className="text-xs text-muted-foreground">w/ <span className="font-clash">BooFi</span> bonus</p>
         </div>
         <span className="font-bold bg-gradient-to-r text-4xl lg:text-5xl from-indigo-300 via-purple-400 to-cyan-300 bg-clip-text text-transparent">
-          {apyData?.totalAPY || 0}      
+          {apyData?.totalAPY || 0}
           <span className="text-xl font-clash text-muted-foreground">%</span>
         </span>
       </div>

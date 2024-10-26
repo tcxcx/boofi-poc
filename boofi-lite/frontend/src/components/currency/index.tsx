@@ -30,14 +30,10 @@ interface CurrencyDisplayerProps {
 }
 
 const chainIcons: { [key: number]: string } = {
-  1: "/icons/ethereum-eth-logo.svg",
   11155111: "/icons/ethereum-eth-logo.svg",
-  10: "/icons/optimism-ethereum-op-logo.svg",
   11155420: "/icons/optimism-ethereum-op-logo.svg",
-  8453: "/icons/base-logo-in-blue.svg",
   84532: "/icons/base-logo-in-blue.svg",
-  34443: "/icons/mode-logo.svg",
-  919: "/icons/mode-logo.svg",
+  43113: "https://bafybeihfbjhiz5rytxcug7l7ymu6veyam5dcdrmqevz2jkepsgec6xobgi.ipfs.web3approved.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJiYWZ5YmVpaGZiamhpejVyeXR4Y3VnN2w3eW11NnZleWFtNWRjZHJtcWV2ejJqa2Vwc2dlYzZ4b2JnaSIsInByb2plY3RfdXVpZCI6Ijc2YTA4NzgxLTViMDctNGRhMy1iZDNhLTBiNDc2ZjRhY2YyMiIsImlhdCI6MTcyOTE5NTczMiwic3ViIjoiSVBGUy10b2tlbiJ9.Or8FYayDjxvOSgW-ZjTLYksp9-0fXa7pKmKFQPUNZL4",
 };
 
 const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
@@ -177,10 +173,6 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
     switch (token.toUpperCase()) {
       case "USDC":
         return <UsdcIcon size={20} />;
-      case "DAI":
-        return <DaiIcon size={20} />;
-      case "USDT":
-        return <UsdtIcon size={20} />;
       case "ETH":
         return <EthIcon size={20} />;
       default:

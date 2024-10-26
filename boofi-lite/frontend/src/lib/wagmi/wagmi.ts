@@ -8,16 +8,8 @@ import {
 import { useMemo } from 'react';
 import { http, createConfig } from 'wagmi';
 import {
-  mainnet,
-  optimism,
-  optimismSepolia,
-  celo,
-  celoAlfajores,
-  base,
   baseSepolia,
-  mode,
-  modeTestnet,
-  sepolia,
+  avalancheFuji
 } from "wagmi/chains";
 import { NEXT_PUBLIC_WC_PROJECT_ID } from './config';
 
@@ -42,41 +34,24 @@ export function useWagmiConfig() {
         },
       ],
       {
-        appName: 'onchainkit',
+        appName: 'BooFi | Spooky Crypto Finance Made Easy',
         projectId,
       },
     );
 
     const wagmiConfig = createConfig({
       chains: [
-        mainnet,
-        sepolia,
-        optimism,
-        optimismSepolia,
-        celo,
-        celoAlfajores,
-        base,
         baseSepolia,
-        mode,
-        modeTestnet,
+        avalancheFuji
       ],
       multiInjectedProviderDiscovery: false,
       connectors,
       ssr: true,
       transports: {
-        [mainnet.id]: http(),
-        [sepolia.id]: http(),
-        [optimism.id]: http(),
-        [optimismSepolia.id]: http(),
-        [celo.id]: http(),
-        [celoAlfajores.id]: http(),
-        [base.id]: http(),
+        [avalancheFuji.id]: http(),
         [baseSepolia.id]: http(),
-        [mode.id]: http(),
-        [modeTestnet.id]: http(),
       },
     });
-
     return wagmiConfig;
   }, [projectId]);
 }

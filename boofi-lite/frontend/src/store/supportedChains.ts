@@ -1,67 +1,36 @@
 import { Chain } from "viem";
 import {
-  mainnet,
   sepolia,
-  optimism,
   optimismSepolia,
-  celo,
-  celoAlfajores,
-  base,
   baseSepolia,
-  mode,
-  modeTestnet,
+  avalancheFuji
 } from "wagmi/chains";
 import { Environment, getCurrentEnvironment } from "./environment";
 
 // The list of supported Chains for a given environment
 export const SUPPORTED_CHAINS: Record<Environment, [Chain, ...Chain[]]> = {
   [Environment.localhost]: [
-    mainnet,
     sepolia,
-    optimism,
     optimismSepolia,
-    celo,
-    celoAlfajores,
-    base,
     baseSepolia,
-    mode,
-    modeTestnet,
+    avalancheFuji
   ],
   [Environment.development]: [
-    mainnet,
     sepolia,
-    optimism,
     optimismSepolia,
-    celo,
-    celoAlfajores,
-    base,
+    avalancheFuji,
     baseSepolia,
-    mode,
-    modeTestnet,
   ],
   [Environment.staging]: [
-    mainnet,
     sepolia,
-    optimism,
     optimismSepolia,
-    celo,
-    celoAlfajores,
-    base,
     baseSepolia,
-    mode,
-    modeTestnet,
   ],
   [Environment.production]: [
-    mainnet,
     sepolia,
-    optimism,
     optimismSepolia,
-    celo,
-    celoAlfajores,
-    base,
     baseSepolia,
-    mode,
-    modeTestnet,
+    avalancheFuji
   ],
 };
 
