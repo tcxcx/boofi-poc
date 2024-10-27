@@ -3,11 +3,8 @@ pragma solidity ^0.8.0;
 
 /**
  * @title FlashLoanAndAutoStake
- * @dev This contract allows users to request flash loans for a specific token
- * and automatically manages staking of idle funds. If the required funds for a
- * flash loan are staked, the contract will automatically withdraw them to fulfill
- * the loan. After the flash loan operation is completed, any unused funds are
- * automatically staked.
+ * @dev This contract handles staking of tokens and offers flash loans to users using Aave.
+ *      It accepts tokens from an authorized contract and stakes them when not in use.
  */
 
 // Required imports
@@ -23,7 +20,8 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
     IERC20 public token;
     IStaking public stakingContract;
 
-    event FundsWithdrawnFromStaking(uint256 amount);
+    mapping(address => bool) public authorizedCallers;
+
     event FundsStaked(uint256 amount);
     event FlashLoanExecuted(address initiator, uint256 amount, uint256 premium);
 
@@ -41,6 +39,7 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
         owner = msg.sender;
         token = IERC20(_tokenAddress);
         stakingContract = IStaking(_stakingContract);
+        authorizedCallers[msg.sender] = true; // Owner is authorized by default
     }
 
     /**
@@ -52,8 +51,48 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
     }
 
     /**
+     * @dev Modifier to restrict functions to authorized callers.
+     */
+    modifier onlyAuthorized() {
+        require(authorizedCallers[msg.sender], "Not authorized");
+        _;
+    }
+
+    /**
+     * @dev Allows the owner to add an authorized caller.
+     * @param _caller The address to authorize
+     */
+    function addAuthorizedCaller(address _caller) external onlyOwner {
+        authorizedCallers[_caller] = true;
+    }
+
+    /**
+     * @dev Allows the owner to remove an authorized caller.
+     * @param _caller The address to remove authorization
+     */
+    function removeAuthorizedCaller(address _caller) external onlyOwner {
+        authorizedCallers[_caller] = false;
+    }
+
+    /**
+     * @dev Function to handle received tokens and stake them.
+     * Can only be called by authorized callers.
+     * @param _tokenAddress The address of the token received
+     * @param _amount The amount of tokens received
+     */
+    function handleReceivedTokens(
+        address _tokenAddress,
+        uint256 _amount
+    ) external onlyAuthorized {
+        require(_tokenAddress == address(token), "Invalid token");
+        // Stake the received tokens
+        token.approve(address(stakingContract), _amount);
+        stakingContract.stake(_amount);
+        emit FundsStaked(_amount);
+    }
+
+    /**
      * @dev Function to request a flash loan of a specific amount.
-     * If there are not enough tokens available, it will withdraw the required amount from staking.
      * @param amount The amount of tokens to borrow
      */
     function requestFlashLoan(uint256 amount) external nonReentrant {
@@ -71,7 +110,6 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
 
             // Withdraw the required amount from staking
             stakingContract.withdraw(requiredAmount);
-            emit FundsWithdrawnFromStaking(requiredAmount);
         }
 
         // Initiate the flash loan
@@ -110,12 +148,13 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
         require(msg.sender == address(POOL), "Caller must be the Pool");
 
         // Implement your custom logic here
+        // For example, arbitrage, liquidation, etc.
 
         // Repay the loan plus fees
         uint256 totalAmount = amount + premium;
         token.approve(address(POOL), totalAmount);
 
-        // After repaying the loan, if there are any remaining funds, stake them
+        // After repaying the loan, stake any remaining tokens
         uint256 contractBalance = token.balanceOf(address(this));
         if (contractBalance > 0) {
             token.approve(address(stakingContract), contractBalance);
@@ -144,7 +183,6 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
                 "Insufficient funds to recover"
             );
             stakingContract.withdraw(requiredAmount);
-            emit FundsWithdrawnFromStaking(requiredAmount);
         }
 
         // Transfer the tokens to the owner
