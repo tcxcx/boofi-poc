@@ -1,12 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// Importaciones necesarias
-import "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
-import "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
-import "@aave/core-v3/contracts/interfaces/IPool.sol";
+/**
+ * @title FlashLoanAndAutoStake
+ * @dev This contract allows users to request flash loans for a specific token
+ * and automatically manages staking of idle funds. If the required funds for a
+ * flash loan are staked, the contract will automatically withdraw them to fulfill
+ * the loan. After the flash loan operation is completed, any unused funds are
+ * automatically staked.
+ */
+
+// Required imports
+import "lib/aave-v3-core/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
+import "lib/aave-v3-core/contracts/interfaces/IPoolAddressesProvider.sol";
+import "lib/aave-v3-core/contracts/interfaces/IPool.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./interfaces/IStaking.sol";
 
 contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
@@ -18,6 +27,12 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
     event FundsStaked(uint256 amount);
     event FlashLoanExecuted(address initiator, uint256 amount, uint256 premium);
 
+    /**
+     * @dev Constructor initializes the contract with necessary addresses.
+     * @param _addressProvider The address of the Aave PoolAddressesProvider
+     * @param _tokenAddress The address of the ERC20 token to be used
+     * @param _stakingContract The address of the staking contract
+     */
     constructor(
         address _addressProvider,
         address _tokenAddress,
@@ -28,34 +43,41 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
         stakingContract = IStaking(_stakingContract);
     }
 
+    /**
+     * @dev Modifier to restrict functions to the owner.
+     */
     modifier onlyOwner() {
-        require(msg.sender == owner, "No autorizado");
+        require(msg.sender == owner, "Not authorized");
         _;
     }
 
-    // Función para solicitar un flash loan
+    /**
+     * @dev Function to request a flash loan of a specific amount.
+     * If there are not enough tokens available, it will withdraw the required amount from staking.
+     * @param amount The amount of tokens to borrow
+     */
     function requestFlashLoan(uint256 amount) external nonReentrant {
-        // Asegurarse de que haya suficientes fondos disponibles
+        // Ensure there are enough available funds
         uint256 availableFunds = token.balanceOf(address(this));
 
-        // Si no hay suficientes fondos en el contrato, retirar del staking
+        // If there are not enough funds in the contract, withdraw from staking
         if (availableFunds < amount) {
             uint256 requiredAmount = amount - availableFunds;
             uint256 stakedBalance = stakingContract.balanceOf(address(this));
             require(
                 stakedBalance >= requiredAmount,
-                "Fondos insuficientes en staking"
+                "Insufficient funds in staking"
             );
 
-            // Retirar la cantidad necesaria del staking
+            // Withdraw the required amount from staking
             stakingContract.withdraw(requiredAmount);
             emit FundsWithdrawnFromStaking(requiredAmount);
         }
 
-        // Iniciar el flash loan
+        // Initiate the flash loan
         address receiverAddress = address(this);
         address asset = address(token);
-        bytes memory params = ""; // Parámetros adicionales si es necesario
+        bytes memory params = ""; // Additional parameters if necessary
         uint16 referralCode = 0;
 
         POOL.flashLoanSimple(
@@ -67,7 +89,16 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
         );
     }
 
-    // Función que Aave llama durante el flash loan
+    /**
+     * @dev This function is called by Aave during the flash loan.
+     * Implement your custom logic here using the borrowed funds.
+     * @param asset The address of the asset being borrowed
+     * @param amount The amount of tokens borrowed
+     * @param premium The fee for the flash loan
+     * @param initiator The address of the flash loan initiator
+     * @param params Additional parameters passed to the function
+     * @return Returns true if the operation is successful
+     */
     function executeOperation(
         address asset,
         uint256 amount,
@@ -75,17 +106,16 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
         address initiator,
         bytes calldata params
     ) external override returns (bool) {
-        require(asset == address(token), "Asset no valido");
-        require(msg.sender == address(POOL), "Solo el Pool puede llamar");
+        require(asset == address(token), "Invalid asset");
+        require(msg.sender == address(POOL), "Caller must be the Pool");
 
-        // Implementa aquí la lógica que deseas ejecutar con el flash loan
-        // Por ejemplo, arbitraje, liquidaciones, etc.
+        // Implement your custom logic here
 
-        // Reembolsar el préstamo más las tarifas
+        // Repay the loan plus fees
         uint256 totalAmount = amount + premium;
         token.approve(address(POOL), totalAmount);
 
-        // Después de devolver el préstamo, si hay fondos no utilizados, ponerlos en staking
+        // After repaying the loan, if there are any remaining funds, stake them
         uint256 contractBalance = token.balanceOf(address(this));
         if (contractBalance > 0) {
             token.approve(address(stakingContract), contractBalance);
@@ -98,37 +128,50 @@ contract FlashLoanAndAutoStake is FlashLoanSimpleReceiverBase, ReentrancyGuard {
         return true;
     }
 
-    // Función para recuperar tokens del contrato (solo propietario)
+    /**
+     * @dev Allows the owner to recover tokens from the contract.
+     * If necessary, it will withdraw tokens from staking to fulfill the request.
+     * @param amount The amount of tokens to recover
+     */
     function recoverTokens(uint256 amount) external onlyOwner nonReentrant {
-        // Primero retirar del staking si es necesario
+        // First, withdraw from staking if necessary
         uint256 availableFunds = token.balanceOf(address(this));
         if (availableFunds < amount) {
             uint256 requiredAmount = amount - availableFunds;
             uint256 stakedBalance = stakingContract.balanceOf(address(this));
             require(
                 stakedBalance >= requiredAmount,
-                "Fondos insuficientes para recuperar"
+                "Insufficient funds to recover"
             );
             stakingContract.withdraw(requiredAmount);
             emit FundsWithdrawnFromStaking(requiredAmount);
         }
 
-        // Transferir los tokens al propietario
+        // Transfer the tokens to the owner
         token.transfer(owner, amount);
     }
 
-    // Función para cambiar el propietario (solo propietario actual)
+    /**
+     * @dev Allows the current owner to transfer ownership to a new owner.
+     * @param newOwner The address of the new owner
+     */
     function transferOwnership(address newOwner) external onlyOwner {
-        require(newOwner != address(0), "Direccion no valida");
+        require(newOwner != address(0), "Invalid address");
         owner = newOwner;
     }
 
-    // Función para obtener el balance en staking
+    /**
+     * @dev Returns the amount of tokens currently staked.
+     * @return The staked balance
+     */
     function stakedBalance() external view returns (uint256) {
         return stakingContract.balanceOf(address(this));
     }
 
-    // Función para obtener el balance disponible en el contrato
+    /**
+     * @dev Returns the amount of tokens available in the contract.
+     * @return The available token balance
+     */
     function availableBalance() external view returns (uint256) {
         return token.balanceOf(address(this));
     }
