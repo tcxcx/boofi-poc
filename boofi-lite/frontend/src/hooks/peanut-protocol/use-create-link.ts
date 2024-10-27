@@ -1,4 +1,4 @@
-// useCreateLink.ts
+// frontend/src/hooks/peanut-protocol/use-create-link.ts
 
 "use client";
 
@@ -43,7 +43,7 @@ const useCreateLink = ({ chainId, token }: UseCreateLinkParams) => {
           description: "Please provide a valid chain ID.",
           variant: "destructive",
         });
-        return;
+        throw new Error("Chain ID Missing");
       }
 
       if (chainId !== chain?.id) {
@@ -71,7 +71,7 @@ const useCreateLink = ({ chainId, token }: UseCreateLinkParams) => {
           description: "You need to be logged in to create a link.",
           variant: "destructive",
         });
-        return;
+        throw new Error("Signer Missing");
       }
 
       let tokenType: interfaces.EPeanutLinkType = interfaces.EPeanutLinkType.erc20;

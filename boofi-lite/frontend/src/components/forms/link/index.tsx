@@ -101,7 +101,7 @@ export default function LinkForm() {
         variant: "destructive",
       });
     } finally {
-      setOverlayVisible(false);
+      setOverlayVisible(true);
       console.log("Overlay set to visible after link creation attempt.");
     }
   };
