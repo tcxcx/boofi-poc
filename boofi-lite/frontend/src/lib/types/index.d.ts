@@ -221,3 +221,62 @@ export interface ChainSelectProps {
 
 
 export type { TransactionError };
+
+
+export interface TransactionDetails {
+  transactionHash: string;
+  peanutLink: string;
+  paymentLink: string;
+}
+
+export interface CurrencyAddressInfo {
+  address: string;
+  hubContract: string;
+  hubABI: any;
+  spokeContract: string;
+  spokeABI: any;
+}
+
+export type CurrencyAddresses = Record<
+  number,
+  Record<string, CurrencyAddressInfo>
+>;
+
+
+export interface LinkUiFormProps {
+  tokenAmount: number;
+  handleValueChange: (usdAmount: number, tokenAmount: number) => void;
+  availableTokens: Record<string, string>;
+  setSelectedToken: Dispatch<SetStateAction<string>>;
+  chainId: number | undefined;
+  handleCreateLinkClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  isPeanutLoading: boolean;
+}
+
+export interface TransactionDetailsDisplayProps {
+  transactionDetails: TransactionDetails;
+  chainId: number | undefined;
+  handleCopy: (text: string, label: string) => void;
+  handleShare: (platform: string) => void;
+  truncateHash: (hash: string) => string;
+}
+
+export interface CurrencyDisplayerProps {
+  tokenAmount: number;
+  onValueChange: (usdAmount: number, tokenAmount: number) => void;
+  initialAmount?: number;
+  availableTokens: Record<string, string>;
+  onTokenSelect: (token: string) => void;
+  currentNetwork: number | null;
+}
+
+export interface AbstractTransaction {
+  to: string;
+  data?: string;
+  value?: bigint;
+}
+
+export interface AbstractSigner {
+  sendTransaction(tx: AbstractTransaction): Promise<{ hash: string }>;
+  getAddress(): Promise<string>;
+}

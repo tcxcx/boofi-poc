@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import CardSkeleton from "@/components/ui/card-skeleton";
-import LinkForm from "@/components/forms/link-form";
+import LinkForm from "@/components/forms/link/index";
 import ClaimForm from "@/components/forms/claim-form";
 import { usePaymentStore } from "@/store/paymentStore";
 

@@ -47,7 +47,7 @@
     "clsx": "^2.1.1",
     "dwolla-v2": "^3.4.0",
     "encoding": "^0.1.13",
-    "ethers": "^6.13.2",
+    "ethers": "5.7.2",
     "framer-motion": "^11.3.17",
     "geist": "^1.3.1",
     "gsap": "^3.12.5",
