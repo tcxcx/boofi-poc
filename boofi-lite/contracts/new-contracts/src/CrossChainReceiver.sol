@@ -10,7 +10,7 @@ pragma solidity ^0.8.13;
 // Required imports
 import "lib/wormhole-solidity-sdk/src/WormholeRelayerSDK.sol";
 import "lib/wormhole-solidity-sdk/src/interfaces/IERC20.sol";
-import {FlashLoanAndAutoStake} from "../FlashLoanAndAutoStake.sol";
+import {FlashLoanAndLender} from "./FlashLoanAndAutoStake.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CrossChainReceiver is TokenReceiver, Ownable {
@@ -24,16 +24,15 @@ contract CrossChainReceiver is TokenReceiver, Ownable {
      * @param _wormholeRelayer The address of the Wormhole Relayer
      * @param _tokenBridge The address of the Wormhole Token Bridge
      * @param _wormhole The address of the Wormhole Core contract
-     * @param _liquidityProvider The address of the LiquidityProvider (FlashLoanAndAutoStake) contract
      */
     constructor(
         address _wormholeRelayer,
         address _tokenBridge,
-        address _wormhole,
-        address _liquidityProvider
-    ) TokenBase(_wormholeRelayer, _tokenBridge, _wormhole) Ownable(msg.sender) {
-        liquidityProvider = _liquidityProvider;
-    }
+        address _wormhole
+    )
+        TokenBase(_wormholeRelayer, _tokenBridge, _wormhole)
+        Ownable(msg.sender)
+    {}
 
     /**
      * @dev Allows the owner to set a new liquidity provider address.
@@ -86,9 +85,17 @@ contract CrossChainReceiver is TokenReceiver, Ownable {
         );
 
         // Notify the LiquidityProvider contract to handle the received tokens
-        FlashLoanAndAutoStake(liquidityProvider).handleReceivedTokens(
-            receivedTokens[0].tokenAddress,
+
+        IERC20(receivedTokens[0].tokenAddress).approve(
+            liquidityProvider,
             receivedTokens[0].amount
         );
+        FlashLoanAndLender(liquidityProvider).handleReceivedTokens(
+            receivedTokens[0].amount
+        );
+    }
+
+    function withdraw(address _to, address _token) external onlyOwner {
+        IERC20(_token).transfer(_to, IERC20(_token).balanceOf(address(this)));
     }
 }

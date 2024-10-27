@@ -13,6 +13,16 @@ contract CrossChainSender is TokenSender {
         address _wormhole
     ) TokenBase(_wormholeRelayer, _tokenBridge, _wormhole) {}
 
+    string private constant ERROR_INSUFFICIENT_FUNDS = "Insufficient funds";
+
+    function _checkMsgValueForCrossChainDeposit(
+        uint16 targetChain
+    ) internal view returns (bool valid, string memory error) {
+        valid = msg.value >= quoteCrossChainDeposit(targetChain);
+
+        return (valid, ERROR_INSUFFICIENT_FUNDS);
+    }
+
     // Function to get the estimated cost for cross-chain deposit
     function quoteCrossChainDeposit(
         uint16 targetChain
@@ -37,12 +47,10 @@ contract CrossChainSender is TokenSender {
         uint256 amount, // Amount of tokens to send
         address token // Address of the IERC20 token contract
     ) public payable {
-        // Get the cost for cross-chain deposit
-        uint256 cost = quoteCrossChainDeposit(targetChain);
-        require(
-            msg.value == cost,
-            "msg.value must equal quoteCrossChainDeposit(targetChain)"
+        (bool valid, string memory error) = _checkMsgValueForCrossChainDeposit(
+            targetChain
         );
+        if (!valid) revert(error);
 
         // Transfer the specified amount of tokens from the user to this contract
         IERC20(token).transferFrom(msg.sender, address(this), amount);
