@@ -10,3 +10,6 @@
 [submodule "boofi-lite/contracts/new-contracts/lib/wormhole-solidity-sdk"]
 	path = boofi-lite/contracts/new-contracts/lib/wormhole-solidity-sdk
 	url = https://github.com/wormhole-foundation/wormhole-solidity-sdk
+[submodule "boofi-lite/contracts/new-contracts/lib/aave-v3-core"]
+	path = boofi-lite/contracts/new-contracts/lib/aave-v3-core
+	url = https://github.com/aave/aave-v3-core
