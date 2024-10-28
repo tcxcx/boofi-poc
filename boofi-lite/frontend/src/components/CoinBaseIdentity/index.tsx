@@ -50,7 +50,10 @@ export default function CoinBaseIdentity({
   };
 
   return (
-    <div className="m-auto w-full text-nowrap rounded-3xl">
+    <div
+      className="m-auto w-full text-nowrap rounded-3xl"
+      onClick={() => handleCopy(address || "", "Address")}
+    >
       <Identity
         className="rounded-3xl bg-white m-auto flex flex-row items-center justify-center p-4"
         address={address as `0x${string}`}
@@ -80,11 +83,7 @@ export default function CoinBaseIdentity({
         <Name>
           <Badge />
         </Name>
-        <Button
-          size="sm"
-          variant="link"
-          onClick={() => handleCopy(address || "", "Address")}
-        >
+        <Button size="sm" variant="link">
           {truncateHash(address)}
         </Button>
       </Identity>

@@ -1,19 +1,19 @@
 // frontend/src/components/money-market/MoneyMarketCard.tsx
 
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAccount, useSwitchChain } from 'wagmi';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-import TransferWrapper from '@/components/money-market/transfer-wrapper';
-import { TransactionHistoryItem } from '@/lib/types';
-import { useTokenBalance } from '@/hooks/use-token-balance';
-import { useChainSelection } from '@/hooks/use-chain-selection';
-import { ChainSelect } from '@/components/chain-select';
-import { BalanceDisplay } from '@/components/balance-display';
-import { getUSDCAddress } from '@/lib/utils';
-import { TransactionError } from '@/lib/types';
+import { useState } from "react";
+import { useAccount, useSwitchChain } from "wagmi";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import TransferWrapper from "@/components/money-market/transfer-wrapper";
+import { TransactionHistoryItem } from "@/lib/types";
+import { useTokenBalance } from "@/hooks/use-token-balance";
+import { useChainSelection } from "@/hooks/use-chain-selection";
+import { ChainSelect } from "@/components/chain-select";
+import { BalanceDisplay } from "@/components/balance-display";
+import { getUSDCAddress } from "@/lib/utils";
+import { TransactionError } from "@/lib/types";
 
 export function MoneyMarketCard() {
   const { address } = useAccount();
@@ -28,51 +28,59 @@ export function MoneyMarketCard() {
   } = useChainSelection();
 
   const { switchChain } = useSwitchChain();
-  const [amount, setAmount] = useState('');
-  const [transactionHistory, setTransactionHistory] = useState<TransactionHistoryItem[]>([]);
+  const [amount, setAmount] = useState("");
+  const [transactionHistory, setTransactionHistory] = useState<
+    TransactionHistoryItem[]
+  >([]);
 
   const chainId = fromChain ? Number(fromChain) : 84532;
 
   const usdcAddress = getUSDCAddress(chainId!);
   const usdcDecimals = 6; // USDC has 6 decimals
 
-  const { balance: usdcBalance, isLoading: isBalanceLoading } = useTokenBalance({
-    tokenAddress: usdcAddress as `0x${string}`,
-    chainId: chainId!,
-    accountAddress: address as `0x${string}`,
-    decimals: usdcDecimals,
-  });
+  const { balance: usdcBalance, isLoading: isBalanceLoading } = useTokenBalance(
+    {
+      tokenAddress: usdcAddress as `0x${string}`,
+      chainId: chainId!,
+      accountAddress: address as `0x${string}`,
+      decimals: usdcDecimals,
+    }
+  );
 
   const transferActions = {
-    lend: { functionName: 'depositCollateral', buttonText: 'Deposit USDC' },
-    withdraw: { functionName: 'withdrawCollateral', buttonText: 'Withdraw USDC' },
-    borrow: { functionName: 'borrow', buttonText: 'Borrow USDC' },
-    repay: { functionName: 'repay', buttonText: 'Repay USDC' },
+    lend: { functionName: "depositCollateral", buttonText: "Deposit USDC" },
+    withdraw: {
+      functionName: "withdrawCollateral",
+      buttonText: "Withdraw USDC",
+    },
+    borrow: { functionName: "borrow", buttonText: "Borrow USDC" },
+    repay: { functionName: "repay", buttonText: "Repay USDC" },
   };
 
-  const action = transferActions[currentViewTab as keyof typeof transferActions] || {};
+  const action =
+    transferActions[currentViewTab as keyof typeof transferActions] || {};
   const { functionName, buttonText } = action;
 
   const handleTransactionSuccess = (txHash: string) => {
-    console.log('Transaction successful:', txHash);
+    console.log("Transaction successful:", txHash);
     setTransactionHistory((prev) => [
       ...prev,
       {
         date: new Date().toLocaleString(),
         amount: parseFloat(amount),
-        status: 'Success',
+        status: "Success",
       },
     ]);
   };
 
   const handleTransactionError = (error: TransactionError) => {
-    console.error('Transaction failed:', error);
+    console.error("Transaction failed:", error);
     setTransactionHistory((prev) => [
       ...prev,
       {
         date: new Date().toLocaleString(),
         amount: parseFloat(amount),
-        status: 'Failed',
+        status: "Failed",
       },
     ]);
   };

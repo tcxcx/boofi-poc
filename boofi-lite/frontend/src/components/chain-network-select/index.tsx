@@ -9,7 +9,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAccount, useSwitchChain, useChains } from "wagmi";
-import { supportedBridgeTokensDictionary, SupportedChain, Token } from "@/data/supportedBridgeTokensDictionary";
+import {
+  supportedBridgeTokensDictionary,
+  SupportedChain,
+  Token,
+} from "@/data/supportedBridgeTokensDictionary";
 import { TokenChip } from "@coinbase/onchainkit/token";
 import { useToast } from "@/components/ui/use-toast";
 import { NetworkSelectorProps } from "@/lib/types";
@@ -64,9 +68,12 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
   const handleNetworkChange = useCallback(
     async (networkId: string) => {
       const selectedChainId = parseInt(networkId, 10);
-      const selectedChain = chains.find((chain: any) => chain.id === selectedChainId);
+      const selectedChain = chains.find(
+        (chain: any) => chain.id === selectedChainId
+      );
       const supportedChain = supportedBridgeTokensDictionary.find(
-        (chain: SupportedChain) => parseInt(chain.chainId, 10) === selectedChainId
+        (chain: SupportedChain) =>
+          parseInt(chain.chainId, 10) === selectedChainId
       );
 
       if (selectedChain && supportedChain) {
@@ -83,7 +90,8 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
           console.error("Error switching chain:", error);
           toast({
             title: "Error switching network",
-            description: error.message || "An error occurred while switching networks.",
+            description:
+              error.message || "An error occurred while switching networks.",
             variant: "destructive",
           });
         }
@@ -130,19 +138,20 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
                 {/* Use TokenChip to display the representative token */}
                 {(() => {
                   const supportedChain = supportedBridgeTokensDictionary.find(
-                    (chain: SupportedChain) => chain.chainId === currentNetwork.id.toString()
+                    (chain: SupportedChain) =>
+                      chain.chainId === currentNetwork.id.toString()
                   );
                   if (supportedChain) {
                     const token = getRepresentativeToken(supportedChain);
                     return (
                       <TokenChip
                         token={{
-                          address: token.address as `0x${string}` | '',
+                          address: token.address as `0x${string}` | "",
                           chainId: token.chainId as number,
                           symbol: token.symbol as string,
                           name: token.name as string,
                           decimals: token.decimals as number,
-                          image: token.image as string | '',
+                          image: token.image as string | "",
                         }}
                       />
                     );
@@ -167,12 +176,12 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
                   {/* Use TokenChip to display the representative token */}
                   <TokenChip
                     token={{
-                      address: token.address as `0x${string}` | '',
+                      address: token.address as `0x${string}` | "",
                       chainId: token.chainId as number,
                       symbol: token.symbol as string,
                       name: token.name as string,
                       decimals: token.decimals as number,
-                      image: token.image as string | '',
+                      image: token.image as string | "",
                     }}
                   />
                   <span className="ml-2">
