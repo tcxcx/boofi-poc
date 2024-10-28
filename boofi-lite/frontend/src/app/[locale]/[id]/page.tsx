@@ -42,6 +42,9 @@ function Page() {
   const { writeContract, error, data, isIdle, isError } = useWriteContract();
   const id = params.id; ///// recipient address
 
+  ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
+  ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
+
   async function getEnsAddress() {
     setLoading(true);
     try {
