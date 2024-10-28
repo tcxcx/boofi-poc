@@ -5,57 +5,33 @@ import { useDeezNuts } from "@/hooks/use-peanut";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "../ui/use-toast";
 import confetti from "canvas-confetti";
-
+import { handleConfetti } from "@/utils/confetti";
 export default function CoinBaseIdentity({
   address,
+  label,
 }: {
   address: string | undefined;
+  label?: string;
 }) {
   const { truncateHash, copyToClipboard } = useDeezNuts();
-  const handleCopy = (text: string, label: string) => {
-    copyToClipboard(text);
-
-    const scalar = 4;
-    const unicorn = confetti.shapeFromText({ text: "💸👻💸", scalar });
-
-    const defaults = {
-      spread: 360,
-      ticks: 60,
-      gravity: 0,
-      decay: 0.96,
-      startVelocity: 20,
-      shapes: [unicorn],
-      scalar,
-    };
-
-    const shoot = () => {
-      confetti({ ...defaults, particleCount: 30 });
-      confetti({ ...defaults, particleCount: 5 });
-      confetti({
-        ...defaults,
-        particleCount: 15,
-        scalar: scalar / 2,
-        shapes: ["circle"],
-      });
-    };
-
-    setTimeout(shoot, 0);
-    setTimeout(shoot, 100);
-    setTimeout(shoot, 200);
-
-    toast({
-      title: "Copied to clipboard!",
-      description: `${label} has been copied to clipboard.`,
-    });
-  };
 
   return (
     <div
-      className="m-auto w-full text-nowrap rounded-3xl"
-      onClick={() => handleCopy(address || "", "Address")}
+      className=" w-full text-nowrap rounded-3xl  bg-white m-auto flex flex-row items-center justify-center p-4 gap-2"
+      onClick={() =>
+        handleConfetti(
+          address || "",
+          "Address",
+          "💸👻💸",
+          "Copied to clipboard!",
+          `${label} has been copied to clipboard.`,
+          copyToClipboard
+        )
+      }
     >
+      {label && <p className="text-sm text-gray-500">{label}</p>}
       <Identity
-        className="rounded-3xl bg-white m-auto flex flex-row items-center justify-center p-4"
+        className="rounded-3xl flex flex-row items-center justify-center p-4"
         address={address as `0x${string}`}
         chain={base}
         schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
