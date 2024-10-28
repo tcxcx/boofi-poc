@@ -29,7 +29,7 @@ export default function TokenSwap() {
 
   return (
 <>  
-    <Swap className='bg-background'>
+    <Swap className='bg-background justify-center items-center w-full'>
         <SwapAmountInput
           label="Sell"
           swappableTokens={swappableTokens}

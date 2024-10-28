@@ -4,7 +4,7 @@ import React, { Suspense, useState, useEffect } from "react"
 import { Translations } from "@/lib/types/translations"
 import { useAccount } from "wagmi"
 import { NotConnectedHome } from "../tab-content/not-connected"
-import { PaymentLinkTabContent } from "../tab-content/peanut-tab"
+import { PaymentLinkTabContent } from "../tab-content/payments-tab"
 import { Tabs, TabsContent, TabsList, TabsTriggerAlt } from "@/components/ui/tabs"
 import { Button } from "../ui/button"
 import MoneyMarketBentoGrid from "../money-market"
@@ -18,9 +18,8 @@ import TokenSwapSkeleton from "@/components/token-swap/token-swap-skeleton"
 interface HomeContentProps {
   translations: Translations["Home"]
 }
-
 export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
-  const { isConnected } = useAccount()
+  const { isConnected, address } = useAccount()
   const { activeTab, setActiveTab } = useTabStore()
   const [isTransitioning, setIsTransitioning] = useState(false)
 
@@ -41,6 +40,7 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
     setIsTransitioning(true)
     setActiveTab(value as "paymentLink" | "moneyMarket" | "tokenSwap")
   }
+
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -86,8 +86,8 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
         <div className="p-4 overflow-hidden flex flex-col items-center justify-center w-full">
           <div className="relative flex flex-col items-center justify-center w-full">
             <div
-              className={`relative z-1 text-center bg-background dark:bg-background rounded-lg shadow-lg p-8 w-full border-2 border-black dark:border-white transition-all duration-300 ease-in-out ${
-                activeTab === 'paymentLink' ? 'max-w-md' : activeTab === 'tokenSwap' ? 'max-w-lg' : 'max-w-5xl'
+              className={`relative z-1 text-center bg-background dark:bg-background rounded-lg shadow-lg px-8 py-4 w-full border-2 border-black dark:border-white transition-all duration-300 ease-in-out ${
+                activeTab === 'paymentLink' ? 'max-w-lg' : activeTab === 'tokenSwap' ? 'max-w-xl' : 'max-w-5xl'
               }`}
             >
               {isTransitioning ? (
@@ -107,7 +107,7 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
                   </TabsContent>
                   <TabsContent value="paymentLink" className="transition-opacity duration-300 ease-in-out">
                     <Suspense fallback={<PaymentLinkSkeleton />}>
-                      <PaymentLinkTabContent translations={translations} />
+                      <PaymentLinkTabContent translations={translations} address={address ?? ""}  />
                     </Suspense>
                   </TabsContent>
                   <TabsContent value="tokenSwap" className="transition-opacity duration-300 ease-in-out">
