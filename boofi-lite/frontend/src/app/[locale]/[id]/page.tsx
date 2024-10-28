@@ -17,15 +17,17 @@ import { useEffect, useState } from "react";
 
 import { ChainSelect } from "@/components/chain-select";
 import { useChainSelection } from "@/hooks/use-chain-selection";
-import { tokens } from "@/utils/tokens";
+import { getTokensByChainId, testnetTokensByChainId } from "@/utils/tokens";
 import CurrencyDisplayer from "@/components/currency";
 import { currencyAddresses } from "@/utils/currencyAddresses";
 import { chains } from "@/utils/contracts";
 import { Button } from "@/components/ui/button";
 import { getAddress } from "@coinbase/onchainkit/identity";
 
-import { useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TokenChip } from "@coinbase/onchainkit/token";
+import CurrencyDisplayerPay from "@/components/currency-pay";
 interface WormholeContracts {
   CrossChainSender: string;
   wormholeChainId: number;
@@ -41,10 +43,10 @@ function Page() {
   const { toChain } = useChainSelection();
   const { writeContract, error, data, isIdle, isError } = useWriteContract();
   const id = params.id; ///// recipient address
-
+  const address = useAccount();
   ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
   ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
-
+  const targetContract = "0x46c46f96Fa488cb491353804528C8591E2E2D9eA";
   async function getEnsAddress() {
     setLoading(true);
     try {
@@ -70,42 +72,29 @@ function Page() {
   });
 
   const tokenFind =
-    tokens.find((token) => token.name === selectedToken) || tokens[1];
+    getTokensByChainId({ chainId: chainId }).find(
+      (token) => token.name === selectedToken
+    ) || getTokensByChainId({ chainId: chainId })[1];
 
-  console.log({ contracts });
-  const { data: cost, isLoading } = useReadContract({
+  const { data: cost } = useReadContract({
     address: contracts.CrossChainSender as Hex,
     abi: crossChainSenderAbi,
     functionName: "quoteCrossChainDeposit",
     args: [6], //// wormhole chain id avalanche fuji
   });
 
-  const contractCalls = [
-    {
-      to: tokenFind?.address as Hex, /// token address
-      data: encodeFunctionData({
-        abi: erc20Abi, //// approve abi
-        functionName: "approve", /// approve function name
-        args: [contracts.CrossChainSender as Hex, BigInt(1000000000000000000)], /// amount
-      }),
-    },
-    // {
-    //   to: contracts.CrossChainSender as Hex, /// contract address sender
-    //   data: encodeFunctionData({
-    //     abi: crossChainSenderAbi, /// abi
-    //     functionName: "sendCrossChainDeposit", /// function name
-    //     args: [
-    //       contracts.wormholeChainId, ////wormhole target chain id
-    //       "0xAE130Ddb73299dc029A2d2b7d6F5C9f1Fb553091" as Hex, /// contract address receiver
-    //       receiver as Hex, ///// recipient
-    //       BigInt(1000), ////todo: get decimals from token address
-    //       tokenFind?.address as Hex,
-    //     ],
-    //   }),
-    // },
-  ];
+  const { data: approveCost } = useReadContract({
+    address: tokenFind?.address as Hex,
+    abi: erc20Abi,
+    functionName: "allowance",
+    args: [
+      (address.address as Hex) || "0x0",
+      contracts.CrossChainSender as Hex,
+    ],
+  });
 
-  console.log({ tokenFind });
+  const sameTargetChain = chainId === "43113";
+
   if (loading) {
     return <Skeleton className="w-full h-full" />;
   }
@@ -118,73 +107,65 @@ function Page() {
             <CoinBaseIdentity address={receiver as Hex} label="Recipient" />
           )}
 
-          <br />
           <ChainSelect
             value={chainId}
             onChange={(value) => {
+              setSelectedToken("");
               setChainId(value);
             }}
             chains={chains}
             label="Select Chain"
           />
 
-          <CurrencyDisplayer
+          <CurrencyDisplayerPay
             tokenAmount={1}
             onValueChange={(value) => {
               setAmount(value);
             }}
-            availableTokens={Object.fromEntries(
-              Object.entries(currencyAddresses[Number(chainId)] || {}).map(
-                ([key, value]) => [key, value.address]
-              )
-            )}
+            availableTokens={testnetTokensByChainId(Number(chainId))}
             onTokenSelect={(value) => {
               setSelectedToken(value);
             }}
             currentNetwork={Number(chainId)}
-            ///TODO: add onchangenetwork here as optional
+            currentToken={selectedToken}
           />
 
-          <Transaction
-            chainId={Number(chainId)}
-            calls={contractCalls}
-            onSuccess={(response: TransactionResponse) => {
-              console.log(response, "response");
-            }}
-            onError={(error) => {
-              console.log(error);
-            }}
-          >
-            <TransactionButton
-              text={"Send"}
-              //disabled={!tokenFind}
-              className="bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-            />
-            <TransactionStatus>
-              <TransactionStatusLabel />
-              <TransactionStatusAction />
-            </TransactionStatus>
-          </Transaction>
           <br />
-          <Button
-            onClick={() =>
-              writeContract({
-                address: contracts.CrossChainSender as Hex,
-                abi: crossChainSenderAbi,
-                functionName: "sendCrossChainDeposit",
-                args: [
-                  6, /// target chain id avalanche fuji
-                  "0xAE130Ddb73299dc029A2d2b7d6F5C9f1Fb553091" as Hex, /// avalanche target contract
-                  receiver as Hex,
-                  BigInt(1000000), /// todo: get decimals from token address
-                  tokenFind?.address as Hex,
-                ],
-                value: cost,
-              })
-            }
-          >
-            Transfer
-          </Button>
+          {!sameTargetChain && (
+            <>
+              {testnetTokensByChainId(Number(chainId))?.map((token) => (
+                <TokenChip
+                  token={token}
+                  onClick={() =>
+                    writeContract({
+                      address: selectedToken as Hex,
+                      abi: erc20Abi,
+                      functionName: "approve",
+                      args: [
+                        contracts.CrossChainSender as Hex,
+                        BigInt(1000000000000000000),
+                      ],
+                    })
+                  }
+                />
+              ))}
+            </>
+          )}
+
+          {sameTargetChain && (
+            <Button
+              onClick={() =>
+                writeContract({
+                  address: tokenFind.address as Hex,
+                  abi: erc20Abi,
+                  functionName: "transfer",
+                  args: [receiver as Hex, BigInt(1000000)],
+                })
+              }
+            >
+              Send Tokens
+            </Button>
+          )}
         </section>
       )}
       {ensNotFound && (
