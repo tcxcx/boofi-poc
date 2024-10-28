@@ -120,19 +120,6 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
         </TransactionStatus>
       </Transaction> */}
 
-      {/* <Button
-        onClick={() =>
-          writeContract({
-            address: currencyAddresses[chainId].USDC.address as `0x${string}`,
-            abi: erc20Abi,
-            functionName: "approve",
-            args: [spokeContract as `0x${string}`, assetAmount],
-          })
-        }
-      >
-        Approve
-      </Button> */}
-
       <Button
         onClick={() =>
           writeContract({
