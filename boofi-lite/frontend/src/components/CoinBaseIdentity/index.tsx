@@ -22,7 +22,7 @@ export default function CoinBaseIdentity({
         handleConfetti(
           address || "",
           "Address",
-          "💸👻💸",
+          "",
           "Copied to clipboard!",
           `${label} has been copied to clipboard.`,
           copyToClipboard

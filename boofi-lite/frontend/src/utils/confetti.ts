@@ -15,33 +15,34 @@ export const handleConfetti = (
   handleCopy?.(text);
 
   const scalar = 4;
-  const unicorn = confetti.shapeFromText({ text: emoji, scalar });
+  if (emoji && text !== "") {
+    const unicorn = confetti.shapeFromText({ text: emoji, scalar });
 
-  const defaults = {
-    spread: 360,
-    ticks: 60,
-    gravity: 0,
-    decay: 0.96,
-    startVelocity: 20,
-    shapes: [unicorn],
-    scalar,
-  };
+    const defaults = {
+      spread: 360,
+      ticks: 60,
+      gravity: 0,
+      decay: 0.96,
+      startVelocity: 20,
+      shapes: [unicorn],
+      scalar,
+    };
 
-  const shoot = () => {
-    confetti({ ...defaults, particleCount: 30 });
-    confetti({ ...defaults, particleCount: 5 });
-    confetti({
-      ...defaults,
-      particleCount: 15,
-      scalar: scalar / 2,
-      shapes: ["circle"],
-    });
-  };
+    const shoot = () => {
+      confetti({ ...defaults, particleCount: 30 });
+      confetti({ ...defaults, particleCount: 5 });
+      confetti({
+        ...defaults,
+        particleCount: 15,
+        scalar: scalar / 2,
+        shapes: ["circle"],
+      });
+    };
 
-  setTimeout(shoot, 0);
-  setTimeout(shoot, 100);
-  setTimeout(shoot, 200);
-
+    setTimeout(shoot, 0);
+    setTimeout(shoot, 100);
+    setTimeout(shoot, 200);
+  }
   toast({
     title: toastTitle,
     description: toastDescription,
