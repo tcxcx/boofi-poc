@@ -83,9 +83,9 @@ export const wormHoleContracts: {
 } = {
   "43113": {
     networkName: "Avalanche testnet fuji",
-    CrossChainSender: "0x480f9F2Fe22cB70C92058f34d5E89F0D8441146d",
+    CrossChainSender: "0x45D2A82b57C20C73263b74dd50E9b99aE33b44C6",
     wormholeChainId: 6,
-    CrossChainReceiver: "0xAE130Ddb73299dc029A2d2b7d6F5C9f1Fb553091",
+    CrossChainReceiver: "0x46c46f96Fa488cb491353804528C8591E2E2D9eA",
   },
   "14": {
     networkName: "Celo Testnet",
@@ -94,10 +94,10 @@ export const wormHoleContracts: {
     CrossChainSender: "0xF1c8C021558b93c00e13795E6F23529cD289446C",
   },
   "84532": {
-    networkName: "Goerli - Base",
-    CrossChainSender: "0x0CE9F8B8B06f843602cB7058B9d1ABd70EE80541",
+    networkName: "Sepolia - Base",
+    CrossChainSender: "0xC6FBC15C69485e502D9B3DA2b07450f531C88c46",
     wormholeChainId: 10004,
-    CrossChainReceiver: "0x85cbB40e56F19789012B0F1fE5d49c71148B99dC",
+    CrossChainReceiver: "0x243028E87f55CCdd444Adb31B4f040cc35aAded5",
   },
 };
 

@@ -69,6 +69,7 @@ function Page() {
   const tokenFind =
     tokens.find((token) => token.name === selectedToken) || tokens[1];
 
+  console.log({ contracts });
   const { data: cost, isLoading } = useReadContract({
     address: contracts.CrossChainSender as Hex,
     abi: crossChainSenderAbi,
@@ -76,31 +77,32 @@ function Page() {
     args: [6], //// wormhole chain id avalanche fuji
   });
 
-  // const contractCalls = [
-  //   {
-  //     to: tokenFind?.address as Hex, /// token address
-  //     data: encodeFunctionData({
-  //       abi: erc20Abi, //// approve abi
-  //       functionName: "approve", /// approve function name
-  //       args: [contracts.CrossChainSender as Hex, BigInt(1000000000000000000)], /// amount
-  //     }),
-  //   },
-  //   {
-  //     to: contracts.CrossChainSender as Hex, /// contract address sender
-  //     data: encodeFunctionData({
-  //       abi: crossChainSenderAbi, /// abi
-  //       functionName: "sendCrossChainDeposit", /// function name
-  //       args: [
-  //         contracts.wormholeChainId, ////wormhole target chain id
-  //         "0xAE130Ddb73299dc029A2d2b7d6F5C9f1Fb553091" as Hex, /// contract address receiver
-  //         receiver as Hex, ///// recipient
-  //         BigInt(1000), ////todo: get decimals from token address
-  //         tokenFind?.address as Hex,
-  //       ],
-  //     }),
-  //   },
-  // ];
+  const contractCalls = [
+    {
+      to: tokenFind?.address as Hex, /// token address
+      data: encodeFunctionData({
+        abi: erc20Abi, //// approve abi
+        functionName: "approve", /// approve function name
+        args: [contracts.CrossChainSender as Hex, BigInt(1000000000000000000)], /// amount
+      }),
+    },
+    // {
+    //   to: contracts.CrossChainSender as Hex, /// contract address sender
+    //   data: encodeFunctionData({
+    //     abi: crossChainSenderAbi, /// abi
+    //     functionName: "sendCrossChainDeposit", /// function name
+    //     args: [
+    //       contracts.wormholeChainId, ////wormhole target chain id
+    //       "0xAE130Ddb73299dc029A2d2b7d6F5C9f1Fb553091" as Hex, /// contract address receiver
+    //       receiver as Hex, ///// recipient
+    //       BigInt(1000), ////todo: get decimals from token address
+    //       tokenFind?.address as Hex,
+    //     ],
+    //   }),
+    // },
+  ];
 
+  console.log({ tokenFind });
   if (loading) {
     return <Skeleton className="w-full h-full" />;
   }
@@ -140,26 +142,26 @@ function Page() {
             ///TODO: add onchangenetwork here as optional
           />
 
-          {/* <Transaction
-        chainId={Number(chainId)}
-        // calls={contractCalls}
-        onSuccess={(response: TransactionResponse) => {
-          console.log(response, "response");
-        }}
-        onError={(error) => {
-          console.log(error);
-        }}
-      >
-        <TransactionButton
-          text={"Send"}
-          disabled={!tokenFind}
-          className="bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-        />
-        <TransactionStatus>
-          <TransactionStatusLabel />
-          <TransactionStatusAction />
-        </TransactionStatus>
-      </Transaction> */}
+          <Transaction
+            chainId={Number(chainId)}
+            calls={contractCalls}
+            onSuccess={(response: TransactionResponse) => {
+              console.log(response, "response");
+            }}
+            onError={(error) => {
+              console.log(error);
+            }}
+          >
+            <TransactionButton
+              text={"Send"}
+              //disabled={!tokenFind}
+              className="bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
+            />
+            <TransactionStatus>
+              <TransactionStatusLabel />
+              <TransactionStatusAction />
+            </TransactionStatus>
+          </Transaction>
           <br />
           <Button
             onClick={() =>
