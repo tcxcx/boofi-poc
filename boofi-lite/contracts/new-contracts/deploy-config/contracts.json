@@ -1,0 +1,24 @@
+{
+  "6": {
+    "networkName": "Avalanche testnet fuji",
+    "CrossChainSender": "0x57A68e2bf5688850f60d39a3AaB657aB66Ad2829",
+    "deployedAt": "2024-10-27T03:10:19.205Z",
+    "CrossChainReceiver": "0x671F625A1f872776cC7716340cD3Df6A0A26283d"
+  },
+  "14": {
+    "networkName": "Celo Testnet",
+    "CrossChainReceiver": "0x725B9404daC1DCb536a93EDcB497a6aa4263421a",
+    "deployedAt": "2024-10-26T18:09:48.391Z",
+    "CrossChainSender": "0xA6CBE2f75d758101D383e2e5C956E377451eA694"
+  },
+  "30": {
+    "networkName": "Goerli - Base",
+    "deployedAt": "2024-10-27T03:02:53.031Z",
+    "CrossChainReceiver": "0x0a11f01D934ac4165a1cEb2B3EEFE98dF1DfAfC2"
+  },
+  "10002": {
+    "networkName": "Sepolia - Ethereum",
+    "deployedAt": "2024-10-27T03:10:19.205Z",
+    "CrossChainSender": "0x4E837fE72325ADC1Bc634Ac9787E0f55106a6D58"
+  }
+}
