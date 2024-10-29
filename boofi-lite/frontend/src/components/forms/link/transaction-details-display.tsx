@@ -1,11 +1,9 @@
-
 import { Button } from "@/components/ui/button";
-import { QRCode } from "react-qrcode-logo";
 import { CopyIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { TransactionDetailsDisplayProps } from "@/lib/types";
-
+import FramedQRCode from "@/components/framed-qr-art";
 
 export default function TransactionDetailsDisplay({
   transactionDetails,
@@ -17,16 +15,32 @@ export default function TransactionDetailsDisplay({
   return (
     <>
       <div className="flex w-full flex-col justify-between rounded-2xl border bg-white p-5">
-        <div
-          className="flex justify-center mb-4 cursor-pointer"
+        {/* QR Code Section */}
+        <div className="flex justify-center">
+          <FramedQRCode
+            image="/images/BooFi-icon.png"
+            link={transactionDetails.paymentLink}
+            frameText="Send Crypto with this unique Link"
+            copyLink={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
+          />
+          
+        </div>
+      {/* Copy Link Button */}
+      <div className="flex justify-center items-center mb-2">
+        <Button
+          size={"lg"}
+          className="flex items-center gap-2"
           onClick={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
         >
-          <QRCode value={transactionDetails.paymentLink} qrStyle="fluid" eyeRadius={100} size={200} />
+          Copy Link
+          <CopyIcon className="size-4" />
+        </Button>
+      </div>
+        <div className="flex justify-center text-xs text-primary my-2">
+          Send crypto with this secure vault link to your friends and family
         </div>
 
-        <div className="flex justify-center text-xs text-primary mb-4">
-          Share crypto with a link to your friends and family
-        </div>
+        {/* Share Buttons */}
         <div className="flex justify-center gap-4 mb-4 mx-2">
           <Button
             size="sm"
@@ -48,6 +62,7 @@ export default function TransactionDetailsDisplay({
           </Button>
         </div>
 
+        {/* Transaction Hash and Block Explorer Link */}
         <div className="mt-2 flex h-16 items-center border-t text-xs">
           <div className="mx-5 flex w-full items-center justify-between">
             <div className="flex flex-col">
@@ -72,16 +87,6 @@ export default function TransactionDetailsDisplay({
             )}
           </div>
         </div>
-      </div>
-      <div className="my-5 flex justify-center gap-5 items-center">
-        <Button
-          size={"lg"}
-          className="flex items-center gap-2"
-          onClick={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
-        >
-          Copy Link
-          <CopyIcon className="size-4" />
-        </Button>
       </div>
     </>
   );

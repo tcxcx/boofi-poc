@@ -285,12 +285,19 @@ export interface OverlayPayNameProps {
   handleToggleOverlay: () => void;
   copyLink: () => void;
   link: string;
-  shareOnWhatsApp: () => void;
-  shareOnTelegram: () => void;
+  shareOnWhatsApp: (localizedLink: string) => void;
+  shareOnTelegram: (localizedLink: string) => void;
 }
-
 
 export interface BaseNameDialogAlertProps {
   translations: Translations["Home"];
   address: string;
 }
+
+export interface FramedQRCodeProps {
+  image: string;
+  copyLink?: () => void;
+  link: string;
+  frameText?: string;
+}
+

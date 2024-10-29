@@ -64,7 +64,7 @@ const Header: React.FC = () => {
                   height={100}
                 />
               </SparklesText>
-              <span className="absolute mt-28 sm:mt-20 z-100 opacity-0 group-hover:opacity-100 group-hover:-rotate-12 transition-all duration-300">
+              <span className="absolute mt-28 sm:mt-20 opacity-0 group-hover:opacity-100 group-hover:-rotate-12 transition-all duration-300">
                 <span className="inline-block font-clash bg-gradient-to-r text-3xl from-indigo-300 via-purple-400 to-cyan-300 bg-clip-text text-transparent">
                   BooFi
                 </span>
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-end">
           <span className="h-px flex-grow bg-black"></span>
           <Suspense fallback={<Skeleton className="h-4 w-[250px]" />}>
-            <div className="flex items-center gap-3 z-100">
+            <div className="flex items-center gap-3 z-20">
               <LoginButton className='bg-clr-blue text-black dark:text-black hover:bg-clr-blue/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none' />
             </div>
           </Suspense>
