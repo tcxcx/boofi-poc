@@ -9,7 +9,7 @@ const AnimatedBackground = dynamic(
 
 const Container: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="relative justify-center items-center mx-auto w-full lg:max-w-7xl border border-black rounded-lg overflow-hidden">
+    <div className="relative rounded-md bg-gradient-to-br from-indigo-100 via-violet-200 to-cyan-300 bg-no-repeat justify-center items-center mx-auto w-full lg:max-w-7xl border border-black rounded-lg overflow-hidden">
       <AnimatedBackground className="absolute top-0 left-0 w-full h-full" />
       {children}
     </div>

@@ -18,7 +18,7 @@ export default function CoinBaseIdentity({
 
   return (
     <div
-      className=" w-full text-nowrap rounded-3xl  bg-white m-auto flex flex-row items-center justify-center p-4 gap-2"
+      className=" w-full text-nowrap rounded-3xl m-auto flex flex-row items-center justify-center p-4 gap-2"
       onClick={() =>
         handleConfetti(
           address || "",

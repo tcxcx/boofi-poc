@@ -46,7 +46,7 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
   }
 
   return (
-    <div className="w-full flex flex-col items-center">
+    <>
       <Tabs defaultValue="moneyMarket" className="w-full max-w-5xl" onValueChange={handleTabChange}>
         <div className="flex justify-center w-full">
           <TabsList className="flex justify-center gap-4 m-4">
@@ -69,7 +69,7 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
                 tabValue="paymentLink"
                 storeType="tab"
               >
-                <span>Payment Links 💸</span>
+                <span>Payments 💸</span>
               </Button>
             </TabsTriggerAlt>
             <TabsTriggerAlt value="tokenSwap">
@@ -125,6 +125,6 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
           </div>
         </div>
       </Tabs>
-    </div>
+    </>
   )
 }

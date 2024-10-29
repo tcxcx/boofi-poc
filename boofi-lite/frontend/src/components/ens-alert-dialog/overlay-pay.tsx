@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { OverlayPayNameProps } from "@/lib/types";
 import { FramedQRCode } from "@/components/framed-qr-art";
+import { NEXT_PUBLIC_URL } from "@/lib/wagmi/config";
 
 /**
  * OverlayPayName Component
@@ -27,25 +28,40 @@ export const OverlayPayName = ({
     const locale = useLocale();
     const supportedLocales = ["en", "es", "pt"];
     
+    /**
+     * Generates a localized link with the correct domain based on the environment.
+     * 
+     * @param {string} url - The original payment link.
+     * @returns {string} - The localized payment link with the appropriate base URL.
+     */
     const getLocalizedLink = (url: string): string => {
         try {
-            const urlObj = new URL(url);
+            // Use the NEXT_PUBLIC_URL as the base URL
+            const urlObj = new URL(url, NEXT_PUBLIC_URL);
             const pathSegments = urlObj.pathname.split('/').filter(segment => segment);
             
+            // Check if the first segment is a supported locale
             if (pathSegments.length > 0 && supportedLocales.includes(pathSegments[0])) {
-                return url;
+                return urlObj.toString();
             } else {
                 urlObj.pathname = `/${locale}/${urlObj.pathname}`.replace('//', '/');
                 return urlObj.toString();
             }
         } catch (error) {
             console.error("Invalid URL provided to OverlayPayName:", url);
+            // Return the original link if URL parsing fails
             return url;
         }
     };
 
     const fullLocalizedLink = getLocalizedLink(link);
     
+    /**
+     * Generates the display link by removing the protocol (https:// or http://).
+     * 
+     * @param {string} url - The full localized link.
+     * @returns {string} - The link without the protocol.
+     */
     const getDisplayLink = (url: string): string => {
         return url.replace(/^https?:\/\//, '');
     };

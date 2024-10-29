@@ -15,6 +15,7 @@ import GridPattern from "@/components/magicui/grid-pattern";
 import OnchainProviders from "@/components/base-onboard/onchain-providers";
 import { cn } from "@/utils";
 import Header from "@/components/header";
+import Container from "@/components/container";
 
 const GridDebugger = dynamic(() => import("@/lib/debug/grid-debugger"), {
   ssr: false,
@@ -66,7 +67,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <OnchainProviders>
-            <main className="bg-gradient-to-r from-indigo-100 via-cyan-100 to-purple-100 font-nubase dark:bg-gradient-to-r dark:from-gray-900 dark:via-indigo-400 dark:to-gray-800">
+            <main className="rounded-md bg-gradient-to-br from-indigo-100 via-violet-200 to-cyan-300 bg-no-repeat font-nubase dark:bg-gradient-to-r dark:from-gray-900 dark:via-indigo-400 dark:to-gray-800">
               <GridPattern
                 width={20}
                 height={20}
@@ -76,9 +77,18 @@ export default function RootLayout({
                   "[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]"
                 )}
               />
-              <Header />
-
-              {children}
+                <Header />
+                  <div className="custom-scrollbar">
+                    <div className="mx-auto px-4 relative flex flex-col justify-center overflow-hidden">
+                    <Container>
+                      <div className="relative">
+                      <div className="w-full flex flex-col items-center">
+                        {children}
+                        </div>
+                      </div>
+                    </Container>
+                  </div>
+                </div>
               {isDev && <GridDebugger />}
               <LayoutMusic />
             </main>

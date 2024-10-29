@@ -3,7 +3,7 @@
 import CoinBaseIdentity from "@/components/CoinBaseIdentity";
 import { useParams } from "next/navigation";
 import { getWormHoleContractsByNetworkName } from "@/utils/contracts";
-import { crossChainSenderAbi } from "@/lib/abi/CrossChainSender"; ////abi
+import { crossChainSenderAbi } from "@/lib/abi/CrossChainSender";
 import {
   Transaction,
   TransactionButton,
@@ -14,16 +14,14 @@ import {
 } from "@coinbase/onchainkit/transaction";
 import { encodeFunctionData, erc20Abi, Hex } from "viem";
 import { useEffect, useState } from "react";
-
 import { ChainSelect } from "@/components/chain-select";
-import { useChainSelection } from "@/hooks/use-chain-selection";
 import { tokens } from "@/utils/tokens";
 import CurrencyDisplayer from "@/components/currency";
+import PresetAmountButtons from "@/components/preset-amounts";
 import { currencyAddresses } from "@/utils/currencyAddresses";
 import { chains } from "@/utils/contracts";
 import { Button } from "@/components/ui/button";
 import { getAddress } from "@coinbase/onchainkit/identity";
-
 import { useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -33,32 +31,22 @@ interface WormholeContracts {
 }
 
 export default function PayId() {
-
   const params = useParams();
-  const [selectedToken, setSelectedToken] = useState<string>("");
+  const [selectedToken, setSelectedToken] = useState<string>("ETH");
   const [amount, setAmount] = useState<number>(0);
   const [receiver, setReceiver] = useState<string>("");
   const [chainId, setChainId] = useState<string>("84532");
   const [ensNotFound, setEnsNotFound] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const { toChain } = useChainSelection();
-  const { writeContract, error, data, isIdle, isError } = useWriteContract();
-  const id = params.id; ///// recipient address
-
-  ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
-  ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
+  const { writeContract } = useWriteContract();
+  const id = params.id; // recipient address
 
   async function getEnsAddress() {
     setLoading(true);
     try {
-      const address = await getAddress({
-        name: id as string,
-      });
-      console.log({ address });
-
-      setEnsNotFound(address === null);
-
+      const address = await getAddress({ name: id as string });
       setReceiver(address as Hex);
+      setEnsNotFound(!address);
     } finally {
       setLoading(false);
     }
@@ -72,129 +60,125 @@ export default function PayId() {
     chainId: chainId,
   });
 
-  const tokenFind =
-    tokens.find((token) => token.name === selectedToken) || tokens[1];
+  const tokenFind = tokens.find((token) => token.name === selectedToken) || tokens[1];
 
-  console.log({ contracts });
   const { data: cost, isLoading } = useReadContract({
     address: contracts.CrossChainSender as Hex,
     abi: crossChainSenderAbi,
     functionName: "quoteCrossChainDeposit",
-    args: [6], //// wormhole chain id avalanche fuji
+    args: [6],
   });
 
   const contractCalls = [
     {
-      to: tokenFind?.address as Hex, /// token address
+      to: tokenFind?.address as Hex,
       data: encodeFunctionData({
-        abi: erc20Abi, //// approve abi
-        functionName: "approve", /// approve function name
-        args: [contracts.CrossChainSender as Hex, BigInt(1000000000000000000)], /// amount
+        abi: erc20Abi,
+        functionName: "approve",
+        args: [contracts.CrossChainSender as Hex, BigInt(1000000000000000000)],
       }),
     },
-    // {
-    //   to: contracts.CrossChainSender as Hex, /// contract address sender
-    //   data: encodeFunctionData({
-    //     abi: crossChainSenderAbi, /// abi
-    //     functionName: "sendCrossChainDeposit", /// function name
-    //     args: [
-    //       contracts.wormholeChainId, ////wormhole target chain id
-    //       "0xAE130Ddb73299dc029A2d2b7d6F5C9f1Fb553091" as Hex, /// contract address receiver
-    //       receiver as Hex, ///// recipient
-    //       BigInt(1000), ////todo: get decimals from token address
-    //       tokenFind?.address as Hex,
-    //     ],
-    //   }),
-    // },
   ];
 
-  console.log({ tokenFind });
-  if (loading) {
-    return <Skeleton className="w-full h-full" />;
+  if (loading) return <Skeleton className="w-full h-full" />;
+
+  function handleAmountSelect(amount: number) {
+    setAmount(amount);
   }
 
   return (
-    <main className="h-screen">
-      {!ensNotFound && (
-        <section className="flex flex-col justify-center items-center w-10/12 m-auto h-screen">
-          {receiver && (
-            <CoinBaseIdentity address={receiver as Hex} label="Recipient" />
-          )}
+    <div className="flex flex-col items-center w-full p-4">
+      <div className="flex flex-col w-full max-w-lg p-6 space-y-6 rounded-2xl border bg-background shadow-lg">
+        {/* Header Section */}
+        <div className="flex justify-between items-center text-xs">
+          <span className="text-xl">💸👻💸</span>
+          <span className="text-right">You are sending</span>
+        </div>
 
-          <br />
-          <ChainSelect
-            value={chainId}
-            onChange={(value) => {
-              setChainId(value);
-            }}
-            chains={chains}
-            label="Select Chain"
-          />
-
-          <CurrencyDisplayer
-            tokenAmount={1}
-            onValueChange={(value) => {
-              setAmount(value);
-            }}
-            availableTokens={Object.fromEntries(
-              Object.entries(currencyAddresses[Number(chainId)] || {}).map(
-                ([key, value]) => [key, value.address]
-              )
+        {!ensNotFound ? (
+          <>
+            {receiver && (
+                <CoinBaseIdentity address={receiver as Hex} label="Recipient" />
             )}
-            onTokenSelect={(value) => {
-              setSelectedToken(value);
-            }}
-            currentNetwork={Number(chainId)}
-            ///TODO: add onchangenetwork here as optional
-          />
 
-          <Transaction
-            chainId={Number(chainId)}
-            calls={contractCalls}
-            onSuccess={(response: TransactionResponse) => {
-              console.log(response, "response");
-            }}
-            onError={(error) => {
-              console.log(error);
-            }}
-          >
-            <TransactionButton
-              text={"Send"}
-              //disabled={!tokenFind}
-              className="bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
+            {/* Centered Chain Selector */}
+            <div className="flex justify-center w-full my-4">
+              <div className="text-center">
+                <span className="block text-xs font-semibold mb-2">Select Chain</span>
+                <ChainSelect
+                  value={chainId}
+                  onChange={(value) => setChainId(value)}
+                  chains={chains}
+                  label="Select Chain"
+                />
+              </div>
+            </div>
+
+            {/* Preset Amount Buttons */}
+            <div className="flex justify-center space-x-2">
+              <PresetAmountButtons onAmountSelect={handleAmountSelect} />
+            </div>
+
+            {/* Currency Displayer */}
+            <CurrencyDisplayer
+              tokenAmount={amount}
+              onValueChange={(value) => setAmount(value)}
+              availableTokens={Object.fromEntries(
+                Object.entries(currencyAddresses[Number(chainId)] || {}).map(([key, value]) => [
+                  key,
+                  value.address,
+                ])
+              )}
+              onTokenSelect={(value) => setSelectedToken(value)}
+              currentNetwork={Number(chainId)}
             />
-            <TransactionStatus>
-              <TransactionStatusLabel />
-              <TransactionStatusAction />
-            </TransactionStatus>
-          </Transaction>
-          <br />
-          <Button
-            onClick={() =>
-              writeContract({
-                address: contracts.CrossChainSender as Hex,
-                abi: crossChainSenderAbi,
-                functionName: "sendCrossChainDeposit",
-                args: [
-                  6, /// target chain id avalanche fuji
-                  "0xAE130Ddb73299dc029A2d2b7d6F5C9f1Fb553091" as Hex, /// avalanche target contract
-                  receiver as Hex,
-                  BigInt(1000000), /// todo: get decimals from token address
-                  tokenFind?.address as Hex,
-                ],
-                value: cost,
-              })
-            }
-          >
-            Transfer
-          </Button>
-        </section>
-      )}
-      {ensNotFound && (
-        <section className="flex flex-col justify-center items-center w-10/12 m-auto">
-          <h1>ENS NOT FOUND</h1>
-        </section>
-      )}
-    </main>
+
+            {/* Transaction Section */}
+            <div className="flex flex-col w-full space-y-2">
+              <Transaction
+                chainId={Number(chainId)}
+                calls={contractCalls}
+                onSuccess={(response: TransactionResponse) => console.log(response, "response")}
+                onError={(error) => console.log(error)}
+              >
+                <TransactionButton
+                  text="Send"
+                  className="w-full bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark"
+                />
+                <TransactionStatus>
+                  <TransactionStatusLabel />
+                  <TransactionStatusAction />
+                </TransactionStatus>
+              </Transaction>
+
+              <Button
+                onClick={() =>
+                  writeContract({
+                    address: contracts.CrossChainSender as Hex,
+                    abi: crossChainSenderAbi,
+                    functionName: "sendCrossChainDeposit",
+                    args: [
+                      6,
+                      "0xAE130Ddb73299dc029A2d2b7d6F5C9f1Fb553091" as Hex,
+                      receiver as Hex,
+                      BigInt(1000000),
+                      tokenFind?.address as Hex,
+                    ],
+                    value: cost,
+                  })
+                }
+                className="w-full bg-green-500 hover:bg-green-600"
+              >
+                Transfer
+              </Button>
+            </div>
+          </>
+        ) : (
+          <section className="flex flex-col items-center justify-center w-full">
+            <h1 className="text-xl font-bold">ENS NOT FOUND</h1>
+          </section>
+        )}
+      </div>
+    </div>
   );
 }

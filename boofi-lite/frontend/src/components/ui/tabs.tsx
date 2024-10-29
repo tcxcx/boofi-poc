@@ -78,10 +78,10 @@ const TabsTriggerRight = React.forwardRef<
     ref={ref}
     className={cn(
       "group relative inline-flex items-center justify-center space-x-4 w-full h-full px-2 py-2 text-xs font-clash display-block inline-block border-double border-4 border-r-4 border-blue-200 transition-all shadow-sm ring-offset-background",
-      "bg-transparent text-accent-foreground/70 hover:bg-gradient-to-br from-pink-100 via-indigo-100 to-yellow-100",
+      "bg-transparent text-accent-foreground/70 dark:text-clr-patito hover:bg-gradient-to-br from-pink-100 via-indigo-100 to-yellow-100",
       "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
       "data-[state=active]:bg-gradient-to-br data-[state=active]:from-pink-200 data-[state=active]:via-indigo-100 data-[state=active]:to-yellow-100",
-      "data-[state=active]:text-black",
+      "data-[state=active]:text-black data-[state=active]:dark:text-clr-blue" ,
       "data-[state=active]:border-blue-500",
       position === "left" ? "rounded-tl-md" : "",
       position === "right" ? "rounded-tr-md" : "",
