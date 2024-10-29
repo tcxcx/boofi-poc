@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +17,8 @@ import { getChainsForEnvironment } from "@/store/supportedChains";
 import { Token } from "@/lib/types";
 import { TokenChip } from "@coinbase/onchainkit/token";
 import { toast } from "../ui/use-toast";
+import { formatUnits } from "ethers";
+import { useTokenBalance } from "@/hooks/use-token-balance";
 
 interface CurrencyDisplayerProps {
   tokenAmount: number;
@@ -52,7 +55,7 @@ const CurrencyDisplayerPay = ({
   const chainId = useChainId();
 
   const { address } = useAccount();
-  const { data: balance, isLoading: wagmiLoading } = useBalance({
+  const { data: balanceETH, isLoading: wagmiLoading } = useBalance({
     address,
     chainId,
   });
@@ -116,24 +119,24 @@ const CurrencyDisplayerPay = ({
 
     return baseSymbol;
   };
+  const token = availableTokens.find((token) => token.name === selectedToken);
+  const { balance: balance, isLoading: isBalanceLoading } = useTokenBalance({
+    tokenAddress: token?.address as `0x${string}`,
+    chainId: chainId!,
+    accountAddress: address as `0x${string}`,
+    decimals: Number(token?.decimals),
+  });
 
   const getAvailableBalance = () => {
-    // const token = availableTokens.find(
-    //   (token) => token.symbol === selectedToken
-    // );
-    // const { data: balance } = useBalance({
-    //   address,
-    //   chainId,
-    //   token: token?.address,
-    // });
-    // return selectedToken === "ETH"
-    //   ? balance
-    //     ? parseFloat(formatUnits(balance?.value, balance?.decimals))
-    //     : 0
-    //   : balance
-    //   ? parseFloat(formatUnits(balance?.value, balance?.decimals))
-    //   : 0;
-    return 0;
+    if (!selectedToken) return 0;
+    if (selectedToken === "ETHEREUM") {
+      return balanceETH
+        ? parseFloat(formatUnits(balanceETH.value, balanceETH.decimals))
+        : 0;
+    }
+
+    console.log({ balance });
+    return balance ? Number(balance) : 0;
   };
 
   const handleMaxClick = () => {
