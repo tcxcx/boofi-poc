@@ -1,6 +1,5 @@
-"use client";
+"use client"
 
-<<<<<<< HEAD
 import React, { Suspense, useState, useEffect } from "react"
 import { Translations } from "@/lib/types/translations"
 import { useAccount } from "wagmi"
@@ -15,69 +14,40 @@ import { MoneyMarketBentoSkeleton } from "@/components/tab-content/money-market/
 import { GridSmall } from "../ui/bg-dot"
 import TokenSwap from "@/components/token-swap"
 import TokenSwapSkeleton from "@/components/token-swap/token-swap-skeleton"
-=======
-import React, { Suspense, useState, useEffect } from "react";
-import { Translations } from "@/lib/types/translations";
-import { useAccount } from "wagmi";
-import { NotConnectedHome } from "../tab-content/not-connected";
-import { PaymentLinkTabContent } from "../tab-content/peanut-tab";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTriggerAlt,
-} from "@/components/ui/tabs";
-import { Button } from "../ui/button";
-import MoneyMarketBentoGrid from "../money-market";
-import { useTabStore } from "@/store/tabStore";
-import { PaymentLinkSkeleton } from "@/components/tab-content/money-market/payment-skeleton";
-import { MoneyMarketBentoSkeleton } from "@/components/tab-content/money-market/money-market-skeleton";
-import { GridSmall } from "../ui/bg-dot";
-import TokenSwap from "@/components/token-swap";
-import TokenSwapSkeleton from "@/components/token-swap/token-swap-skeleton";
-import Bridge from "../bridge";
->>>>>>> dev/tomas
+import { LottieWrapper } from "@/components/lottie-wrapper"
 
 interface HomeContentProps {
-  translations: Translations["Home"];
+  translations: Translations["Home"]
 }
+
 export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
-<<<<<<< HEAD
-  const { isConnected, address } = useAccount()
+  const { isConnected } = useAccount()
   const { activeTab, setActiveTab } = useTabStore()
   const [isTransitioning, setIsTransitioning] = useState(false)
-=======
-  const { isConnected } = useAccount();
-  const { activeTab, setActiveTab } = useTabStore();
-  const [isTransitioning, setIsTransitioning] = useState(false);
->>>>>>> dev/tomas
+  const address = useAccount();
+
 
   useEffect(() => {
     if (isTransitioning) {
       const timer = setTimeout(() => {
-        setIsTransitioning(false);
-      }, 300);
-      return () => clearTimeout(timer);
+        setIsTransitioning(false)
+      }, 300)
+      return () => clearTimeout(timer)
     }
-  }, [isTransitioning]);
+  }, [isTransitioning])
 
   if (!isConnected) {
-    return <NotConnectedHome translations={translations} />;
+    return <NotConnectedHome translations={translations} />
   }
 
   const handleTabChange = (value: string) => {
-    setIsTransitioning(true);
-    setActiveTab(value as "paymentLink" | "moneyMarket" | "tokenSwap");
-  };
-
+    setIsTransitioning(true)
+    setActiveTab(value as "paymentLink" | "moneyMarket" | "tokenSwap")
+  }
 
   return (
     <div className="w-full flex flex-col items-center">
-      <Tabs
-        defaultValue="moneyMarket"
-        className="w-full max-w-5xl"
-        onValueChange={handleTabChange}
-      >
+      <Tabs defaultValue="moneyMarket" className="w-full max-w-5xl" onValueChange={handleTabChange}>
         <div className="flex justify-center w-full">
           <TabsList className="flex justify-center gap-4 m-4">
             <TabsTriggerAlt value="moneyMarket">
@@ -116,59 +86,37 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
           </TabsList>
         </div>
 
-        <div className="p-4 overflow-hidden flex flex-col items-center justify-center w-full">
+        <div className="p-10 overflow-hidden flex flex-col items-center justify-center w-full">
           <div className="relative flex flex-col items-center justify-center w-full">
             <div
-<<<<<<< HEAD
               className={`relative z-1 text-center bg-background dark:bg-background rounded-lg shadow-lg px-8 py-4 w-full border-2 border-black dark:border-white transition-all duration-300 ease-in-out ${
                 activeTab === 'paymentLink' ? 'max-w-lg' : activeTab === 'tokenSwap' ? 'max-w-xl' : 'max-w-5xl'
-=======
-              className={`relative z-1 text-center bg-background dark:bg-background rounded-lg shadow-lg p-8 w-full border-2 border-black dark:border-white transition-all duration-300 ease-in-out ${
-                activeTab === "paymentLink"
-                  ? "max-w-md"
-                  : activeTab === "tokenSwap"
-                  ? "max-w-lg"
-                  : "max-w-5xl"
->>>>>>> dev/tomas
               }`}
             >
+              <LottieWrapper />
               {isTransitioning ? (
-                activeTab === "paymentLink" || activeTab === "tokenSwap" ? (
-                  activeTab === "paymentLink" ? (
-                    <PaymentLinkSkeleton />
-                  ) : (
-                    <TokenSwapSkeleton />
-                  )
+                activeTab === 'paymentLink' || activeTab === 'tokenSwap' ? (
+                  activeTab === 'paymentLink' ? <PaymentLinkSkeleton /> : <TokenSwapSkeleton />
                 ) : (
                   <MoneyMarketBentoSkeleton />
                 )
               ) : (
                 <>
-                  <TabsContent
-                    value="moneyMarket"
-                    className="transition-opacity duration-300 ease-in-out"
-                  >
+                  <TabsContent value="moneyMarket" className="transition-opacity duration-300 ease-in-out">
                     <GridSmall>
                       <Suspense fallback={<MoneyMarketBentoSkeleton />}>
                         <MoneyMarketBentoGrid />
                       </Suspense>
                     </GridSmall>
                   </TabsContent>
-                  <TabsContent
-                    value="paymentLink"
-                    className="transition-opacity duration-300 ease-in-out"
-                  >
+                  <TabsContent value="paymentLink" className="transition-opacity duration-300 ease-in-out">
                     <Suspense fallback={<PaymentLinkSkeleton />}>
-                      <PaymentLinkTabContent translations={translations} address={address ?? ""}  />
+                      <PaymentLinkTabContent translations={translations} address={address?.address ?? ""} />
                     </Suspense>
                   </TabsContent>
-                  <TabsContent
-                    value="tokenSwap"
-                    className="transition-opacity duration-300 ease-in-out"
-                  >
+                  <TabsContent value="tokenSwap" className="transition-opacity duration-300 ease-in-out">
                     <Suspense fallback={<TokenSwapSkeleton />}>
-                      <TokenSwap />
-                      {/* <Bridge /> */}
+                      <TokenSwap/>
                     </Suspense>
                   </TabsContent>
                 </>
@@ -178,5 +126,5 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
         </div>
       </Tabs>
     </div>
-  );
-};
+  )
+}

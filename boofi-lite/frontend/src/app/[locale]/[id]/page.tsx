@@ -26,11 +26,14 @@ import { getAddress } from "@coinbase/onchainkit/identity";
 
 import { useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
+
 interface WormholeContracts {
   CrossChainSender: string;
   wormholeChainId: number;
 }
-function Page() {
+
+export default function PayId() {
+
   const params = useParams();
   const [selectedToken, setSelectedToken] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
@@ -195,5 +198,3 @@ function Page() {
     </main>
   );
 }
-
-export default Page;

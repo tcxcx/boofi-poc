@@ -11,6 +11,7 @@ import LoginButton from "@/components/onchain-kit/WalletWrapper";
 import SparklesText from "@/components/magicui/sparkles-text";
 import { motion } from "framer-motion";
 import { Skeleton } from "../ui/skeleton";
+import ActionBanner from "./action-banner";
 
 const song = "/sounds/anime-wow-sound-effect.mp3";
 
@@ -37,6 +38,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-transparent relative pb-6">
+      <ActionBanner/>
       <div className="container mx-auto grid grid-cols-3 items-center">
         <div className="flex items-center space-x-2">
           <Suspense fallback={<Skeleton className="h-4 w-[250px]" />}>

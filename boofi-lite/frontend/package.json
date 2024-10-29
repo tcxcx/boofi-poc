@@ -57,6 +57,7 @@
     "http-proxy-middleware": "^3.0.0",
     "jsonwebtoken": "^9.0.2",
     "just-debounce-it": "^3.2.0",
+    "lottie-react": "^2.4.0",
     "lucide-react": "^0.416.0",
     "mini-svg-data-uri": "^1.4.4",
     "next": "14.2.5",

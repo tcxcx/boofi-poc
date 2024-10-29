@@ -17,11 +17,11 @@ export function generateArgs(
   amount: string, // Human-readable amount, e.g., "100.0"
   costForReturnDelivery: bigint
 ): any[] {
-  const assetAmount = ethers.parseUnits(amount || '0', 6); 
+  const assetAmount = ethers.utils.parseUnits(amount || '0', 6); 
 
   switch (action) {
     case MoneyMarketAction.Lend:
-      return [assetAddress, assetAmount, costForReturnDelivery];
+      return [assetAddress, assetAmount, costForReturnDelivery.toString()];
     case MoneyMarketAction.Borrow:
       return [assetAddress, assetAmount, costForReturnDelivery];
     case MoneyMarketAction.Repay:

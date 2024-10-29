@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 import CurrencyDisplayer from "@/components/currency";
-import { Dispatch, SetStateAction } from "react";
 import { LinkUiFormProps } from "@/lib/types";
 
 
@@ -12,7 +11,7 @@ export default function LinkUiForm({
   setSelectedToken,
   chainId,
   handleSendPaymentClick,
-}: LinkUiFormProps) {
+}: LinkUiFormProps & { handleSendPaymentClick: () => void }) {
   return (
     <>
       <div className="flex w-full md:h-[300px] lg:h-[400px] flex-col justify-between rounded-2xl border bg-background">

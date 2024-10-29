@@ -280,3 +280,17 @@ export interface AbstractSigner {
   sendTransaction(tx: AbstractTransaction): Promise<{ hash: string }>;
   getAddress(): Promise<string>;
 }
+
+export interface OverlayPayNameProps {
+  handleToggleOverlay: () => void;
+  copyLink: () => void;
+  link: string;
+  shareOnWhatsApp: () => void;
+  shareOnTelegram: () => void;
+}
+
+
+export interface BaseNameDialogAlertProps {
+  translations: Translations["Home"];
+  address: string;
+}

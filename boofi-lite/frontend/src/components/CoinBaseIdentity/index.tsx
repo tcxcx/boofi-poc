@@ -6,6 +6,7 @@ import { Skeleton } from "../ui/skeleton";
 import { toast } from "../ui/use-toast";
 import confetti from "canvas-confetti";
 import { handleConfetti } from "@/utils/confetti";
+
 export default function CoinBaseIdentity({
   address,
   label,

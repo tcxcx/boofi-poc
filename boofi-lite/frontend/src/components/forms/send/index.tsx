@@ -1,4 +1,3 @@
-// SendPayment.tsx
 
 import { useState } from "react";
 import { useDeezNuts } from "@/hooks/use-peanut";
@@ -76,13 +75,14 @@ export default function SendPayment() {
         handleValueChange={(usdAmount, tokenAmount) => {
           setUsdAmount(usdAmount);
           setTokenAmount(tokenAmount);
-        }}
+        } }
         availableTokens={availableTokens}
         setSelectedToken={setSelectedToken}
         chainId={defaultChainId}
         handleCreateLinkClick={handleSendPaymentClick}
-        isPeanutLoading={isPeanutLoading}
-      />
+        isPeanutLoading={isPeanutLoading} handleSendPaymentClick={function (): void {
+          throw new Error("Function not implemented.");
+        } }      />
     </section>
   );
 }
