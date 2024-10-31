@@ -13,3 +13,6 @@
 [submodule "boofi-lite/contracts/new-contracts/lib/aave-v3-core"]
 	path = boofi-lite/contracts/new-contracts/lib/aave-v3-core
 	url = https://github.com/aave/aave-v3-core
+[submodule "boofi-lite/contracts/new-contracts/lib/chainlink"]
+	path = boofi-lite/contracts/new-contracts/lib/chainlink
+	url = https://github.com/smartcontractkit/chainlink
