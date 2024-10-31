@@ -36,19 +36,19 @@
     },
     {
       "description": "Goerli - Base",
-      "chainId": 30,
-      "rpc": "https://goerli.base.org",
-      "tokenBridge": "0xA31aa3FDb7aF7Db93d18DDA4e19F811342EDF780",
-      "wormholeRelayer": "0xea8029CD7FCAEFFcD1F53686430Db0Fc8ed384E1",
-      "wormhole": "0x23908A62110e21C04F3A4e011d24F901F911744A"
+      "chainId": 10004,
+      "rpc": "https://base-sepolia.infura.io/v3/",
+      "tokenBridge": "0x86F55A04690fd7815A3D802bD587e83eA888B239",
+      "wormholeRelayer": "0x93BAD53DDfB6132b0aC8E37f6029163E63372cEE",
+      "wormhole": "0x79A1027a6A159502049F10906D333EC57E95F083"
     },
     {
       "description": "Sepolia - Base",
       "chainId": 10004,
       "rpc": "https://base-sepolia.infura.io/v3/",
       "tokenBridge": "0x86F55A04690fd7815A3D802bD587e83eA888B239",
-      "wormholeRelayer": "0xea8029CD7FCAEFFcD1F53686430Db0Fc8ed384E1",
-      "wormhole": "0x93BAD53DDfB6132b0aC8E37f6029163E63372cEE"
+      "wormholeRelayer": "0x93BAD53DDfB6132b0aC8E37f6029163E63372cEE",
+      "wormhole": "0x79A1027a6A159502049F10906D333EC57E95F083"
     }
   ]
 }
