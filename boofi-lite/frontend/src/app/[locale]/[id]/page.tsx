@@ -46,7 +46,7 @@ function Page() {
   const address = useAccount();
   ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
   ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
-  const targetContract = "0x46c46f96Fa488cb491353804528C8591E2E2D9eA";
+  const targetContract = "0xE6BBD0e8E200c2BA28650761F6f6947000ac9c91"; //// target contract address in avalanche fuji
   async function getEnsAddress() {
     setLoading(true);
     try {

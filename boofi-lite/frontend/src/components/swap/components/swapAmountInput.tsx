@@ -143,7 +143,7 @@ export function SwapAmountInput({
           {userBalance && (
             <span
               className={cn(text.label2, color.foregroundMuted)}
-            >{`Balance: ${getRoundedAmount(userBalance, 8)}`}</span>
+            >{`Balance: ${getRoundedAmount(userBalance, 10)}`}</span>
           )}
           {address && (
             <button
