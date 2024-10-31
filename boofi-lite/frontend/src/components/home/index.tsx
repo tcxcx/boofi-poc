@@ -17,9 +17,8 @@ import { useTabStore } from "@/store/tabStore";
 import { PaymentLinkSkeleton } from "@/components/tab-content/money-market/payment-skeleton";
 import { MoneyMarketBentoSkeleton } from "@/components/tab-content/money-market/money-market-skeleton";
 import { GridSmall } from "../ui/bg-dot";
-import TokenSwap from "@/components/token-swap";
+import TokenSwap from "@/components/swap";
 import TokenSwapSkeleton from "@/components/token-swap/token-swap-skeleton";
-import Bridge from "../bridge";
 
 interface HomeContentProps {
   translations: Translations["Home"];
