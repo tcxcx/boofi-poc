@@ -16,3 +16,6 @@
 [submodule "boofi-lite/contracts/new-contracts/lib/chainlink"]
 	path = boofi-lite/contracts/new-contracts/lib/chainlink
 	url = https://github.com/smartcontractkit/chainlink
+[submodule "boofi-lite/contracts/new-contracts/lib/ccip"]
+	path = boofi-lite/contracts/new-contracts/lib/ccip
+	url = https://github.com/smartcontractkit/ccip
