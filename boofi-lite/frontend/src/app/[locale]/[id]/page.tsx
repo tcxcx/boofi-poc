@@ -28,6 +28,7 @@ import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TokenChip } from "@coinbase/onchainkit/token";
 import CurrencyDisplayerPay from "@/components/currency-pay";
+import { bigint } from "zod";
 interface WormholeContracts {
   CrossChainSender: string;
   wormholeChainId: number;
@@ -46,7 +47,7 @@ function Page() {
   const address = useAccount();
   ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
   ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
-  const targetContract = "0xE6BBD0e8E200c2BA28650761F6f6947000ac9c91"; //// target contract address in avalanche fuji
+  const targetContract = "0x84f597AEcC19925070974c8EeDAa38E535430c5e"; //// target contract address in avalanche fuji
   async function getEnsAddress() {
     setLoading(true);
     try {
@@ -76,15 +77,20 @@ function Page() {
       (token) => token.name === selectedToken
     ) || getTokensByChainId({ chainId: chainId })[1];
 
-  const { data: cost } = useReadContract({
+  const {
+    data: cost,
+    isLoading,
+    status,
+  } = useReadContract({
     address: contracts.CrossChainSender as Hex,
     abi: crossChainSenderAbi,
     functionName: "quoteCrossChainDeposit",
     args: [6], //// wormhole chain id avalanche fuji
   });
 
+  console.log({ cost, isLoading, status });
   const { data: approveCost } = useReadContract({
-    address: tokenFind?.address as Hex,
+    address: selectedToken as Hex,
     abi: erc20Abi,
     functionName: "allowance",
     args: [
@@ -92,6 +98,8 @@ function Page() {
       contracts.CrossChainSender as Hex,
     ],
   });
+
+  console.log({ approveCost });
 
   const sameTargetChain = chainId === "43113";
 
@@ -150,6 +158,30 @@ function Page() {
                 />
               ))}
             </>
+          )}
+
+          {approveCost && <p>Approval Cost: {approveCost}</p>}
+
+          {!sameTargetChain && (
+            <Button
+              onClick={() =>
+                writeContract({
+                  address: contracts.CrossChainSender as Hex,
+                  value: cost,
+                  abi: crossChainSenderAbi,
+                  functionName: "sendCrossChainDeposit",
+                  args: [
+                    6,
+                    targetContract as Hex,
+                    receiver as Hex,
+                    BigInt(1000000),
+                    selectedToken as Hex,
+                  ],
+                })
+              }
+            >
+              Send Tokens
+            </Button>
           )}
 
           {sameTargetChain && (
