@@ -8,13 +8,14 @@ export default function PresetAmountButtons({ onAmountSelect }: PresetAmountButt
   const amounts = [5, 20, 50, 100];
 
   return (
-    <div className="flex justify-around w-full space-x-2">
+    <div className="flex justify-around w-full">
       {amounts.map((amount) => (
         <Button
           key={amount}
-          variant="charly"
+          size="xs"
+          variant="fito"
           onClick={() => onAmountSelect(amount)}
-          className="w-20"
+          className="w-10"
         >
           ${amount}
         </Button>

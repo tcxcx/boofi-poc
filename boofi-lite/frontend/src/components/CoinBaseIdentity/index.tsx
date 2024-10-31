@@ -3,8 +3,6 @@ import { Button } from "@/components/ui/button";
 import { base } from "wagmi/chains";
 import { useDeezNuts } from "@/hooks/use-peanut";
 import { Skeleton } from "../ui/skeleton";
-import { toast } from "../ui/use-toast";
-import confetti from "canvas-confetti";
 import { handleConfetti } from "@/utils/confetti";
 
 export default function CoinBaseIdentity({

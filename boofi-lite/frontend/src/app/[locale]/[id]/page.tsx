@@ -24,11 +24,8 @@ import { Button } from "@/components/ui/button";
 import { getAddress } from "@coinbase/onchainkit/identity";
 import { useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { WormholeContracts } from "@/lib/types";
 
-interface WormholeContracts {
-  CrossChainSender: string;
-  wormholeChainId: number;
-}
 
 export default function PayId() {
   const params = useParams();
@@ -88,7 +85,7 @@ export default function PayId() {
 
   return (
     <div className="flex flex-col items-center w-full p-4">
-      <div className="flex flex-col w-full max-w-lg p-6 space-y-6 rounded-2xl border bg-background shadow-lg">
+      <div className="flex flex-col w-full max-w-l">
         {/* Header Section */}
         <div className="flex justify-between items-center text-xs">
           <span className="text-xl">💸👻💸</span>
@@ -100,11 +97,14 @@ export default function PayId() {
             {receiver && (
                 <CoinBaseIdentity address={receiver as Hex} label="Recipient" />
             )}
+            {/* Preset Amount Buttons */}
+            <div className="flex justify-center space-x-2">
+              <PresetAmountButtons onAmountSelect={(value) => setAmount(value)} />
+            </div>
 
             {/* Centered Chain Selector */}
             <div className="flex justify-center w-full my-4">
               <div className="text-center">
-                <span className="block text-xs font-semibold mb-2">Select Chain</span>
                 <ChainSelect
                   value={chainId}
                   onChange={(value) => setChainId(value)}
@@ -114,15 +114,10 @@ export default function PayId() {
               </div>
             </div>
 
-            {/* Preset Amount Buttons */}
-            <div className="flex justify-center space-x-2">
-              <PresetAmountButtons onAmountSelect={handleAmountSelect} />
-            </div>
-
             {/* Currency Displayer */}
             <CurrencyDisplayer
               tokenAmount={amount}
-              onValueChange={(value) => setAmount(value)}
+              onValueChange={(newAmount) => setAmount(newAmount)}
               availableTokens={Object.fromEntries(
                 Object.entries(currencyAddresses[Number(chainId)] || {}).map(([key, value]) => [
                   key,
@@ -134,7 +129,7 @@ export default function PayId() {
             />
 
             {/* Transaction Section */}
-            <div className="flex flex-col w-full space-y-2">
+            <div className="flex flex-col w-full space-y-2 pt-4">
               <Transaction
                 chainId={Number(chainId)}
                 calls={contractCalls}

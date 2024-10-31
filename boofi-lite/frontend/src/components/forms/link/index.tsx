@@ -15,15 +15,13 @@ import confetti from "canvas-confetti";
 
 export default function LinkForm() {
   const { address, isConnected } = useAccount();
-  const defaultChainId = 84532; // Base Sepolia chain ID
+  const defaultChainId = 84532;
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { toast } = useToast();
   const { width } = useWindowSize();
   const isMobile = width && width <= 768;
 
-
-  // Initialize the useDeezNuts hook with the abstract signer
   const {
     createPayLink,
     isLoading: isPeanutLoading,
@@ -36,13 +34,12 @@ export default function LinkForm() {
   const [tokenAmount, setTokenAmount] = useState<number>(0);
   const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
   const [showSentTable, setShowSentTable] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<string>("ETH"); // Initial selection
+  const [selectedToken, setSelectedToken] = useState<string>("ETH");
   const [currentText, setCurrentText] = useState<string>("");
 
-  // Available tokens on the default chain
   const availableTokens = {
     USDC: currencyAddresses[defaultChainId]?.USDC.address || "",
-    ETH: "0x0000000000000000000000000000000000000000", // Native ETH
+    ETH: "0x0000000000000000000000000000000000000000",
   };
 
   const handleCreateLinkClick = async (e: React.MouseEvent<HTMLButtonElement>) => {

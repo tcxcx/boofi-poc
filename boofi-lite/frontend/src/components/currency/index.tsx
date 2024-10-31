@@ -74,13 +74,16 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
     onTokenSelect(tokenSymbol);
   };
 
+  useEffect(() => {
+    setInputValue(tokenAmount.toFixed(3));
+  }, [tokenAmount]);
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    const regex = /^\d*\.?\d{0,6}$/; // Adjusted to 6 decimal places
-
-    if (regex.test(value) || value === "") {
+    if (/^\d*\.?\d*$/.test(value) || value === "") {
       setInputValue(value);
-      updateValues(value);
+      const numericValue = parseFloat(value);
+      onValueChange(numericValue || 0, numericValue !== undefined ? 1 : 0);
     }
   };
 

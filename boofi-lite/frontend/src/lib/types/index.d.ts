@@ -301,3 +301,7 @@ export interface FramedQRCodeProps {
   frameText?: string;
 }
 
+export interface WormholeContracts {
+  CrossChainSender: string;
+  wormholeChainId: number;
+}
