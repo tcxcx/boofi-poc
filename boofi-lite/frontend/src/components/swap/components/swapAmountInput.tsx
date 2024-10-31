@@ -6,66 +6,86 @@ import { isValidAmount } from "@/utils/isValidAmount";
 import { background, cn, color, pressable, text } from "../styles/theme";
 import { TokenChip, TokenSelectDropdown } from "@coinbase/onchainkit/token";
 import type { Token } from "@coinbase/onchainkit/token";
+import { useReadContract } from "wagmi";
+import { erc20Abi, formatUnits } from "viem";
 
 export function SwapAmountInput({
   className,
   delayMs = 1000,
   label,
   token,
-  type,
   swappableTokens,
   address,
-  to,
-  from,
-  balance,
   handleAmountChange,
   setToken,
-}: any) {
-  const source = useValue(type === "from" ? from : to);
-
-  const destination = useValue(type === "from" ? to : from);
-
+  amount,
+  setAmount,
+  amountUSD,
+  loading,
+}: {
+  className?: string;
+  delayMs?: number;
+  label: string;
+  token: Token;
+  swappableTokens: Token[];
+  address: string;
+  handleAmountChange: (amount: string, token: Token) => void;
+  setToken: (token: Token) => void;
+  amount: string;
+  setAmount: (amount: string) => void;
+  amountUSD: string;
+  loading: boolean;
+}) {
   useEffect(() => {
     if (token) {
       setToken(token);
     }
   }, [token, setToken]);
 
+  const { data: userTokenBalance } = useReadContract({
+    address: token.address as `0x${string}`,
+    abi: erc20Abi,
+    functionName: "balanceOf",
+    args: [address as `0x${string}`],
+  });
+
+  const userBalance = userTokenBalance
+    ? formatUnits(userTokenBalance, token.decimals)
+    : "0";
+
   const handleMaxButtonClick = useCallback(() => {
-    if (!source.balance) {
+    if (!userBalance) {
       return;
     }
-    source.setAmount(source.balance);
-    handleAmountChange(type, source.balance);
-  }, [balance, source.setAmount, handleAmountChange, type]);
+    setAmount(userBalance);
+    handleAmountChange(userBalance, token);
+  }, [userBalance, setAmount, handleAmountChange, token]);
 
   const handleChange = useCallback(
     (amount: string) => {
-      handleAmountChange(type, amount);
+      setAmount(amount);
+      handleAmountChange(amount, token);
     },
-    [handleAmountChange, type]
+    [handleAmountChange, setAmount, token]
   );
 
   const handleSetToken = useCallback(
     (token: Token) => {
-      source.setToken(token);
-      handleAmountChange(type, source.amount, token);
+      setToken(token);
+      handleAmountChange(amount, token);
     },
-    [source.amount, source.setToken, handleAmountChange, type]
+    [amount, setToken, handleAmountChange]
   );
 
-  // We are mocking the token selectors so I'm not able
-  // to test this since the components aren't actually rendering
   const sourceTokenOptions = useMemo(() => {
     return (
       swappableTokens?.filter(
-        ({ symbol }: Token) => symbol !== destination.token?.symbol
+        ({ symbol }: Token) => symbol !== token?.symbol
       ) ?? []
     );
-  }, [swappableTokens, destination.token]);
+  }, [swappableTokens, token]);
 
-  const hasInsufficientBalance =
-    type === "from" && Number(source.balance) < Number(source.amount);
+  const hasInsufficientBalance = Number(userBalance) < Number(amount);
 
   const formatUSD = (amount: string) => {
     if (!amount || amount === "0") {
@@ -97,38 +117,35 @@ export function SwapAmountInput({
           )}
           placeholder="0.0"
           delayMs={delayMs}
-          value={source.amount}
-          setValue={source.setAmount}
-          disabled={source.loading}
+          value={amount}
+          setValue={setAmount}
+          disabled={loading}
           onChange={handleChange}
           inputValidator={isValidAmount}
         />
         {sourceTokenOptions.length > 0 ? (
           <TokenSelectDropdown
-            token={source.token}
+            token={token}
             setToken={handleSetToken}
             options={sourceTokenOptions}
           />
         ) : (
-          source.token && (
-            <TokenChip className={pressable.inverse} token={source.token} />
-          )
+          token && <TokenChip className={pressable.inverse} token={token} />
         )}
       </div>
       <div className="mt-4 flex w-full justify-between">
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <span className={cn(text.label2, color.foregroundMuted)}>
-            {formatUSD(source.amountUSD)}
+            {formatUSD(amountUSD)}
           </span>
-        </div>
-        <span className={cn(text.label2, color.foregroundMuted)}>{""}</span>
+        </div> */}
         <div className="flex items-center">
-          {source.balance && (
+          {userBalance && (
             <span
               className={cn(text.label2, color.foregroundMuted)}
-            >{`Balance: ${getRoundedAmount(source.balance, 8)}`}</span>
+            >{`Balance: ${getRoundedAmount(userBalance, 8)}`}</span>
           )}
-          {type === "from" && address && (
+          {address && (
             <button
               type="button"
               className="flex cursor-pointer items-center justify-center px-2 py-1"

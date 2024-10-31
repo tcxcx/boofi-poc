@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { background, cn, color, pressable, text } from "../styles/theme";
+import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 // import { ConnectWallet } from "../../wallet";
 
 export function SwapButton({
@@ -29,9 +30,9 @@ export function SwapButton({
   const isSwapInvalid = to.token?.address === from.token?.address;
 
   // prompt user to connect wallet
-  //   if (!isDisabled && !address) {
-  //     return <ConnectWallet className="mt-4 w-full" />;
-  //   }
+  if (!isDisabled && !address) {
+    return <ConnectWallet className="mt-4 w-full" />;
+  }
 
   return (
     <button

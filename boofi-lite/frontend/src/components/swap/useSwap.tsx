@@ -1,49 +1,42 @@
 import { Token } from "@/lib/types";
-import { SwapError } from "@coinbase/onchainkit/swap";
 import { Address } from "viem";
-import { UseBalanceReturnType, UseReadContractReturnType } from "wagmi";
 import { create } from "zustand";
-export type SwapUnit = {
+
+interface SwapUnit {
   amount: string;
   amountUSD: string;
   balance?: string;
-  balanceResponse?: UseBalanceReturnType | UseReadContractReturnType;
-  error?: SwapError;
   loading: boolean;
+  token: Token | undefined;
   setAmount: (amount: string) => void;
   setAmountUSD: (amountUSD: string) => void;
   setLoading: (loading: boolean) => void;
   setToken: (token: Token) => void;
-  token: Token | undefined;
-};
+}
 
-export type SwapContextType = {
-  address?: Address; // Used to check if user is connected in SwapButton
+interface SwapContextType {
+  address?: Address;
   from: SwapUnit;
+  to: SwapUnit;
   handleAmountChange: (
     t: "from" | "to",
     amount: string,
     st?: Token,
     dt?: Token
   ) => void;
-  handleSubmit: () => void;
-  handleToggle: () => void;
-  to: SwapUnit;
   isToastVisible?: boolean;
   setIsToastVisible?: (visible: boolean) => void;
   transactionHash?: string;
   setTransactionHash?: (hash: string) => void;
-};
+}
 
 export const useSwap = create<SwapContextType>((set) => ({
-  address: undefined,
   from: {
     amount: "",
     amountUSD: "",
-    balance: "",
-    balanceResponse: undefined,
-    error: undefined,
     loading: false,
+    token: undefined,
+    balance: undefined,
     setAmount: (amount: string) =>
       set((state) => ({ from: { ...state.from, amount } })),
     setAmountUSD: (amountUSD: string) =>
@@ -51,13 +44,21 @@ export const useSwap = create<SwapContextType>((set) => ({
     setLoading: (loading: boolean) =>
       set((state) => ({ from: { ...state.from, loading } })),
     setToken: (token: Token) =>
-      set((state) => ({ from: { ...state.from, token } })),
-    token: undefined,
+      set((state) => {
+        if (state.from.token === token) {
+          return state; // Evitamos la actualización si el token no ha cambiado
+        }
+        return {
+          from: { ...state.from, token },
+        };
+      }),
   },
   to: {
     amount: "",
     amountUSD: "",
     loading: false,
+    token: undefined,
+    balance: undefined,
     setAmount: (amount: string) =>
       set((state) => ({ to: { ...state.to, amount } })),
     setAmountUSD: (amountUSD: string) =>
@@ -65,10 +66,19 @@ export const useSwap = create<SwapContextType>((set) => ({
     setLoading: (loading: boolean) =>
       set((state) => ({ to: { ...state.to, loading } })),
     setToken: (token: Token) =>
-      set((state) => ({ to: { ...state.to, token } })),
-    token: undefined,
+      set((state) => {
+        if (state.to.token === token) {
+          return state;
+        }
+        return {
+          to: { ...state.to, token },
+        };
+      }),
   },
-  handleAmountChange: () => {},
-  handleSubmit: () => {},
-  handleToggle: () => {},
+  address: undefined,
+  handleAmountChange: (t, amount, st, dt) => {},
+  isToastVisible: false,
+  setIsToastVisible: (visible) => set({ isToastVisible: visible }),
+  transactionHash: undefined,
+  setTransactionHash: (hash: string) => set({ transactionHash: hash }),
 }));
