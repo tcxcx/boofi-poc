@@ -45,10 +45,11 @@ export interface ButtonProps
   asChild?: boolean;
   tabValue?: string;
   storeType?: 'market' | 'payment' | 'tab';
+  recordingState?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, tabValue, storeType, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, tabValue, storeType, recordingState, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     const { activeTab } = useTabStore();
     const { currentViewTab: marketTab } = useMarketStore();
@@ -59,6 +60,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       (storeType === 'payment' && tabValue === currentPaymentTab) ||
       (storeType === 'tab' && tabValue === activeTab)
     );
+    
 
     if (variant === "fito") {
       return (

@@ -80,7 +80,7 @@ export const HomeContent: React.FC<HomeContentProps> = ({ translations }) => {
                 tabValue="tokenSwap"
                 storeType="tab"
               >
-                <span>Token Swap 🔄</span>
+                <span>CCIP USDC Bridge 🔄</span>
               </Button>
             </TabsTriggerAlt>
           </TabsList>
