@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { Chat } from "@/components/blockchain-assistant/chat";
 import { useAssistantStore } from "@/store/assistantStore";
 import { nanoid } from "nanoid";
-import { Header } from "./header";
 import { useHotkeys } from "react-hotkeys-hook";
 import BooFiGhostCard from "@/components/blockchain-assistant/boofi-ghost-card";
 import type { ClientMessage } from "@/actions/ai/types";
+import { Separator } from "@/components/ui/separator";
 
 export function Assistant() {
   const [isExpanded, setExpanded] = useState(false);
@@ -53,20 +53,18 @@ export function Assistant() {
     enableOnFormTags: true,
   });
 
+
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden justify-center items-center bg-background">
       {/* Left panel with BooFiGhostCard */}
-      <div className="w-1/4 p-4 bg-gray-100 dark:bg-gray-800">
-        <div className="flex flex-col items-center">
-          <BooFiGhostCard />
-        </div>
+      <div className="w-1/4 p-4 flex items-center justify-center">
+        <BooFiGhostCard />
       </div>
-
+      <Separator orientation="vertical" className="justify-center justify-self-center items-center m-4"/>
+      
       {/* Right panel with chat */}
-      <div className="flex-1 w-full h-full px-10 dark:bg-background bg-white overflow-auto">
-        <div className="overflow-hidden p-0 h-full w-full md:max-w-[760px] md:h-[480px]">
-          <Header toggleSidebar={toggleOpen} isExpanded={isExpanded} />
-
+      <div className="flex-1 w-full h-full px-10 dark:bg-background bg-background overflow-auto">
+        <div className="overflow-hidden p-0 h-full w-full md:max-w-5xl md:h-3xl">
           <Chat
             messages={formattedMessages}
             submitMessage={handleSendMessage}

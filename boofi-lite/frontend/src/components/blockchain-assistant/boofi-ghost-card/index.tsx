@@ -8,14 +8,7 @@ import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 
 export default function BooFiGhostCard() {
-  const {
-    isRecording,
-    setIsRecording,
-    addMessage,
-    audioLevel,
-    setAudioLevel,
-  } = useAssistantStore();
-
+  const { isRecording, setIsRecording, addMessage, audioLevel, setAudioLevel } = useAssistantStore();
   const recorderRef = useRef<WavRecorder | null>(null);
   const streamPlayerRef = useRef<WavStreamPlayer | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -23,11 +16,11 @@ export default function BooFiGhostCard() {
   const toggleRecording = () => setIsRecording(!isRecording);
 
   const startRecording = async () => {
-    if (!recorderRef.current || !streamPlayerRef.current) return;
+    if (!recorderRef.current) return;
     try {
       await recorderRef.current.begin();
       await recorderRef.current.record();
-      await streamPlayerRef.current.connect();
+      await streamPlayerRef.current?.connect();
       animateAudio();
     } catch (error) {
       console.error("Failed to start recording:", error);
@@ -36,10 +29,10 @@ export default function BooFiGhostCard() {
   };
 
   const stopRecording = async () => {
-    if (!recorderRef.current || !streamPlayerRef.current) return;
+    if (!recorderRef.current || !recorderRef.current.recording) return;
     try {
       await recorderRef.current.pause();
-      await streamPlayerRef.current.interrupt();
+      await streamPlayerRef.current?.interrupt();
       setAudioLevel(0);
       addMessage({ id: nanoid(), role: "user", content: "Simulated voice message from user." });
     } catch (error) {
@@ -56,33 +49,16 @@ export default function BooFiGhostCard() {
   };
 
   useEffect(() => {
-    if (isRecording) {
-      startRecording();
-    } else {
-      stopRecording();
-    }
+    isRecording ? startRecording() : stopRecording();
   }, [isRecording]);
 
   return (
     <div className="flex flex-col items-center">
-      <Image
-        src="/images/ai-boofi.png"
-        alt="Boofi Ghost"
-        width={100}
-        height={100}
-        className="mb-4"
-      />
-      
+      <Image src="/images/ai-boofi.png" alt="Boofi Ghost" width={100} height={100} className="mb-4" />
       <Separator className="w-full my-2" />
-
       <div className="relative flex flex-col items-center mb-2">
         <Mic className="h-6 w-6 relative" />
-        <Button
-          variant="charly"
-          onClick={toggleRecording}
-          className="w-full mt-4 inline-flex items-center justify-center"
-          recordingState={isRecording}
-        >
+        <Button variant="charly" onClick={toggleRecording} className="w-full mt-4">
           {isRecording ? "Stop Speaking" : "Press to Speak"}
         </Button>
       </div>

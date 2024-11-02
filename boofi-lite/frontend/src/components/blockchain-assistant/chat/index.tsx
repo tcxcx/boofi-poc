@@ -15,8 +15,6 @@ import { ChatFooter } from "./chat-footer";
 import { ChatList } from "./chat-list";
 import { UserMessage } from "./messages";
 
-
-
 interface ChatProps {
   messages: ClientMessage[];
   submitMessage: (update: (prevMessages: ClientMessage[]) => ClientMessage[]) => void;
@@ -92,7 +90,7 @@ export function Chat({
         </div>
       </ScrollArea>
 
-      <div className="fixed bottom-[1px] left-[1px] right-[1px] todesktop:h-[88px] md:h-[88px] bg-background border-border border-t-[1px]">
+      <div className="fixed bottom-[1px] left-[1px] right-[1px] bg-background">
         {showExamples && <ChatExamples onSubmit={onSubmit} />}
 
         <form
@@ -110,7 +108,7 @@ export function Chat({
             autoComplete="off"
             autoCorrect="off"
             value={input}
-            className="h-12 min-h-12 pt-3 resize-none border-none"
+            className="h-12 min-h-12 pt-4 resize-none border-none"
             placeholder="Ask BooFi a question..."
             onKeyDown={onKeyDown}
             onChange={(evt: React.ChangeEvent<HTMLTextAreaElement>) => {

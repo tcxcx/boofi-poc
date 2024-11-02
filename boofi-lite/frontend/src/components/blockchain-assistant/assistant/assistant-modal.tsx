@@ -8,6 +8,7 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogTitle,
 } from '@/components/ui/dialog'
 import { ArrowUpRight } from 'lucide-react'
 
@@ -26,8 +27,9 @@ export function AssistantModal() {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="overflow-hidden max-w-full w-full h-full md:max-w-[740px] md:h-[480px] select-text"
+        className="overflow-hidden max-w-full w-full h-5/6 md:max-w-7xl md:h-5xl select-text"
       >
+        <DialogTitle>BooFi AI Assistant</DialogTitle>
       <Assistant />
     </DialogContent>
   </Dialog>
