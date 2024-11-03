@@ -1,5 +1,6 @@
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 aave-v3-core/=lib/aave-v3-core/
+ccip/=lib/ccip/
 chainlink/=lib/chainlink/
 ds-test/=lib/wormhole-solidity-sdk/lib/forge-std/lib/ds-test/src/
 erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/
