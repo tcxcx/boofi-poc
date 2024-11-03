@@ -40,22 +40,9 @@ BooFi is a cutting-edge platform developed for Wormhole's **Sigma Sprint Hackath
 - **AI Integration:** OpenAI Realtime API
 - **Frontend:** Next.js 14, TailwindCSS, Shadcn UI components
 - **Liquidator:** Rust flash-loan liquidator for over collateralized loan liquidation with AAVE and Uniswap liquidity.
+- **AI Voice Relayer:**  AI voice relayer connected to OpenAi's Realtime API for voice assistance.
 - **Backend:** Node.js, Supabase
 - **Oracles:** Chainlink agreggator and Pyth for weighted decentralized data feeds
-
-### **Flow Diagram**
-```mermaid
-graph TD;
-    A[User] --> B[BooFi Frontend]
-    B --> C[Hub (L1 Blockchain)]
-    C --> D[Spokes (L1/L2 Blockchains)]
-    C --> E[Private Blockchain (Open Banking)]
-    D --> F[Liquidity Pools]
-    E --> G[Fintech Integrations]
-    C --> H[AI Console]
-    H --> I[OpenAI API]
-    C --> J[Payments & Bridge]
-```
 
 ## 🔧 Getting Started
 
@@ -83,23 +70,6 @@ BooFi’s payment and bridging solutions ensure seamless and secure transactions
 - **QR Code Art Generator:** Enhances payment link sharing with customizable QR codes.
 - **Peanut Protocol Integration:** Facilitates easy USDC payments through shareable links.
 - **CCIP Bridge:** Ensures reliable USDC transfers across different blockchain ecosystems.
-
-
-### **Diagram**
-```mermaid
-graph TD;
-    A[Frontend (React, Next.js)] --> B[Backend (Node.js)]
-    B --> C[Hub (Avalanche/Optimism)]
-    C --> D[Spokes (L1/L2 Blockchains)]
-    C --> E[Private Blockchain (Open Banking)]
-    B --> F[AI Console (OpenAI API)]
-    B --> G[Database (Supabase)]
-    B --> H[Cache (Upstash Redis)]
-    B --> I[Notifications (Novu)]
-    B --> J[Background Jobs (Trigger.dev)]
-    B --> K[Payment Integrations (GoCardless, Plaid, Teller)]
-    A --> L[Hosting (Vercel)]
-```
 
 
 ## 🙏 Acknowledgments
