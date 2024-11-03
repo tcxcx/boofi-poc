@@ -4,7 +4,7 @@ import { getBurnRate, getRunway } from "@midday/supabase/cached-queries";
 import { startOfMonth } from "date-fns";
 import { nanoid } from "nanoid";
 import { z } from "zod";
-import { BurnRateUI } from "./ui/burn-rate-ui";
+import { BurnRateUI } from "./ui/account-balance-ui";
 
 type Args = {
   aiState: MutableAIState;

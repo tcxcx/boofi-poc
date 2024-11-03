@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useAssistantStore } from '@/store/assistantStore';
 
-export function useRealtimeHandlers(client, wavStreamPlayer) {
-  const addMessage = useAssistantStore((state) => state.addMessage);
-
+export function useRealtimeHandlers(client: any, wavStreamPlayer: any) {
   useEffect(() => {
     if (!client) return;
 
-    client.on('conversation.updated', ({ item, delta }) => {
+    const addMessage = useAssistantStore.getState().addMessage;
+
+    client.on('conversation.updated', ({ item, delta }: { item: any, delta: any }) => {
       if (delta?.audio) {
         wavStreamPlayer.add16BitPCM(delta.audio, item.id);
       }
@@ -21,7 +21,7 @@ export function useRealtimeHandlers(client, wavStreamPlayer) {
       }
     });
 
-    client.on('error', (error) => {
+    client.on('error', (error: any) => {
       console.error('RealtimeClient Error:', error);
     });
 
@@ -29,5 +29,5 @@ export function useRealtimeHandlers(client, wavStreamPlayer) {
       client.off('conversation.updated');
       client.off('error');
     };
-  }, [client, wavStreamPlayer, addMessage]);
+  }, [client, wavStreamPlayer]);
 }

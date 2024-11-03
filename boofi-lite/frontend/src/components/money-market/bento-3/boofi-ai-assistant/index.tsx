@@ -9,7 +9,6 @@ import { Separator } from "@radix-ui/react-select";
 import LayoutAuthCardAiAssistant from "./layout-auth-card";
 import { SkeletonGradient } from "@/components/ui/skeleton-gradient";
 import BlockchainAssistant from "@/components/blockchain-assistant";
-import AuthSubscriptionFailure from "@/components/blockchain-assistant/auth-failure";
 
 const BooFiAiAssistant: React.FC = () => {
   const MotionLink = motion(Link);

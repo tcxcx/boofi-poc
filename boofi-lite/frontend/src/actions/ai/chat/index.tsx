@@ -1,6 +1,6 @@
 "use server";
 
-import { BotMessage, SpinnerMessage } from "@/components/chat/messages";
+import { BotMessage, SpinnerMessage } from "@/components/blockchain-assistant/chat/messages";
 import { openai } from "@ai-sdk/openai";
 import { client as RedisClient } from "@midday/kv";
 import { getUser } from "@midday/supabase/cached-queries";
@@ -16,16 +16,7 @@ import { nanoid } from "nanoid";
 import { headers } from "next/headers";
 import { getAssistantSettings, saveChat } from "../storage";
 import type { AIState, Chat, ClientMessage, UIState } from "../types";
-import { getBurnRateTool } from "./tools/burn-rate";
-import { getForecastTool } from "./tools/forecast";
-import { getDocumentsTool } from "./tools/get-documents";
-import { getInvoicesTool } from "./tools/get-invoces";
-import { getTransactionsTool } from "./tools/get-transactions";
-import { getProfitTool } from "./tools/profit";
-import { createReport } from "./tools/report";
-import { getRevenueTool } from "./tools/revenue";
-import { getRunwayTool } from "./tools/runway";
-import { getSpendingTool } from "./tools/spending";
+import { getAccountBalanceTool } from "./tools/blockchain/get-account-balance";
 
 const ratelimit = new Ratelimit({
   limiter: Ratelimit.fixedWindow(10, "10s"),
@@ -37,7 +28,7 @@ export async function submitUserMessage(
 ): Promise<ClientMessage> {
   "use server";
   const ip = headers().get("x-forwarded-for");
-  const { success } = await ratelimit.limit(ip);
+  const { success } = await ratelimit.limit(ip ?? "");
 
   const aiState = getMutableAIState<typeof AI>();
 
@@ -91,15 +82,10 @@ export async function submitUserMessage(
     model: openai("gpt-4o-mini"),
     initial: <SpinnerMessage />,
     system: `\
-    You are a helpful assistant in BooFi who can help users ask questions about their transactions, revenue, spending find invoices and more.
+    You are a helpful assistant in BooFi who can help users transcat on the blockchain and answer questions about their balances.
 
-    If the user wants the burn rate, call \`getBurnRate\` function.
-    If the user wants the runway, call \`getRunway\` function.
-    If the user wants the profit, call \`getProfit\` function.
-    If the user wants to find transactions or expenses, call \`getTransactions\` function.
-    If the user wants to see spending based on a category, call \`getSpending\` function.
-    If the user wants to find invoices or receipts, call \`getInvoices\` function.
-    If the user wants to find documents, call \`getDocuments\` function.
+    If the user wants their balance \`getAccountBalanceTool\` function.
+
     Don't return markdown, just plain text.
 
     Always try to call the functions with default values, otherwise ask the user to respond with parameters.
@@ -139,46 +125,10 @@ export async function submitUserMessage(
       return textNode;
     },
     tools: {
-      getSpending: getSpendingTool({
+        getAccountBalance: getAccountBalanceTool({
         aiState,
-        dateFrom: defaultValues.from,
-        dateTo: defaultValues.to,
       }),
-      getBurnRate: getBurnRateTool({
-        aiState,
-        dateFrom: defaultValues.from,
-        dateTo: defaultValues.to,
-      }),
-      getRunway: getRunwayTool({
-        aiState,
-        dateFrom: defaultValues.from,
-        dateTo: defaultValues.to,
-      }),
-      getProfit: getProfitTool({
-        aiState,
-        dateFrom: defaultValues.from,
-        dateTo: defaultValues.to,
-      }),
-      getRevenue: getRevenueTool({
-        aiState,
-        dateFrom: defaultValues.from,
-        dateTo: defaultValues.to,
-      }),
-      getForecast: getForecastTool({
-        aiState,
-        dateFrom: defaultValues.from,
-        dateTo: defaultValues.to,
-      }),
-      getTransactions: getTransactionsTool({ aiState }),
-      getInvoices: getInvoicesTool({ aiState, teamId }),
-      getDocuments: getDocumentsTool({ aiState, teamId }),
-      createReport: createReport({
-        aiState,
-        userId: user?.data?.id ?? "",
-        teamId,
-        dateFrom: defaultValues.from,
-        dateTo: defaultValues.to,
-      }),
+   
     },
   });
 

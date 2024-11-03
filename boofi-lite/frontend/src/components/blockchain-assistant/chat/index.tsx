@@ -3,7 +3,6 @@
 import type { ClientMessage } from "@/actions/ai/types";
 import { useEnterSubmit } from "@/hooks/use-enter-submit";
 import { useScrollAnchor } from "@/hooks/use-scroll-anchor";
-import { useAssistantStore } from "@/store/assistantStore";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useActions } from "ai/rsc";
@@ -17,7 +16,7 @@ import { UserMessage } from "./messages";
 
 interface ChatProps {
   messages: ClientMessage[];
-  submitMessage: (update: (prevMessages: ClientMessage[]) => ClientMessage[]) => void;
+  submitMessage: (input: string) => Promise<void>;
   onNewChat: () => void;
   input: string;
   setInput: (input: string) => void;
@@ -30,11 +29,13 @@ export function Chat({
   input,
   setInput,
 }: ChatProps) {
-  const { submitUserMessage } = useActions() || { submitUserMessage: async () => null };
   const { formRef, onKeyDown } = useEnterSubmit();
-  const ref = useRef(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  const { messagesRef, scrollRef, visibilityRef, scrollToBottom } =
+    useScrollAnchor();
+
+  const showExamples = messages.length === 0 && !input;
 
   const onSubmit = async (input: string) => {
     const value = input.trim();
@@ -46,21 +47,7 @@ export function Chat({
     setInput("");
     scrollToBottom();
 
-    submitMessage((message: ClientMessage[]) => [
-      ...message,
-      {
-        id: nanoid(),
-        role: "user",
-        display: <UserMessage>{value}</UserMessage>,
-      },
-    ]);
-
-    const responseMessage = await submitUserMessage(value);
-
-    submitMessage((messages: ClientMessage[]) => [
-      ...messages,
-      responseMessage,
-    ]);
+    await submitMessage(value);
   };
 
   useEffect(() => {
@@ -70,11 +57,6 @@ export function Chat({
       }
     });
   }, [messages]);
-
-  const { messagesRef, scrollRef, visibilityRef, scrollToBottom } =
-    useScrollAnchor();
-
-  const showExamples = messages.length === 0 && !input;
 
   return (
     <div className="relative">

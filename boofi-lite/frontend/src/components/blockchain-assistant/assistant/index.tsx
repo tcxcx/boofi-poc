@@ -6,53 +6,56 @@ import { useAssistantStore } from "@/store/assistantStore";
 import { nanoid } from "nanoid";
 import { useHotkeys } from "react-hotkeys-hook";
 import BooFiGhostCard from "@/components/blockchain-assistant/boofi-ghost-card";
-import type { ClientMessage } from "@/actions/ai/types";
 import { Separator } from "@/components/ui/separator";
+import useRealtimeClient from '@/hooks/realtime-open-ai/use-realtime-client';
+import { useRealtimeHandlers } from '@/hooks/realtime-open-ai/use-realtime-handlers';
+import useAudioStreaming from '@/hooks/realtime-open-ai/use-audio-streaming';
+import { ClientMessage } from "@/actions/ai/types";
 
 export function Assistant() {
-  const [isExpanded, setExpanded] = useState(false);
   const [input, setInput] = useState<string>("");
 
-  const { messages, addMessage, clearMessages, isOpen, setOpen } = useAssistantStore();
+  const { messages, addMessage, clearMessages } = useAssistantStore();
+  const { wavRecorder, wavStreamPlayer } = useAudioStreaming();
+  const { getClient, isReady } = useRealtimeClient();
+
+  useRealtimeHandlers(getClient(), wavStreamPlayer);
 
   const formattedMessages: ClientMessage[] = messages.map((msg) => ({
     id: msg.id,
-    role: msg.role,
-    display: <div>{msg.content}</div>, 
+    role: msg.role as "user" | "assistant",
+    display: <div>{msg.content}</div>,
   }));
 
-  const handleSendMessage = (update: (prevMessages: ClientMessage[]) => ClientMessage[]) => {
-    const newMessage: ClientMessage = {
+  const handleSendMessage = async (input: string) => {
+    if (input.trim().length === 0) return;
+
+    const client = getClient();
+
+    addMessage({
       id: nanoid(),
       role: "user",
-      display: <div>{input}</div>,
-    };
-    addMessage(newMessage as any);
+      content: input,
+    });
 
-    const assistantResponse: ClientMessage = {
-      id: nanoid(),
-      role: "assistant",
-      display: <div>This is a simulated response.</div>,
-    };
-    addMessage(assistantResponse as any);
+    client.sendUserMessageContent([
+      {
+        type: `input_text`,
+        text: input,
+      },
+    ]);
+
+    setInput("");
   };
-
-  const toggleOpen = () => setExpanded((prev) => !prev);
 
   const onNewChat = () => {
     clearMessages();
     setInput("");
-    setExpanded(false);
   };
 
   useHotkeys("meta+j", () => onNewChat(), {
     enableOnFormTags: true,
   });
-
-  useHotkeys("meta+k", () => setOpen(true), {
-    enableOnFormTags: true,
-  });
-
 
   return (
     <div className="flex h-screen overflow-hidden justify-center items-center bg-background">
@@ -60,8 +63,8 @@ export function Assistant() {
       <div className="w-1/4 p-4 flex items-center justify-center">
         <BooFiGhostCard />
       </div>
-      <Separator orientation="vertical" className="justify-center justify-self-center items-center m-4"/>
-      
+      <Separator orientation="vertical" className="m-4" />
+
       {/* Right panel with chat */}
       <div className="flex-1 w-full h-full px-10 dark:bg-background bg-background overflow-auto">
         <div className="overflow-hidden p-0 h-full w-full md:max-w-5xl md:h-3xl">
