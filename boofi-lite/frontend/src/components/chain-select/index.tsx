@@ -36,22 +36,30 @@ export const ChainSelect: React.FC<ChainSelectProps> = ({
   };
 
   return (
-    <div className="flex-1 flex items-center space-x-2">
-      <span className="text-xs text-gray-500 uppercase">{label}</span>
-      <Select value={value || ""} onValueChange={onChange}>
-        <SelectTrigger className="w-auto flex items-center">
-          <SelectValue placeholder={label}>
-            {value ? renderChainOption(value) : label}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {chains.map((chain) => (
-            <SelectItem key={chain.chainId} value={chain.chainId.toString()}>
-              {renderChainOption(chain.chainId.toString())}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="flex-1 flex items-center space-x-2 m-auto gap-4 justify-around">
+      {!value && (
+        <span className="text-xs text-gray-500 uppercase ">{label}</span>
+      )}
+      <div className=" min-w-[230px] w-[230px] max-w-[230px] m-auto">
+        <Select value={value || ""} onValueChange={onChange}>
+          <SelectTrigger className="w-full m-auto flex items-center">
+            <SelectValue placeholder={label} className="m-auto">
+              {value ? renderChainOption(value) : label}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {chains.map((chain) => (
+              <SelectItem
+                key={chain.chainId}
+                value={chain.chainId.toString()}
+                className="m-auto"
+              >
+                {renderChainOption(chain.chainId.toString())}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 };

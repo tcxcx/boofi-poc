@@ -85,16 +85,25 @@ export default function TokenSwap() {
     const amount = ethers.parseUnits(toAmount, tokens[0]?.decimals);
     if (!destinationChainInfo?.ccipChainId) return;
     try {
-      // const contractApprove = new ethers.Contract(
-      //   tokens[0]?.address as Hex,
-      //   erc20Abi,
-      //   signer
-      // );
-      // const txApprove = await contractApprove.approve(
-      //   actualChain?.address as Hex,
-      //   amount
-      // );
-      // console.log({ txApprove });
+      const contractApprove = new ethers.Contract(
+        tokens[0]?.address as Hex,
+        erc20Abi,
+        signer
+      );
+
+      const allowance = await contractApprove.allowance(
+        address,
+        actualChain?.address as Hex
+      );
+
+      if (allowance < amount) {
+        const txApprove = await contractApprove.approve(
+          actualChain?.address as Hex,
+          amount
+        );
+        await txApprove.wait();
+        console.log({ txApprove });
+      }
 
       const contract = new ethers.Contract(
         actualChain?.address as Hex,
@@ -132,38 +141,40 @@ export default function TokenSwap() {
 
   return (
     <div className="flex flex-col items-center gap-10 text-nowrap">
-      <ChainSelect
-        value={sourceChain ? sourceChain : chainId}
-        onChange={(value) => {
-          setSelectedToken("");
-          setFromAmount("");
-          if (chainId !== Number(value)) {
-            switchChain({ chainId: Number(value) });
-            setDestinationChain(null);
-            setSourceChain(value);
-          }
-        }}
-        chains={chains}
-        label="Select Source Chain"
-      />
-      <div className="relative w-full flex justify-center items-center ">
-        <SwapToggleButton
-          className="bg-main border-2 border-border dark:border-white rounded-full shadow-light dark:shadow-dark hover:bg-clr-yellow"
-          handleToggle={handleToggle}
+      <div className="flex flex-col items-center gap-10 text-nowrap">
+        <ChainSelect
+          value={sourceChain ? sourceChain : chainId}
+          onChange={(value) => {
+            setSelectedToken("");
+            setFromAmount("");
+            if (chainId !== Number(value)) {
+              switchChain({ chainId: Number(value) });
+              setDestinationChain(null);
+              setSourceChain(value);
+            }
+          }}
+          chains={chains}
+          label="Source Chain"
+        />
+        <div className="relative w-full flex justify-center items-center ">
+          <SwapToggleButton
+            className="bg-main border-2 border-border dark:border-white rounded-full shadow-light dark:shadow-dark hover:bg-clr-yellow"
+            handleToggle={handleToggle}
+          />
+        </div>
+        <ChainSelect
+          value={destinationChain}
+          onChange={(value) => {
+            setSelectedToken("");
+            setFromAmount("");
+            if (chainId !== Number(value)) {
+              setDestinationChain(value);
+            }
+          }}
+          chains={chains}
+          label="Destination Chain"
         />
       </div>
-      <ChainSelect
-        value={destinationChain}
-        onChange={(value) => {
-          setSelectedToken("");
-          setFromAmount("");
-          if (chainId !== Number(value)) {
-            setDestinationChain(value);
-          }
-        }}
-        chains={chains}
-        label="Select Destination Chain"
-      />
       <SwapAmountInput
         label="Sell"
         swappableTokens={tokens}
@@ -208,7 +219,9 @@ export default function TokenSwap() {
         lifecycleStatus={{ statusName: "transactionPending" }}
         className="mt-4 bg-main border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
       /> */}
-      <Button onClick={sendCCIPTransfer}>Approve</Button>
+      <Button variant={"brutalism"} onClick={sendCCIPTransfer}>
+        Bridge
+      </Button>
     </div>
   );
 }
