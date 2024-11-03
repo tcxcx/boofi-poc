@@ -18,7 +18,8 @@
     "jobs:dashboard": "turbo jobs --filter=@midday/dashboard",
     "format": "biome format --write .",
     "lint": "turbo lint && manypkg check",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "start:relay": "turbo start --filter=@midday/relay-server"
   },
   "dependencies": {
     "@biomejs/biome": "1.9.1",
