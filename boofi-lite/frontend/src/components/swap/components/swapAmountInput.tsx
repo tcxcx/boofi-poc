@@ -6,7 +6,7 @@ import { isValidAmount } from "@/utils/isValidAmount";
 import { background, cn, color, pressable, text } from "../styles/theme";
 import { TokenChip, TokenSelectDropdown } from "@coinbase/onchainkit/token";
 import type { Token } from "@coinbase/onchainkit/token";
-import { useReadContract } from "wagmi";
+import { useChainId, useReadContract } from "wagmi";
 import { erc20Abi, formatUnits } from "viem";
 
 export function SwapAmountInput({
@@ -41,10 +41,12 @@ export function SwapAmountInput({
       setToken(token);
     }
   }, [token, setToken]);
+  const chainId = useChainId();
 
   const { data: userTokenBalance } = useReadContract({
     address: token.address as `0x${string}`,
     abi: erc20Abi,
+    chainId: Number(chainId),
     functionName: "balanceOf",
     args: [address as `0x${string}`],
   });

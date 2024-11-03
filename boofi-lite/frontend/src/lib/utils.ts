@@ -2,9 +2,9 @@
 import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
-import { Token } from '@/lib/types';
-import { tokens } from '@/utils/tokens';
-import { Address } from 'viem';
+import { Token } from "@/lib/types";
+import { tokens } from "@/utils/tokens";
+import { Address } from "viem";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -114,16 +114,13 @@ export const formatCurrency = (amount: number, decimals = 2): string => {
 
 // Function to get the base token by chainId
 export const getBaseTokenByChainId = (chainId: number): Token | undefined => {
-  return tokens.find(
-    (token) => token.chainId === chainId && token.address === ''
-  ) as Token | undefined;
+  return tokens.find((token) => token.chainId === chainId) as Token | undefined;
 };
 
 // Function to get USDC address by chainId
 export const getUSDCAddress = (chainId: number): `0x${string}` => {
   const usdcToken = tokens.find(
-    (token) => token.chainId === chainId && token.symbol === 'USDC'
+    (token) => token.chainId === chainId && token.symbol === "USDC"
   );
-  return (usdcToken?.address || '') as `0x${string}`;
+  return (usdcToken?.address || "") as `0x${string}`;
 };
-

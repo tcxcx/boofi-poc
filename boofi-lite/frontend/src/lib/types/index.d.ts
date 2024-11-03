@@ -213,7 +213,7 @@ export interface Token {
 }
 
 export interface ChainSelectProps {
-  value: string;
+  value: string | null;
   onChange: (value: string) => void;
   chains: ChainConfig[];
   label: string;

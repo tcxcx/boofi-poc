@@ -12,14 +12,13 @@ import {
   TransactionStatusAction,
   TransactionStatusLabel,
 } from "@coinbase/onchainkit/transaction";
-import { encodeFunctionData, erc20Abi, Hex } from "viem";
+import { erc20Abi, Hex } from "viem";
 import { useEffect, useState } from "react";
 
 import { ChainSelect } from "@/components/chain-select";
 import { useChainSelection } from "@/hooks/use-chain-selection";
 import { getTokensByChainId, testnetTokensByChainId } from "@/utils/tokens";
-import CurrencyDisplayer from "@/components/currency";
-import { currencyAddresses } from "@/utils/currencyAddresses";
+
 import { chains } from "@/utils/contracts";
 import { Button } from "@/components/ui/button";
 import { getAddress } from "@coinbase/onchainkit/identity";
@@ -28,7 +27,6 @@ import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TokenChip } from "@coinbase/onchainkit/token";
 import CurrencyDisplayerPay from "@/components/currency-pay";
-import { bigint } from "zod";
 interface WormholeContracts {
   CrossChainSender: string;
   wormholeChainId: number;
@@ -45,6 +43,7 @@ function Page() {
   const { writeContract, error, data, isIdle, isError } = useWriteContract();
   const id = params.id; ///// recipient address
   const address = useAccount();
+
   ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
   ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
   const targetContract = "0x84f597AEcC19925070974c8EeDAa38E535430c5e"; //// target contract address in avalanche fuji
