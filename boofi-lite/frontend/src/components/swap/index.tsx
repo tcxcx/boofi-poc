@@ -17,7 +17,7 @@ import { getCCIPChainByChainId } from "@/utils/contracts";
 import { ChainSelect } from "../chain-select";
 import { chains } from "@/utils/contracts";
 import { erc20Abi, Hex } from "viem";
-import { ethers } from "ethers";
+import { BigNumberish, ethers } from "ethers";
 import { SwapButton } from "./components/swapButton";
 import { Button } from "../ui/button";
 import { CCIPTransferAbi } from "@/lib/abi/CCIP";
@@ -102,7 +102,7 @@ export default function TokenSwap() {
         signer
       );
       console.log(destinationChainInfo.ccipChainId);
-      console.log(BigInt(destinationChainInfo?.ccipChainId), "bigint");
+      console.log(destinationChainInfo?.ccipChainId);
       console.log(address, "address");
       console.log(tokens[0]?.address, "token address");
       console.log(amount, "amount");
@@ -118,7 +118,7 @@ export default function TokenSwap() {
       // const estimateGas = await signer?.estimateGas(populateTransaction);
       // console.log({ estimateGas });
       const tx = await contract.transferTokensPayLINK(
-        BigInt(destinationChainInfo?.ccipChainId), // here the problem
+        destinationChainInfo?.ccipChainId,
         address,
         tokens[0]?.address,
         amount
