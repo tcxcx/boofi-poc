@@ -1,5 +1,4 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
-import dynamic from 'next/dynamic'
 import Image from 'next/image';
 
 import { RealtimeClient } from '@openai/realtime-api-beta'
@@ -28,9 +27,6 @@ import { motion } from "framer-motion";
 import SparklesText from "@/components/magicui/sparkles-text";
 import { Separator } from "@/components/ui/separator";
 import LayoutAuthCardAiAssistant from "@/components/money-market/bento-3/boofi-ai-assistant/layout-auth-card";
-import { SkeletonGradient } from "@/components/ui/skeleton-gradient";
-
-
 
 /**
  * Type for all event logs

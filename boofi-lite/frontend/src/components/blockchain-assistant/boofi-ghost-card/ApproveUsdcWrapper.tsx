@@ -13,6 +13,7 @@ import type {
 import type { Address, ContractFunctionParameters } from 'viem';
 import { erc20Abi, parseUnits } from 'viem';
 import { baseSepolia } from 'viem/chains';
+
 const USDC_ADDRESS = '0x036cbd53842c5426634e7929541ec2318f3dcf7e'; // USDC contract address on Base Sepolia
 
 interface ApproveUsdcWrapperProps {
