@@ -34,13 +34,13 @@ export default function WalletWrapper({
           text={text}
           className={className}
         >
-          <Avatar className="h-6 w-6" />
-          <Name />
+          <Avatar className="h-6 w-6 text-white dark:text-black" />
+          <Name className="text-white dark:text-black" />
         </ConnectWallet>
         <WalletDropdown>
-          <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick={true}>
+          <Identity className="px-4 pt-3 pb-2 text-white dark:text-black" hasCopyAddressOnClick={true}>
             <Avatar />
-            <Name />
+            <Name className="text-white dark:text-black" />
             <Address />
             <EthBalance />
           </Identity>

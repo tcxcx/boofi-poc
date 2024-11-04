@@ -31,6 +31,6 @@
     "src/components/user-button",
     "src/components/grid-pattern/index.tsx",
     "src/components/grid-pattern-linear-gradient/index.jsx"
-  ],
+, "src/hooks/realtime-open-ai/use-realtime-handlers.tsx"  ],
   "exclude": ["node_modules"]
 }

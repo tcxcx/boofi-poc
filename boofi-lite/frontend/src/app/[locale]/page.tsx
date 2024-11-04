@@ -25,16 +25,10 @@ export default function Home() {
   };
 
   return (
-    <div className="custom-scrollbar">
-      <div className="mx-auto px-4 relative flex flex-col justify-center overflow-hidden">
-        <Container>
-          <div className="relative">
-            <Suspense fallback={<MoneyMarketSkeleton />}>
-              <HomeContent translations={translations} />
-            </Suspense>
-          </div>
-        </Container>
-      </div>
-    </div>
+    <>
+      <Suspense fallback={<MoneyMarketSkeleton />}>
+        <HomeContent translations={translations} />
+      </Suspense>
+    </>
   );
 }

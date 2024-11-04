@@ -5,6 +5,11 @@ import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 import { cn } from "@/utils";
 
+interface TabsTriggerRightProps
+  extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> {
+  position?: "left" | "right";
+}
+
 const Tabs = TabsPrimitive.Root;
 
 const TabsList = React.forwardRef<
@@ -14,13 +19,28 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-9 items-start justify-start rounded-lg p-1",
+      "inline-flex h-9 items-center justify-center rounded-lg p-1",
       className
     )}
     {...props}
   />
 ));
 TabsList.displayName = TabsPrimitive.List.displayName;
+
+const TabsListAlt = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.List>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.List
+    ref={ref}
+    className={cn(
+      "inline-flex h-9 items-center justify-between rounded-sm px-2",
+      className
+    )}
+    {...props}
+  />
+));
+TabsListAlt.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
@@ -49,6 +69,29 @@ const TabsTriggerAlt = React.forwardRef<
 ));
 TabsTriggerAlt.displayName = TabsPrimitive.Trigger.displayName;
 
+
+const TabsTriggerRight = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Trigger>,
+  TabsTriggerRightProps
+>(({ className, position, ...props }, ref) => (
+  <TabsPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "group relative inline-flex items-center justify-center space-x-4 w-full h-full px-2 py-2 text-xs font-clash display-block inline-block border-double border-4 border-r-4 border-blue-200 transition-all shadow-sm ring-offset-background",
+      "bg-transparent text-accent-foreground/70 dark:text-clr-patito hover:bg-gradient-to-br from-pink-100 via-indigo-100 to-yellow-100",
+      "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+      "data-[state=active]:bg-gradient-to-br data-[state=active]:from-pink-200 data-[state=active]:via-indigo-100 data-[state=active]:to-yellow-100",
+      "data-[state=active]:text-black data-[state=active]:dark:text-clr-blue" ,
+      "data-[state=active]:border-blue-500",
+      position === "left" ? "rounded-tl-md" : "",
+      position === "right" ? "rounded-tr-md" : "",
+      className
+    )}
+    {...props}
+  />
+));
+TabsTriggerRight.displayName = TabsPrimitive.Trigger.displayName;
+
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
@@ -56,7 +99,7 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "mt-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       className
     )}
     {...props}
@@ -65,4 +108,4 @@ const TabsContent = React.forwardRef<
 TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 
-export { Tabs, TabsList, TabsTrigger, TabsContent, TabsTriggerAlt };
+export { Tabs, TabsList, TabsListAlt, TabsTrigger, TabsContent, TabsTriggerAlt, TabsTriggerRight };

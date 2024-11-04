@@ -17,13 +17,15 @@ const buttonVariants = cva(
         outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: " text-secondary-foreground hover:text-primary underline-offset-4 hover:underline transition-color",
+        link: "text-secondary-foreground hover:text-primary underline-offset-4 hover:underline transition-color",
         fito: "group relative overflow-hidden border border-input focus:outline-none focus:ring",
         paez: "group shadow-sm bg-gradient-to-r from-indigo-100 via-pink-100 to-purple-100 hover:text-accent-foreground active:text-opacity-75",
         charly: "group relative overflow-hidden border border-yellow-200 focus:outline-none focus:ring",
+        canterby: "group relative overflow-hidden w-full items-center uppercase justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 shadow-sm bg-gradient-to-r from-indigo-100 via-pink-100 to-purple-100 hover:text-accent-foreground active:text-opacity-75",
       },
       size: {
         default: "h-9 px-4 py-2",
+        noPadding: "h-9",
         xs: "h-6 rounded-md text-xs px-4 py-2",
         sm: "h-8 rounded-md text-xs",
         lg: "h-10 rounded-md px-8",
@@ -43,10 +45,11 @@ export interface ButtonProps
   asChild?: boolean;
   tabValue?: string;
   storeType?: 'market' | 'payment' | 'tab';
+  recordingState?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, tabValue, storeType, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, tabValue, storeType, recordingState, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     const { activeTab } = useTabStore();
     const { currentViewTab: marketTab } = useMarketStore();
@@ -57,6 +60,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       (storeType === 'payment' && tabValue === currentPaymentTab) ||
       (storeType === 'tab' && tabValue === activeTab)
     );
+    
 
     if (variant === "fito") {
       return (
@@ -74,6 +78,27 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     if (variant === "paez") {
+      return (
+        <Comp
+          className={cn(
+            buttonVariants({ variant, size, className }),
+            isActive ? "bg-gradient-to-r from-indigo-200 via-pink-200 to-purple-200" : ""
+          )}
+          ref={ref}
+          {...props}
+        >
+          <span className={cn(
+            "block rounded-md px-4 py-2 font-medium transition-colors",
+            isActive ? "bg-transparent text-accent-foreground" : "bg-background hover:bg-transparent hover:text-accent-foreground"
+          )}>
+            {props.children}
+          </span>
+        </Comp>
+      );
+    }
+
+
+    if (variant === "canterby") {
       return (
         <Comp
           className={cn(

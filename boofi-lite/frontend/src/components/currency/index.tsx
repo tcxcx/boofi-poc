@@ -1,3 +1,5 @@
+// CurrencyDisplayer.tsx
+
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,28 +14,17 @@ import {
 import styled from "styled-components";
 import { Eth } from "@styled-icons/crypto/Eth";
 import { Usdc } from "@styled-icons/crypto/Usdc";
-import { Dai } from "@styled-icons/crypto/Dai";
-import { Usdt } from "@styled-icons/crypto/Usdt";
 import { InputMoney } from "../ui/input";
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { getChainsForEnvironment } from "@/store/supportedChains";
 import { formatUnits } from "viem";
 import { useWindowSize } from "@/hooks/use-window-size";
-
-interface CurrencyDisplayerProps {
-  tokenAmount: number;
-  onValueChange: (usdAmount: number, tokenAmount: number) => void;
-  initialAmount?: number;
-  availableTokens: Record<string, string>;
-  onTokenSelect: (token: string) => void;
-  currentNetwork: number | null;
-}
+import { CurrencyDisplayerProps } from "@/lib/types";
 
 const chainIcons: { [key: number]: string } = {
   11155111: "/icons/ethereum-eth-logo.svg",
-  11155420: "/icons/optimism-ethereum-op-logo.svg",
   84532: "/icons/base-logo-in-blue.svg",
-  43113: "https://bafybeihfbjhiz5rytxcug7l7ymu6veyam5dcdrmqevz2jkepsgec6xobgi.ipfs.web3approved.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJiYWZ5YmVpaGZiamhpejVyeXR4Y3VnN2w3eW11NnZleWFtNWRjZHJtcWV2ejJqa2Vwc2dlYzZ4b2JnaSIsInByb2plY3RfdXVpZCI6Ijc2YTA4NzgxLTViMDctNGRhMy1iZDNhLTBiNDc2ZjRhY2YyMiIsImlhdCI6MTcyOTE5NTczMiwic3ViIjoiSVBGUy10b2tlbiJ9.Or8FYayDjxvOSgW-ZjTLYksp9-0fXa7pKmKFQPUNZL4",
+  43113: "/icons/avalanche-avax-logo.svg",
 };
 
 const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
@@ -44,7 +35,6 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
   onTokenSelect,
   currentNetwork,
 }) => {
-  const tokenPriceInUSD = 0.02959;
   const [usdAmount, setUsdAmount] = useState<number>(0);
   const [selectedToken, setSelectedToken] = useState<string>("ETH");
   const [inputValue, setInputValue] = useState<string>(
@@ -59,6 +49,7 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
   const { data: balance, isLoading: wagmiLoading } = useBalance({
     address,
     chainId,
+    token: selectedToken !== "ETH" ? `0x${availableTokens[selectedToken]}` : undefined,
   });
 
   const supportedChains = getChainsForEnvironment();
@@ -71,83 +62,49 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
 
   const EthIcon = styled(Eth)`
     color: #627eea;
-    &:hover,
-    &:active {
-      color: #627eea;
-    }
   `;
 
   const UsdcIcon = styled(Usdc)`
     color: #2775ca;
-    &:hover,
-    &:active {
-      color: #2775ca;
-    }
-  `;
-
-  const DaiIcon = styled(Dai)`
-    color: #f4b731;
-    &:hover,
-    &:active {
-      color: #f4b731;
-    }
-  `;
-
-  const UsdtIcon = styled(Usdt)`
-    color: #26a17b;
-    &:hover,
-    &:active {
-      color: #26a17b;
-    }
   `;
 
   const handleSelectChange = (value: string) => {
-    setSelectedToken(value.toUpperCase());
-    onTokenSelect(value.toUpperCase());
+    const tokenSymbol = value.toUpperCase();
+    setSelectedToken(tokenSymbol);
+    onTokenSelect(tokenSymbol);
   };
+
+  useEffect(() => {
+    setInputValue(tokenAmount.toFixed(3));
+  }, [tokenAmount]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    const regex = /^\d*\.?\d{0,4}$/;
-
-    if (regex.test(value) || value === "") {
+    if (/^\d*\.?\d*$/.test(value) || value === "") {
       setInputValue(value);
-      updateValues(value);
+      const numericValue = parseFloat(value);
+      onValueChange(numericValue || 0, numericValue !== undefined ? 1 : 0);
     }
   };
 
   const updateValues = (value: string) => {
     const numericValue = parseFloat(value);
     if (!isNaN(numericValue)) {
-      const usdValue = numericValue * tokenPriceInUSD;
-      setUsdAmount(isFinite(usdValue) ? parseFloat(usdValue.toFixed(2)) : 0);
-      onValueChange(
-        isFinite(usdValue) ? parseFloat(usdValue.toFixed(2)) : 0,
-        numericValue
-      );
+      onValueChange(0, numericValue);
     } else {
       onValueChange(0, 0);
     }
   };
 
-  const getTokenSymbolForNetwork = (baseSymbol: string) => {
-    if (currentNetwork === 84532 && baseSymbol === "ETH") {
-      return "ETH Sepolia";
-    }
-    return baseSymbol;
-  };
-
   const getAvailableBalance = () => {
-    const tokenBalance = availableTokens[selectedToken] || "0";
-    return selectedToken === "ETH"
-      ? balance
-        ? parseFloat(formatUnits(balance?.value, balance?.decimals))
-        : 0
-      : parseFloat(tokenBalance);
+    if (balance && balance.value) {
+      return parseFloat(formatUnits(balance.value, balance.decimals));
+    }
+    return 0;
   };
 
   const handleMaxClick = () => {
-    const maxBalance = getAvailableBalance().toFixed(3);
+    const maxBalance = getAvailableBalance().toFixed(6);
     setInputValue(maxBalance);
     updateValues(maxBalance);
   };
@@ -156,14 +113,14 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
     if (wagmiLoading) {
       return <p className="text-xs">Loading balance...</p>;
     }
-    const displayBalance = getAvailableBalance().toFixed(3);
+    const displayBalance = getAvailableBalance().toFixed(6);
     return (
       <>
         <Button variant={"link"} className="text-xs" onClick={handleMaxClick}>
           Available balance (Max):
         </Button>
         <Button variant={"link"} className="text-xs" onClick={handleMaxClick}>
-          {displayBalance} {getTokenSymbolForNetwork(selectedToken)}{" "}
+          {displayBalance} {selectedToken}
         </Button>
       </>
     );
@@ -197,7 +154,7 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
         {renderAvailableBalance()}
       </div>
 
-      <Select onValueChange={handleSelectChange}>
+      <Select onValueChange={handleSelectChange} value={selectedToken.toLowerCase()}>
         <SelectTrigger className="w-full border-transparent flex justify-between">
           <SelectValue>
             {selectedToken && currentNetwork && (
@@ -210,14 +167,14 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
                   }
                   className="inline-block w-4 h-4 mr-2"
                 />
-                {getTokenSymbolForNetwork(selectedToken)}
+                {selectedToken}
               </div>
             )}
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="w-full justify-between">
           <SelectGroup className="justify-stretch">
-            <SelectLabel>Stablecoins</SelectLabel>
+            <SelectLabel>Tokens</SelectLabel>
             {Object.keys(availableTokens).map((token) => (
               <SelectItem key={token} value={token.toLowerCase()}>
                 {getTokenIcon(token)} {token}
@@ -225,9 +182,9 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
             ))}
           </SelectGroup>
           <SelectGroup>
-            <SelectLabel>Cryptocurrencies</SelectLabel>
+            <SelectLabel>Native Token</SelectLabel>
             <SelectItem value="eth">
-              <EthIcon size={20} /> {getTokenSymbolForNetwork("ETH")}
+              <EthIcon size={20} /> ETH
             </SelectItem>
           </SelectGroup>
         </SelectContent>

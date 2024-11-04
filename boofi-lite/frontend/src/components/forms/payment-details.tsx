@@ -2,12 +2,11 @@ import React from "react";
 import { useDeezNuts } from "@/hooks/use-peanut";
 import { ToastAction } from "@/components/ui/toast";
 import Link from "next/link";
-import { ChevronRightIcon, CopyIcon } from "lucide-react";
+import { ChevronRightIcon } from "lucide-react";
 import { getBlockExplorerUrlByChainId } from "@/utils/index";
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { PaymentInfoProps } from "@/lib/types";
 

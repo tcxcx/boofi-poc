@@ -32,6 +32,32 @@ const Alert = React.forwardRef<
 ))
 Alert.displayName = 'Alert'
 
+const AlertLeftContainer = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
+>(({ className, variant, ...props }, ref) => (
+  <div
+    ref={ref}
+    role="alert"
+    className={cn('w-9/12 justify-start text-left', className)}
+    {...props}
+  />
+))
+AlertLeftContainer.displayName = 'AlertLeftContainer'
+
+const AlertRightContainer = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
+>(({ className, variant, ...props }, ref) => (
+  <div
+    ref={ref}
+    role="alert"
+    className={cn('w-3/12 justify-end text-right', className)}
+    {...props}
+  />
+))
+AlertRightContainer.displayName = 'AlertRightContainer'
+
 const AlertTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
@@ -56,4 +82,4 @@ const AlertDescription = React.forwardRef<
 ))
 AlertDescription.displayName = 'AlertDescription'
 
-export { Alert, AlertTitle, AlertDescription }
+export { Alert, AlertTitle, AlertDescription, AlertLeftContainer, AlertRightContainer }

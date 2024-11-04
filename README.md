@@ -1,82 +1,91 @@
-![hero](github.png)
+![hero](boofi-preview.png)
 
-<p align="center">
-	<h1 align="center"><b>BooFi</b></h1>
-<p align="center">
-    Run your business smarter
-    <br />
-    <br />
-    <a href="https://go.boofi.ai/anPiuRx">Discord</a>
-    ·
-    <a href="https://boofi.ai">Website</a>
-    ·
-    <a href="https://github.com/boofi-ai/boofi/issues">Issues</a>
-  </p>
-</p>
+# BooFi: Stablecoin-first Multichain DeFi and Open Banking for Emerging Markets with AI
 
-## About BooFi
+## 🌐 Overview
 
-BooFi is an all-in-one tool designed to help freelancers, contractors, consultants, and solo entrepreneurs manage their business operations more efficiently. It integrates various functions typically scattered across multiple platforms into a single, cohesive system.
+BooFi is a cutting-edge platform developed for Wormhole's **Sigma Sprint Hackathon 2024**, designed to bridge the gap between decentralized finance (DeFi) and traditional private banking within the Latin American (LATAM) fintech ecosystem for accessing capital for freelancers and small to medium sized businessed for the future of work. By leveraging a **Hub and Spoke Money Market** model, BooFi facilitates secure borrowing and lending, enabling seamless cross-border transactions and liquidity management across multiple blockchain networks with a private blockchain for open banking services in LATAM looking to create a spoke with the coming of regional CBDCs and stablecoins in the region.
 
-## Features
+## 🚀 Features
 
-**Time Tracking**: Allows for live time tracking of projects to boost productivity and collaboration, providing insightful project overviews.<br/>
-**Invoicing**: An upcoming feature that will enable users to create web-based invoices, collaborate in real-time, and synchronize projects seamlessly.<br/>
-**Magic Inbox**: Automatically matches incoming invoices or receipts to the correct transactions, simplifying financial tracking and organization.<br/>
-**Vault**: Secure storage for important files like contracts and agreements, keeping everything in one place for easy access​.<br/>
-**Seamless Export**: Facilitates easy export of financial data, packaged neatly in CSV files for accountants.<br/>
-**Assistant**: Provides tailored insights into financial situations, helping users understand spending patterns, cut costs, and find documents.<br/>
+### **Hub and Spoke Money Market**
+- **Cross-Chain Integration:** Utilizes **CCIP** and **Wormhole** protocols to transport cryptocurrencies between various blockchains in the [Oracle contract](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/evm/src/contracts/priceOracle/BooFiPriceOracle.sol).
+- **Centralized Liquidity Hub:** Aggregates liquidity from multiple L1/L2 blockchains into a central hub, ensuring efficient liquidity management and consensus finalization as per the [Hub contract](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/evm/src/contracts/lendingHub/Hub.sol).
+- **Private Blockchain Connectivity:** Connects to a private blockchain or L1 network (**Avalanche**) to provide robust open banking financial services tailored for fintech as per the [Receiver Subnet contract](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/evm/src/contracts/interchain-messaging/ReceiverOnSubnet.sol).
+- **Liquidator:** A flash-loan liquidator for over collateralized loan liquidation with AAVE and Uniswap liquidity as per the [Liquidator contract](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/evm/src/contracts/LiquidatorFlashLoan.sol) and the Rust liquidator [bot scavenger](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/bots/src/main.rs).
 
-## Recognition
+### **Open Banking L1**
+- **LATAM Fintech Integration:** A private blockchain designed to connect and support fintech companies across Latin America, currently running locally as it needs 5 valdiators to run with contracts running [Teleporter](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/evm/src/contracts/lendingHub/Hub.sol#L655).
+- **CBDC Integration:** Facilitates the incorporation of Central Bank Digital Currencies (CBDCs) from emerging markets, enhancing secure DeFi access.
 
-<a href="https://news.ycombinator.com/item?id=40737901">
-  <img
-    style="width: 250px; height: 54px;" width="250" height="54"
-    alt="Featured on Hacker News"
-    src="https://hackernews-badge.vercel.app/api?id=40737901"
-  />
-</a>
+### **BooFi AI Console**
+- **AI-Powered Assistance:** An AI assistant leveraging OpenAI’s Realtime API to manage Coinbase smart wallets and other financial tools as a [Console](https://github.com/tcxcx/boofi-poc/tree/private-blockchain/boofi-lite/frontend/src/components/blockchain-assistant/boofi-ghost-card).
+- **Real-Time Insights:** Provides users with actionable insights and streamlined wallet management via a Relayer which can connect to the other service providers [Relayer](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/apps/relay-server/index.js).
 
-<a href="https://www.producthunt.com/posts/boofi-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-boofi&#0045;2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=460784&theme=light" alt="BooFi - Run&#0032;your&#0032;business&#0032;smarter | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+### **Payments**
+- **ENS-Based Payments:** Supports payments using `base.ens.names` via Wormhole for seamless transactions for [Payments](https://github.com/tcxcx/boofi-poc/blob/c885a50b1ec3a83652ad6a065a07742292eaf415/boofi-lite/frontend/src/app/%5Blocale%5D/%5Bid%5D/page.tsx#L56).
+- **QR Code Art Generator:** Creates visually appealing QR codes for payment links, enhancing user experience via the [useQrCode hook](https://github.com/tcxcx/boofi-poc/blob/c885a50b1ec3a83652ad6a065a07742292eaf415/boofi-lite/frontend/src/components/framed-qr-art/index.tsx#L12). Check out the (QR Code Art Generator)[https://qrbtf.com/en] to see the potential of this feature.
+- **Peanut Protocol Integration:** Enables USDC link payments through the Peanut Protocol for efficient and secure transactions via the [useDeezNuts hooks](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/frontend/src/hooks/peanut-protocol/use-create-link.ts).
 
-<br/>
+### **Bridge**
+- **USDC Bridging with CCIP:** Ensures smooth and reliable USDC transfers across different blockchain networks using CCIP in the [CCIP Bridge Tab](https://github.com/tcxcx/boofi-poc/tree/private-blockchain/boofi-lite/frontend/src/components/bridge).
 
-## Get started
 
-We are working on the documentation to get started with BooFi for local development: https://docs.boofi.ai
 
-## App Architecture
+## 🛠 Architecture
 
-- Monorepo
-- Bun
-- React
-- TypeScript
-- Nextjs
-- Supabase
-- Shadcn
-- ToDesktop
-- Expo
-- TailwindCSS
+### **Technical Stack**
+- **Blockchain Protocols:** Avalanche, Base, CCIP, Wormhole
+- **AI Integration:** OpenAI Realtime API
+- **Frontend:** Next.js 14, TailwindCSS, Shadcn UI components
+- **Liquidator:** Rust flash-loan liquidator for over collateralized loan liquidation with AAVE and Uniswap liquidity.
+- **AI Voice Relayer:**  AI voice relayer connected to OpenAi's Realtime API for voice assistance.
+- **Backend:** Node.js, Supabase
+- **Oracles:** Chainlink agreggator and Pyth for weighted decentralized data feeds
 
-### Hosting
+## 🔧 Getting Started
 
-- Supabase (database, storage, realtime, auth)
-- Vercel (Website, edge-config, and metrics)
-- Upstash (redis)
+### **Prerequisites**
+- **Node.js:** Version 20.x or later
+- **Package Manager:** bun
 
-### Services
 
-- Trigger.dev (background jobs)
-- Resend (email)
-- Novu (notifications)
-- Github Actions (CI/CD)
-- GoCardLess (Bank connection EU)
-- Plaid (Bank connection in Canada and US)
-- Teller (Bank connection in the US)
-- Loops (Marketing email)
-- OpenPanel (Events and Analytics)
-- Dub (Short URLs)
+## 🧩 Technical Details
 
-## Repo Activity
+### **Hub and Spoke Money Market Model**
+BooFi employs a **Hub and Spoke** architecture to manage liquidity and consensus across multiple blockchains:
+- **Central Hub:** Acts as the liquidity aggregator and consensus finalizer, deployed on a scalable L1 blockchain.
+- **Spokes:** Connect various L1 and L2 blockchains, pulling liquidity into the central hub using CCIP and Wormhole protocols.
+- **Private Blockchain Integration:** Links to a dedicated Open Banking L1, enabling secure DeFi access for LATAM fintech and incorporation of CBDCs.
 
-![Alt](https://repobeats.axiom.co/api/embed/96aae855e5dd87c30d53c1d154b37cf7aa5a89b3.svg "Repobeats analytics image")
+### **BooFi AI Console**
+The AI Console enhances user experience through intelligent assistance:
+- **Real-Time API Integration:** Utilizes OpenAI’s Realtime API to provide instant insights and management tools.
+- **Smart Wallet Management:** Assists users in managing Coinbase smart wallets, offering tailored financial advice and automated transactions.
+
+### **Payments & Bridge**
+BooFi’s payment and bridging solutions ensure seamless and secure transactions:
+- **ENS-Based Payments:** Simplifies USDC transactions using `base.ens.names` via Wormhole.
+- **QR Code Art Generator:** Enhances payment link sharing with customizable QR codes.
+- **Peanut Protocol Integration:** Facilitates easy USDC payments through shareable links.
+- **CCIP Bridge:** Ensures reliable USDC transfers across different blockchain ecosystems.
+
+## 🙏 Verify our [contract deployments](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/contract-deployments.md) by taking a look at the following document
+
+
+## 🙏 Acknowledgments
+
+We extend our gratitude to the following organizations and communities for their support and inspiration:
+
+- **[Sigma Hackathon](https://www.sigma-hackathon.com/):** Thank you for organizing an inspiring event that brought together innovative minds to develop groundbreaking projects like BooFi.
+- **[Wormhole](https://wormholenetwork.com/):** For facilitating seamless cross-chain cryptocurrency transportation.
+- **[Circle](https://www.circle.com/):** For enabling the infrastructure for solving remittances and bringing increased prosperity to all by being able to move money faster, safer with USDC, the digital dollar made for businesses and developers around the world.
+- **[CCIP](https://chain.link/ccip):** For their robust cross-chain interoperability protocols.
+- **[Midday](https://midday.ai/):** For the foundational monorepo structure ready to scale to multidevice development using a smart microservices turborepo architecture.
+- **[Avalanche](https://www.avax.network/):** For providing a scalable and secure blockchain infrastructure for our Open Banking L1.
+- **[Peanut Protocol](https://peanutprotocol.com/):** For enabling efficient USDC link payments.
+- **[Base](https://base.org/):** For providing a scalable and secure blockchain smart wallet infrastructure and compatible wagmi hooks via onchain kit.
+- **[Satoshi Nakamoto](https://bitcoin.org/bitcoin.pdf):** For his gift to mankind and dissapearing.
+
+Special thanks to the contributors and maintainers of the open-source libraries and tools that make BooFi possible.
+s

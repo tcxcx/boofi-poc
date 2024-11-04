@@ -3,9 +3,8 @@ import { Button } from "@/components/ui/button";
 import { base } from "wagmi/chains";
 import { useDeezNuts } from "@/hooks/use-peanut";
 import { Skeleton } from "../ui/skeleton";
-import { toast } from "../ui/use-toast";
-import confetti from "canvas-confetti";
 import { handleConfetti } from "@/utils/confetti";
+
 export default function CoinBaseIdentity({
   address,
   label,
@@ -17,7 +16,7 @@ export default function CoinBaseIdentity({
 
   return (
     <div
-      className=" w-full text-nowrap rounded-3xl  bg-white m-auto flex flex-row items-center justify-center p-4 gap-2"
+      className=" w-full text-nowrap rounded-3xl m-auto flex flex-row items-center justify-center p-4 gap-2"
       onClick={() =>
         handleConfetti(
           address || "",

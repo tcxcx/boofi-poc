@@ -1,3 +1,5 @@
+// useDeezNuts.ts
+
 import { useCallback, useState } from "react";
 import peanut, {
   getRandomString,
@@ -7,36 +9,40 @@ import peanut, {
   prepareTxs,
   getLinksFromTx,
 } from "@squirrel-labs/peanut-sdk";
-import {
-  useAccount,
-  useSendTransaction,
-  useSwitchChain,
-} from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { getChainsForEnvironment } from "@/store/supportedChains";
 import { useTransactionStore } from "@/store/transactionStore";
 import { useToast } from "@/components/ui/use-toast";
-import { PEANUT_API_URL } from "@/lib/constants";
-import { parseEther } from "viem"; // Ensure viem is installed
+import { AbstractSigner, AbstractTransaction } from '@/lib/types';
+import { currencyAddresses } from "@/utils/currencyAddresses";
+import { useEthersSigner } from "@/lib/wagmi/wagmi";
 
 const PEANUTAPIKEY = process.env.NEXT_PUBLIC_DEEZ_NUTS_API_KEY;
-const next_proxy_url = PEANUT_API_URL;
+if (!PEANUTAPIKEY) {
+  throw new Error("Peanut API key not found in environment variables");
+}
+
+
 
 export const useDeezNuts = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { address, isConnected } = useAccount();
-  const { sendTransactionAsync } = useSendTransaction();
+  const chainId = useChainId();
   const { setLoading, setError } = useTransactionStore();
   const { toast } = useToast();
+  const signer = useEthersSigner({ chainId });
 
   /**
    * Retrieves the chain configuration based on the current chain ID.
    */
   const getChainConfig = useCallback((chainId: number) => {
     const supportedChains = getChainsForEnvironment();
+    console.log("Retrieving chain configuration for Chain ID:", chainId);
     const chainConfig = supportedChains.find((c: { id: number }) => c.id === chainId);
     if (!chainConfig) {
       throw new Error(`Unsupported chain ID: ${chainId}`);
     }
+    console.log("Chain configuration found:", chainConfig);
     return chainConfig;
   }, []);
 
@@ -45,7 +51,10 @@ export const useDeezNuts = () => {
    */
   const generatePassword = useCallback(async () => {
     try {
-      return await getRandomString(16);
+      console.log("Generating random password for transaction...");
+      const password = await getRandomString(16);
+      console.log("Password generated:", password);
+      return password;
     } catch (error) {
       console.error("Error generating password:", error);
       throw new Error("Error generating the password.");
@@ -53,52 +62,22 @@ export const useDeezNuts = () => {
   }, []);
 
   /**
-   * Waits for a transaction receipt with a specified timeout.
+   * Determines token details based on its address.
    */
-  const waitForTransactionReceipt = useCallback(
-    async (txHash: string, timeout = 60000): Promise<any> => {
-      const startTime = Date.now();
-
-      return new Promise((resolve, reject) => {
-        const interval = setInterval(async () => {
-          try {
-            const receipt = await fetch(
-              `https://api.${next_proxy_url}/v1/transactions/${txHash}`
-            ).then((res) => res.json());
-
-            if (receipt) {
-              clearInterval(interval);
-              resolve(receipt);
-            } else if (Date.now() - startTime > timeout) {
-              clearInterval(interval);
-              reject(
-                new Error(
-                  `Transaction ${txHash} was not mined within ${
-                    timeout / 1000
-                  } seconds`
-                )
-              );
-            }
-          } catch (error) {
-            console.error("Error checking transaction receipt:", error);
-            // Continue polling
-          }
-        }, 3000); // Poll every 3 seconds
-      });
-    },
-    [next_proxy_url]
-  );
-
-  /**
-   * Determines token details based on its address and chain ID.
-   */
-  const getTokenDetails = useCallback((tokenAddress: string, chainId: number | string) => {
+  const getTokenDetails = useCallback((tokenAddress: string) => {
+    console.log("Getting token details for tokenAddress:", tokenAddress);
     if (tokenAddress === "0x0000000000000000000000000000000000000000") {
       return { tokenType: 0, tokenDecimals: 18 }; // Native token (e.g., ETH)
+    } else if (
+      tokenAddress.toLowerCase() ===
+      currencyAddresses[chainId]?.USDC.address.toLowerCase()
+    ) {
+      return { tokenType: 1, tokenDecimals: 6 }; // USDC
     } else {
-      return { tokenType: 1, tokenDecimals: 18 }; // ERC20 token (assuming 18 decimals)
+      // Add other ERC20 tokens here if needed
+      return { tokenType: 1, tokenDecimals: 18 }; // Default ERC20
     }
-  }, []);
+  }, [chainId]);
 
   /**
    * Generates link details required for creating a payment link.
@@ -114,19 +93,27 @@ export const useDeezNuts = () => {
       chainId: number;
     }) => {
       try {
-        const tokenDetails = getTokenDetails(tokenAddress, chainId);
+        console.log(
+          "Generating link details with tokenValue:",
+          tokenValue,
+          "tokenAddress:",
+          tokenAddress
+        );
+        const tokenDetails = getTokenDetails(tokenAddress);
         const baseUrl = `${window.location.origin}/claim`;
 
         const linkDetails: peanutInterfaces.IPeanutLinkDetails = {
           chainId: chainId.toString(),
-          tokenAmount: parseFloat(Number(tokenValue).toFixed(6)),
+          tokenAmount: parseFloat(
+            Number(tokenValue).toFixed(tokenDetails.tokenDecimals)
+          ),
           tokenType: tokenDetails.tokenType,
           tokenAddress: tokenAddress,
           tokenDecimals: tokenDetails.tokenDecimals,
           baseUrl: baseUrl,
           trackId: "ui",
         };
-
+        console.log("Generated link details:", linkDetails);
         return linkDetails;
       } catch (error) {
         console.error("Error generating link details:", error);
@@ -148,18 +135,22 @@ export const useDeezNuts = () => {
       password: string;
     }) => {
       try {
+        console.log(
+          "Preparing deposit transactions with linkDetails:",
+          linkDetails
+        );
         if (!isConnected || !address) {
           throw new Error("Wallet not connected.");
         }
 
         const userAddress = address as `0x${string}`;
 
-        const prepareTxsResponse = await prepareTxs({
+        const prepareTxsResponse = await peanut.prepareTxs({
           address: userAddress,
           linkDetails: linkDetails,
           passwords: [password],
         });
-
+        console.log("Prepared deposit transactions:", prepareTxsResponse);
         return prepareTxsResponse;
       } catch (error) {
         console.error("Error in prepareDepositTxs:", error);
@@ -176,6 +167,7 @@ export const useDeezNuts = () => {
     async (
       amount: string,
       tokenAddress: string,
+      chainId: number,
       onInProgress?: () => void,
       onSuccess?: () => void,
       onFailed?: (error: Error) => void,
@@ -190,48 +182,50 @@ export const useDeezNuts = () => {
           throw new Error("Wallet not connected.");
         }
 
-        // Parse chainId from window.ethereum.chainId (hex to decimal)
-        const chainIdHex = window.ethereum?.chainId;
-        const chainId = chainIdHex ? parseInt(chainIdHex, 16) : 1; // Default to Ethereum Mainnet
-        const chainConfig = getChainConfig(chainId);
+        if (!signer) {
+          throw new Error("No signer available");
+        }
+
+        const chainConfig = getChainConfig(chainId || 84532);
 
         const linkDetails = generateLinkDetails({
           tokenValue: amount,
           tokenAddress,
-          chainId,
+          chainId: chainConfig.id,
         });
 
         const password = await generatePassword();
 
         const preparedTransactions = await prepareDepositTxs({
-          linkDetails,
-          password,
+          linkDetails: linkDetails,
+          password: password,
         });
 
         const transactionHashes: string[] = [];
+        console.log("Sending prepared transactions...");
 
         for (const unsignedTx of preparedTransactions.unsignedTxs) {
-          const txHash = await sendTransactionAsync({
-            to: unsignedTx.to as `0x${string}`,
-            data: unsignedTx.data as `0x${string}`,
-            value: unsignedTx.value
-              ? parseEther(unsignedTx.value.toString())
-              : undefined,
-          });
+          const abstractTx: AbstractTransaction = {
+            to: unsignedTx.to as string,
+            data: unsignedTx.data as string,
+            value: unsignedTx.value ? BigInt(unsignedTx.value.toString()) : undefined,
+          };
 
+          console.log("Sending abstract transaction:", abstractTx);
+
+          const txResponse = await signer.sendTransaction(abstractTx);
+          const txHash = txResponse.hash;
+          console.log("Transaction sent, txHash:", txHash);
           transactionHashes.push(txHash);
           onInProgress?.();
         }
-
-        const lastTxHash = transactionHashes[transactionHashes.length - 1];
-
-        // Wait for the last transaction to be mined
-        const receipt = await waitForTransactionReceipt(lastTxHash);
-
-        const { links } = await getLinksFromTx({
+      
+        const { links } = await peanut.getLinksFromTx({
           linkDetails: linkDetails,
           passwords: [password],
-          txHash: lastTxHash as `0x${string}`,
+          txHash: transactionHashes[
+            transactionHashes.length - 1
+          ] as `0x${string}`,
         });
 
         toast({
@@ -240,11 +234,11 @@ export const useDeezNuts = () => {
         });
         onSuccess?.();
         return {
-          transactionHash: lastTxHash,
+          transactionHash: transactionHashes[transactionHashes.length - 1],
           paymentLink: links[0],
         };
       } catch (error: any) {
-        console.error("Error creating paylink:", error);
+        console.error("Error creating pay link:", error);
         const errorMessage =
           error instanceof Error ? error.message : String(error);
         setError(errorMessage);
@@ -259,19 +253,20 @@ export const useDeezNuts = () => {
         setIsLoading(false);
         setLoading(false);
         onFinished?.();
+        console.log("Pay link creation process completed.");
       }
     },
     [
       isConnected,
       address,
+      signer,
       getChainConfig,
       generateLinkDetails,
       prepareDepositTxs,
-      sendTransactionAsync,
       toast,
-      waitForTransactionReceipt,
       setError,
       setLoading,
+      getTokenDetails,
     ]
   );
 
@@ -295,7 +290,7 @@ export const useDeezNuts = () => {
           throw new Error("Wallet not connected.");
         }
 
-        const claimedLinkResponse = await claimLinkGasless({
+        const claimedLinkResponse = await peanut.claimLinkGasless({
           link,
           APIKey: PEANUTAPIKEY as string,
           recipientAddress: address as `0x${string}`,
@@ -360,12 +355,12 @@ export const useDeezNuts = () => {
           throw new Error("Wallet not connected.");
         }
 
-        const claimedLinkResponse = await claimLinkXChainGasless({
+        const claimedLinkResponse = await peanut.claimLinkXChainGasless({
           link,
           APIKey: PEANUTAPIKEY as string,
           recipientAddress: address as `0x${string}`,
           destinationChainId, // ID of the destination chain
-          destinationToken,   // Address of the token on the destination chain
+          destinationToken, // Address of the token on the destination chain
           isMainnet: true,
           slippage: 1,
         });
@@ -442,13 +437,12 @@ export const useDeezNuts = () => {
 
   return {
     isLoading,
-    currentChainId: window.ethereum ? parseInt(window.ethereum.chainId, 16) : null, // Simplified chain ID retrieval
     address,
     createPayLink,
-    claimPayLinkXChain,
     claimPayLink,
+    claimPayLinkXChain,
     copyToClipboard,
     truncateHash,
-    // Optionally expose sendTransaction if needed elsewhere
+    currentChainId: chainId,
   };
 };
