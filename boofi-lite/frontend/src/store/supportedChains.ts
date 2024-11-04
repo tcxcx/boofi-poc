@@ -10,25 +10,18 @@ import { Environment, getCurrentEnvironment } from "./environment";
 // The list of supported Chains for a given environment
 export const SUPPORTED_CHAINS: Record<Environment, [Chain, ...Chain[]]> = {
   [Environment.localhost]: [
-    sepolia,
-    optimismSepolia,
     baseSepolia,
     avalancheFuji
   ],
   [Environment.development]: [
-    sepolia,
-    optimismSepolia,
     avalancheFuji,
     baseSepolia,
   ],
   [Environment.staging]: [
-    sepolia,
-    optimismSepolia,
+    avalancheFuji,
     baseSepolia,
   ],
   [Environment.production]: [
-    sepolia,
-    optimismSepolia,
     baseSepolia,
     avalancheFuji
   ],

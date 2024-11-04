@@ -34,7 +34,7 @@ export function useWagmiConfig() {
         },
       ],
       {
-        appName: 'BooFi | Spooky Crypto Finance Made Easy',
+        appName: 'BooFi',
         projectId,
       },
     );

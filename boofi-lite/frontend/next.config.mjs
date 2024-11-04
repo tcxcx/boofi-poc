@@ -13,6 +13,11 @@ const config = {
         port: "3000",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "dynamic-assets.coinbase.com",
+        pathname: "**",
+      },
     ],
   },
   experimental: {},

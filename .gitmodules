@@ -1,3 +1,21 @@
 [submodule "boofi-lite/contracts/foundry/lib/forge-std"]
 	path = boofi-lite/contracts/foundry/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "boofi-lite/contracts/new-contracts/lib/forge-std"]
+	path = boofi-lite/contracts/new-contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "boofi-lite/contracts/new-contracts/lib/openzeppelin-contracts"]
+	path = boofi-lite/contracts/new-contracts/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "boofi-lite/contracts/new-contracts/lib/wormhole-solidity-sdk"]
+	path = boofi-lite/contracts/new-contracts/lib/wormhole-solidity-sdk
+	url = https://github.com/wormhole-foundation/wormhole-solidity-sdk
+[submodule "boofi-lite/contracts/new-contracts/lib/aave-v3-core"]
+	path = boofi-lite/contracts/new-contracts/lib/aave-v3-core
+	url = https://github.com/aave/aave-v3-core
+[submodule "boofi-lite/contracts/new-contracts/lib/chainlink"]
+	path = boofi-lite/contracts/new-contracts/lib/chainlink
+	url = https://github.com/smartcontractkit/chainlink
+[submodule "boofi-lite/contracts/new-contracts/lib/ccip"]
+	path = boofi-lite/contracts/new-contracts/lib/ccip
+	url = https://github.com/smartcontractkit/ccip
