@@ -177,6 +177,8 @@ export const useDeezNuts = () => {
     ) => {
       setIsLoading(true);
       setLoading(true);
+
+      console.log("Creating pay link with amount:", amount);
       try {
         if (!isConnected || !address) {
           throw new Error("Wallet not connected.");
@@ -345,7 +347,7 @@ export const useDeezNuts = () => {
       onSuccess?: () => void,
       onFailed?: (error: Error) => void,
       onFinished?: () => void
-    ) => {
+    ) => {  
       setIsLoading(true);
       setLoading(true);
       setError(null);

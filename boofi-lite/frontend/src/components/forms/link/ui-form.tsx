@@ -1,8 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import CurrencyDisplayer from "@/components/currency";
 import { LinkUiFormProps } from "@/lib/types";
-
 
 export default function LinkUiForm({
   tokenAmount,
@@ -13,6 +11,7 @@ export default function LinkUiForm({
   handleCreateLinkClick,
   isPeanutLoading,
 }: LinkUiFormProps) {
+  console.log("Token amount:", tokenAmount);
   return (
     <>
       <div className="flex w-full md:h-[300px] lg:h-[400px] flex-col justify-between rounded-2xl border bg-background">

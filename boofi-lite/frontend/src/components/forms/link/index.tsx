@@ -32,7 +32,8 @@ export default function LinkForm() {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [usdAmount, setUsdAmount] = useState<number>(0);
   const [tokenAmount, setTokenAmount] = useState<number>(0);
-  const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
+  const [transactionDetails, setTransactionDetails] =
+    useState<TransactionDetails | null>(null);
   const [showSentTable, setShowSentTable] = useState(false);
   const [selectedToken, setSelectedToken] = useState<string>("ETH");
   const [currentText, setCurrentText] = useState<string>("");
@@ -42,13 +43,19 @@ export default function LinkForm() {
     ETH: "0x0000000000000000000000000000000000000000",
   };
 
-  const handleCreateLinkClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCreateLinkClick = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     setOverlayVisible(true);
 
     // Ensure we are on Base Sepolia (ID: 84532) before proceeding
     if (!chainId || chainId !== defaultChainId) {
-      console.log("Current chain ID:", chainId, "Switching to Base Sepolia network (ID: 84532)...");
+      console.log(
+        "Current chain ID:",
+        chainId,
+        "Switching to Base Sepolia network (ID: 84532)..."
+      );
       try {
         await switchChain({ chainId: defaultChainId });
         console.log("Successfully switched to Base Sepolia network.");
@@ -56,7 +63,8 @@ export default function LinkForm() {
         console.error("Failed to switch network:", error);
         toast({
           title: "Network Switch Failed",
-          description: "Please switch to the Base Sepolia network to create a payment link.",
+          description:
+            "Please switch to the Base Sepolia network to create a payment link.",
           variant: "destructive",
         });
         setOverlayVisible(false);
@@ -64,15 +72,22 @@ export default function LinkForm() {
       }
     }
 
-
     try {
-      const tokenAddress = availableTokens[selectedToken as keyof typeof availableTokens];
+      const tokenAddress =
+        availableTokens[selectedToken as keyof typeof availableTokens];
       if (!tokenAddress) {
-        throw new Error(`Token ${selectedToken} is not supported on this network.`);
+        throw new Error(
+          `Token ${selectedToken} is not supported on this network.`
+        );
       }
 
       setCurrentText("In Progress...");
-      console.log("Calling createPayLink with tokenAmount:", tokenAmount, "and token:", selectedToken);
+      console.log(
+        "Calling createPayLink with tokenAmount:",
+        tokenAmount,
+        "and token:",
+        selectedToken
+      );
 
       const linkResponse = await createPayLink(
         tokenAmount.toString(),
@@ -115,9 +130,15 @@ export default function LinkForm() {
   const handleShare = (platform: string) => {
     const url = transactionDetails?.paymentLink;
     if (platform === "whatsapp") {
-      window.open(`https://wa.me/?text=${encodeURIComponent(url || "")}`, "_blank");
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(url || "")}`,
+        "_blank"
+      );
     } else if (platform === "telegram") {
-      window.open(`https://t.me/share/url?url=${encodeURIComponent(url || "")}`, "_blank");
+      window.open(
+        `https://t.me/share/url?url=${encodeURIComponent(url || "")}`,
+        "_blank"
+      );
     }
   };
 
