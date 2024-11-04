@@ -9,6 +9,7 @@ BooFi is a cutting-edge platform developed for Wormhole's **Sigma Sprint Hackath
 ## 🚀 Features
 
 ### **Hub and Spoke Money Market**
+
 - **Cross-Chain Integration:** Utilizes **CCIP** and **Wormhole** protocols to transport cryptocurrencies between various blockchains in the [Oracle contract](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/evm/src/contracts/priceOracle/BooFiPriceOracle.sol).
 - **Centralized Liquidity Hub:** Aggregates liquidity from multiple L1/L2 blockchains into a central hub, ensuring efficient liquidity management and consensus finalization as per the [Hub contract](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/evm/src/contracts/lendingHub/Hub.sol).
 - **Private Blockchain Connectivity:** Connects to a private blockchain or L1 network (**Avalanche**) to provide robust open banking financial services tailored for fintech as per the [Receiver Subnet contract](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/evm/src/contracts/interchain-messaging/ReceiverOnSubnet.sol).
@@ -29,8 +30,6 @@ BooFi is a cutting-edge platform developed for Wormhole's **Sigma Sprint Hackath
 
 ### **Bridge**
 - **USDC Bridging with CCIP:** Ensures smooth and reliable USDC transfers across different blockchain networks using CCIP in the [CCIP Bridge Tab](https://github.com/tcxcx/boofi-poc/tree/private-blockchain/boofi-lite/frontend/src/components/bridge).
-
-
 
 ## 🛠 Architecture
 
@@ -73,6 +72,9 @@ BooFi’s payment and bridging solutions ensure seamless and secure transactions
 ## 🙏 Verify our [contract deployments](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/contract-deployments.md) by taking a look at the following document
 
 
+## Smart contract architecture
+![Architecture](boofi-architecture-extended.png)
+
 ## 🙏 Acknowledgments
 
 We extend our gratitude to the following organizations and communities for their support and inspiration:
@@ -88,4 +90,4 @@ We extend our gratitude to the following organizations and communities for their
 - **[Satoshi Nakamoto](https://bitcoin.org/bitcoin.pdf):** For his gift to mankind and dissapearing.
 
 Special thanks to the contributors and maintainers of the open-source libraries and tools that make BooFi possible.
-s
+
