@@ -49,7 +49,10 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
   const { data: balance, isLoading: wagmiLoading } = useBalance({
     address,
     chainId,
-    token: selectedToken !== "ETH" ? `0x${availableTokens[selectedToken]}` : undefined,
+    token:
+      selectedToken !== "ETH"
+        ? `0x${availableTokens[selectedToken]}`
+        : undefined,
   });
 
   const supportedChains = getChainsForEnvironment();
@@ -83,7 +86,7 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
     if (/^\d*\.?\d*$/.test(value) || value === "") {
       setInputValue(value);
       const numericValue = parseFloat(value);
-      onValueChange(numericValue || 0, numericValue !== undefined ? 1 : 0);
+      onValueChange(numericValue || 0, numericValue);
     }
   };
 
@@ -154,7 +157,10 @@ const CurrencyDisplayer: React.FC<CurrencyDisplayerProps> = ({
         {renderAvailableBalance()}
       </div>
 
-      <Select onValueChange={handleSelectChange} value={selectedToken.toLowerCase()}>
+      <Select
+        onValueChange={handleSelectChange}
+        value={selectedToken.toLowerCase()}
+      >
         <SelectTrigger className="w-full border-transparent flex justify-between">
           <SelectValue>
             {selectedToken && currentNetwork && (

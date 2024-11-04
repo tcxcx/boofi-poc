@@ -1,14 +1,15 @@
 {
   "6": {
     "networkName": "Avalanche testnet fuji",
-    "CrossChainSender": "0x57A68e2bf5688850f60d39a3AaB657aB66Ad2829",
-    "deployedAt": "2024-10-27T03:10:19.205Z",
-    "CrossChainReceiver": "0x671F625A1f872776cC7716340cD3Df6A0A26283d"
+    "CrossChainSender": "0x39E052d2e4B0805d56f26292C44eDFA0173C8E4C",
+    "deployedAt": "2024-10-31T20:48:24.122Z",
+    "CrossChainReceiver": "0x84f597AEcC19925070974c8EeDAa38E535430c5e",
+    "CCIPSenderMiniApp": "0x445A24f04A2d31DE7f02d38875551Be1E0b3Cc95"
   },
   "14": {
     "networkName": "Celo Testnet",
-    "CrossChainReceiver": "0x725B9404daC1DCb536a93EDcB497a6aa4263421a",
-    "deployedAt": "2024-10-26T18:09:48.391Z",
+    "CrossChainReceiver": "0xacfD21d6C63f63617c90B29C73b32E5068ca4062",
+    "deployedAt": "2024-10-31T19:35:26.862Z",
     "CrossChainSender": "0xA6CBE2f75d758101D383e2e5C956E377451eA694"
   },
   "30": {
@@ -20,5 +21,11 @@
     "networkName": "Sepolia - Ethereum",
     "deployedAt": "2024-10-27T03:10:19.205Z",
     "CrossChainSender": "0x4E837fE72325ADC1Bc634Ac9787E0f55106a6D58"
+  },
+  "10004": {
+    "networkName": "Sepolia - Base",
+    "deployedAt": "2024-10-31T20:48:24.120Z",
+    "CrossChainReceiver": "0x88Ab79411cDc6A17cA1D8233A505FC4d41BC7f80",
+    "CrossChainSender": "0x30F396A426036dA0b2346185d3c1a19D78f86F13"
   }
 }

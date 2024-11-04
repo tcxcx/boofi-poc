@@ -22,7 +22,7 @@ const BLOCKSCOUT_EXPLORERS: Record<number, string> = {
   420: "https://optimism-sepolia.blockscout.com",
   84532: "https://base-sepolia.blockscout.com",
   11155111: "https://sepolia.blockscout.com",
-  43113: "https://testnet.avascan.info"
+  43113: "https://testnet.avascan.info",
 };
 
 export function getBlockExplorerUrl(chain: Chain): string {
@@ -45,7 +45,6 @@ export function getChainInfoByChainId(chainId: number | string) {
     chainIcon,
   };
 }
-
 
 export default function ClaimForm({
   claimId: initialClaimId,
@@ -367,10 +366,11 @@ export default function ClaimForm({
                                             width={24}
                                             height={24}
                                             priority
-                                            alt={`${getChainInfoByChainId(
-                                              Number(destinationChainId)
-                                            ).chainName
-                                              } Logo`}
+                                            alt={`${
+                                              getChainInfoByChainId(
+                                                Number(destinationChainId)
+                                              ).chainName
+                                            } Logo`}
                                           />
                                         </div>
                                         <div className="flex-1">

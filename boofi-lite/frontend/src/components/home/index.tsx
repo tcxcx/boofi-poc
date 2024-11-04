@@ -1,20 +1,25 @@
 "use client"
 
-import React, { Suspense, useState, useEffect } from "react"
-import { Translations } from "@/lib/types/translations"
-import { useAccount } from "wagmi"
-import { NotConnectedHome } from "../tab-content/not-connected"
-import { PaymentLinkTabContent } from "../tab-content/payments-tab"
-import { Tabs, TabsContent, TabsList, TabsTriggerAlt } from "@/components/ui/tabs"
-import { Button } from "../ui/button"
-import MoneyMarketBentoGrid from "../money-market"
-import { useTabStore } from "@/store/tabStore"
-import { PaymentLinkSkeleton } from "@/components/tab-content/money-market/payment-skeleton"
-import { MoneyMarketBentoSkeleton } from "@/components/tab-content/money-market/money-market-skeleton"
-import { GridSmall } from "../ui/bg-dot"
-import TokenSwap from "@/components/token-swap"
-import TokenSwapSkeleton from "@/components/token-swap/token-swap-skeleton"
+import React, { Suspense, useState, useEffect } from "react";
+import { Translations } from "@/lib/types/translations";
+import { useAccount } from "wagmi";
+import { NotConnectedHome } from "../tab-content/not-connected";
+import { PaymentLinkTabContent } from "../tab-content/payments-tab";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTriggerAlt,
+} from "@/components/ui/tabs";
+import { Button } from "../ui/button";
+import MoneyMarketBentoGrid from "../money-market";
+import { useTabStore } from "@/store/tabStore";
 import { LottieWrapper } from "@/components/lottie-wrapper"
+import { PaymentLinkSkeleton } from "@/components/tab-content/money-market/payment-skeleton";
+import { MoneyMarketBentoSkeleton } from "@/components/tab-content/money-market/money-market-skeleton";
+import { GridSmall } from "../ui/bg-dot";
+import TokenSwap from "@/components/swap";
+import TokenSwapSkeleton from "@/components/token-swap/token-swap-skeleton";
 
 interface HomeContentProps {
   translations: Translations["Home"]

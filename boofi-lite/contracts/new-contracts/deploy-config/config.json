@@ -36,27 +36,19 @@
     },
     {
       "description": "Goerli - Base",
-      "chainId": 30,
+      "chainId": 10004,
       "rpc": "https://base-sepolia.infura.io/v3/",
-      "tokenBridge": "0xA31aa3FDb7aF7Db93d18DDA4e19F811342EDF780",
-      "wormholeRelayer": "0xea8029CD7FCAEFFcD1F53686430Db0Fc8ed384E1",
-      "wormhole": "0x23908A62110e21C04F3A4e011d24F901F911744A"
+      "tokenBridge": "0x86F55A04690fd7815A3D802bD587e83eA888B239",
+      "wormholeRelayer": "0x93BAD53DDfB6132b0aC8E37f6029163E63372cEE",
+      "wormhole": "0x79A1027a6A159502049F10906D333EC57E95F083"
     },
     {
-      "description": "Sepolia - Ethereum",
-      "chainId": 10002,
-      "rpc": "https://sepolia.infura.io/v3/",
-      "tokenBridge": "0xDB5492265f6038831E89f495670FF909aDe94bd9",
-      "wormholeRelayer": "0x7B1bD7a6b4E61c2a123AC6BC2cbfC614437D0470",
-      "wormhole": "0x4a8bc80Ed5a4067f1CCf107057b8270E0cC11A78"
-    },
-    {
-      "description": "Polygon mainnet",
-      "chainId": 5,
-      "rpc": "https://polygon-rpc.com",
-      "tokenBridge": "0x5a58505a96D1dbf8dF91cB21B54419FC36e93fdE",
-      "wormholeRelayer": "0x27428DD2d3DD32A4D7f7C497eAaa23130d894911",
-      "wormhole": "0x7A4B5a56256163F07b2C80A7cA55aBE66c4ec4d7"
+      "description": "Sepolia - Base",
+      "chainId": 10004,
+      "rpc": "https://base-sepolia.infura.io/v3/",
+      "tokenBridge": "0x86F55A04690fd7815A3D802bD587e83eA888B239",
+      "wormholeRelayer": "0x93BAD53DDfB6132b0aC8E37f6029163E63372cEE",
+      "wormhole": "0x79A1027a6A159502049F10906D333EC57E95F083"
     }
   ]
 }

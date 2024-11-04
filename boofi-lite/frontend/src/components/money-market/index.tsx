@@ -4,7 +4,8 @@ import React from 'react';
 import { BentoGrid, BentoGridItem } from "@/components/bento-grid";
 import MoneyMarketTabs from './bento-1/index';
 import ApyAssets from './bento-2/market-info/index';
-import BooFiAiAssistant from './bento-3/boofi-ai-assistant/index';
+// import BooFiAiAssistant from './bento-3/boofi-ai-assistant/index';
+import { BooFiConsole } from '@/components/blockchain-assistant/boofi-ghost-card/console';
 import PositionSummary from './bento-4/market-positions-table/index';
 
 export default function MoneyMarketBentoGrid() {
@@ -31,7 +32,7 @@ export default function MoneyMarketBentoGrid() {
         className="md:col-span-1"
         title={null}
         description={null}
-        header={<BooFiAiAssistant />}
+        header={<BooFiConsole />}
         icon={null}
       />
 

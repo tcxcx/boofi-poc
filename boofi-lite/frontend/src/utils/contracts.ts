@@ -83,9 +83,9 @@ export const wormHoleContracts: {
 } = {
   "43113": {
     networkName: "Avalanche testnet fuji",
-    CrossChainSender: "0x45D2A82b57C20C73263b74dd50E9b99aE33b44C6",
+    CrossChainSender: "0x39E052d2e4B0805d56f26292C44eDFA0173C8E4C",
     wormholeChainId: 6,
-    CrossChainReceiver: "0x46c46f96Fa488cb491353804528C8591E2E2D9eA",
+    CrossChainReceiver: "0x84f597AEcC19925070974c8EeDAa38E535430c5e", ////base receiver
   },
   "14": {
     networkName: "Celo Testnet",
@@ -95,10 +95,39 @@ export const wormHoleContracts: {
   },
   "84532": {
     networkName: "Sepolia - Base",
-    CrossChainSender: "0xC6FBC15C69485e502D9B3DA2b07450f531C88c46",
+    CrossChainReceiver: "0x88Ab79411cDc6A17cA1D8233A505FC4d41BC7f80",
     wormholeChainId: 10004,
-    CrossChainReceiver: "0x243028E87f55CCdd444Adb31B4f040cc35aAded5",
+    CrossChainSender: "0x30F396A426036dA0b2346185d3c1a19D78f86F13", /// avalanche sender
   },
+};
+//// todo unify chains arr and tokens arr
+export const destinationChains = [
+  {
+    address: "0xA9fB4A1a42BA87e1590cd0F55A11a96071d2D943", /// address to interact with on avalanche fuji
+    ccipChainId: 14767482510784806043n, //// ccip chain id for avalanche fuji
+    name: "Avalanche Fuji",
+    chainId: 43113,
+  },
+  {
+    address: "0x0000000000000000000000000000000000000000", // this chain is only used for ccip
+    ccipChainId: 16015286601757825753n, //// ccip chain id for sepolia
+    name: "Sepolia",
+    chainId: 11155111, // chain id for sepolia
+  },
+  {
+    address: "0x480f9F2Fe22cB70C92058f34d5E89F0D8441146d", // base sepolia
+    ccipChainId: 10344971235874465080n, // ccip chain id for base sepolia
+    name: "Base Sepolia", // name of the chain
+    chainId: 84532, // decimal chain id for base sepolia
+  },
+];
+
+export const getCCIPChainByChainId = ({
+  chainId,
+}: {
+  chainId: number | null;
+}) => {
+  return destinationChains.find((chain) => chain.chainId === chainId);
 };
 
 export const getWormHoleContractsByNetworkName = ({
