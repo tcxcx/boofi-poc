@@ -8,7 +8,6 @@ import {
   useAccount,
   useChainId,
   useSwitchChain,
-  useWriteContract,
 } from "wagmi";
 import type { Token } from "@coinbase/onchainkit/token";
 import { ETHToken, testnetTokensByChainId, USDCToken } from "@/utils/tokens";
@@ -23,10 +22,12 @@ import { Button } from "../ui/button";
 import { CCIPTransferAbi } from "@/lib/abi/CCIP";
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
 import { parseUnits } from "viem"; 
+import { useToast } from "@/components/ui/use-toast";
 
 export default function TokenSwap() {
   const { address } = useAccount();
   const chainId = useChainId();
+  const { toast } = useToast();
   const tokens = testnetTokensByChainId(chainId);
   const [fromToken, setFromToken] = useState<Token>(tokens[0]);
   const [fromAmount, setFromAmount] = useState<string>("");
@@ -61,14 +62,40 @@ export default function TokenSwap() {
     setToAmount(amount);
   };
 
+
   function handleToggle() {
-    setSourceChain(destinationChain);
-    switchChain({ chainId: Number(destinationChain) });
-    setDestinationChain(chainId);
-    if (destinationChain === sourceChain) {
+    if (sourceChain && destinationChain && sourceChain === destinationChain) {
+      console.warn("Source and destination chains cannot be the same.");
+      return; // Exit the function early if they are the same
+    }
+  
+    if (sourceChain && destinationChain && sourceChain !== destinationChain) {
+      const currentSource = sourceChain;
+      const currentDestination = destinationChain;
+  
+      // Find the name of the network for the current destination chain
+      const destinationChainName = chains.find(
+        (chain) => chain.chainId === Number(currentDestination)
+      )?.name || `Chain ID ${currentDestination}`;
+  
+      // Display a toast before switching networks
+      toast({
+        title: "Switching Network",
+        description: `Switching network to ${destinationChainName}. Please check your wallet to allow network change.`,
+      });
+  
+      setSourceChain(currentDestination);
+      setDestinationChain(currentSource);
+  
+      // Switch chain to the new source chain
+      switchChain({ chainId: Number(currentDestination) });
+    } else {
+      // Reset to initial state if toggling results in the same chain
+      setSourceChain(String(chainId));
       setDestinationChain(null);
     }
   }
+  
 
   // function approveToken() {
   //   if (!fromAmount) return;
@@ -80,6 +107,7 @@ export default function TokenSwap() {
   //     args: [actualChain?.address as Hex, amount],
   //   });
   // }
+
   const signer = useEthersSigner();
   async function sendCCIPTransfer() {
     const amount = parseUnits(toAmount, tokens[0]?.decimals);
@@ -172,7 +200,7 @@ export default function TokenSwap() {
             }
           }}
           chains={chains}
-          label="Destination Chain"
+          label="Bridge USDC to:"
         />
       </div>
       <SwapAmountInput
@@ -186,7 +214,7 @@ export default function TokenSwap() {
           "mb-2 p-4 bg-card dark:bg-darkCard border-2 border-border dark:border-darkBorder rounded-md",
           "focus-within:shadow-light dark:focus-within:shadow-dark"
         )}
-        address={address}
+        address={address || ''}
         handleAmountChange={handleFromAmountChange}
         amountUSD={"100"} // Reemplaza con la lógica para convertir la cantidad a USD
         loading={false}

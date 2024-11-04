@@ -121,6 +121,9 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
       </Transaction> */}
 
       <Button
+        variant="brutalism"
+        className="w-full p-4 justify-center bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
+
         onClick={() =>
           writeContract({
             address: "0xA8f6Db88D79bcA5F1990C93b6a6eA5866722d198",

@@ -6,7 +6,6 @@ import '@/components/blockchain-assistant/boofi-ghost-card/styles.scss';
 
 export default function BooFiGhostCard() {
   const {
-    getClient,
     isReady,
   } = useRealtimeClient();
 

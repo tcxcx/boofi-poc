@@ -1,9 +1,12 @@
-import React from "react";
+'use client';
+
+import React, { Suspense } from "react";
 import { Translations } from "@/lib/types/translations";
 import PaymentLink from "@/components/payment-link-card";
 import SendPayment from "@/components/forms/send";
 import { Tabs, TabsContent, TabsList, TabsTriggerRight } from '@/components/ui/tabs';
 import {BaseNameDialogAlert } from "@/components/ens-alert-dialog";
+import SelectPaymentSkeleton from "./select-payment-skeleton";
 
 interface HomeContentProps {
   translations: Translations["Home"];
@@ -24,10 +27,14 @@ export const PaymentLinkTabContent: React.FC<HomeContentProps> = ({ translations
           </TabsTriggerRight>
         </TabsList>
         <TabsContent value="send-payment">
-          <SendPayment />
+          <Suspense fallback={<SelectPaymentSkeleton />}>
+            <SendPayment />
+          </Suspense>
         </TabsContent>
         <TabsContent value="payment-link">
-          <PaymentLink />
+          <Suspense fallback={<SelectPaymentSkeleton />}>
+            <PaymentLink />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </>

@@ -7,7 +7,7 @@ export const toggleSvg = (
     width="16"
     height="17"
     viewBox="0 0 16 17"
-    fill="none"
+    fill="black"
     xmlns="http://www.w3.org/2000/svg"
     data-testid="ock-toggleSvg"
   >
@@ -22,7 +22,7 @@ export const toggleSvg = (
         <rect
           width="16"
           height="16"
-          fill="white"
+          fill="black"
           transform="translate(0 0.5)"
         />
       </clipPath>

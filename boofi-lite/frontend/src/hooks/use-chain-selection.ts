@@ -16,11 +16,11 @@ export const useChainSelection = () => {
     const fromChains = getFromChains(currentViewTab, chains);
     const toChains = getToChains(currentViewTab, chains);
 
-    // Only set default chains if they are not already set
-    if (!fromChain) {
+    // Ensure chains are populated based on the current tab
+    if (!fromChain || !fromChains.find(chain => chain.chainId.toString() === fromChain)) {
       setFromChain(fromChains[0]?.chainId.toString() || '');
     }
-    if (!toChain) {
+    if (!toChain || !toChains.find(chain => chain.chainId.toString() === toChain)) {
       setToChain(toChains[0]?.chainId.toString() || '');
     }
   }, [currentViewTab, setFromChain, setToChain, fromChain, toChain]);

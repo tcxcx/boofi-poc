@@ -205,13 +205,7 @@
           max-height: 200px;
           border-top: 1px solid #e7e7e7;
         }
-        .smart-wallet-gif {
-          width: 200px;
-          margin: 20px auto;
-          border-radius: 10px;
-          overflow: hidden;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+ 
         .smart-wallet-info {
           max-width: 600px;
           margin: 20x auto;
@@ -368,7 +362,7 @@
   
     .visualization {
       display: flex;
-      gap: 16px;
+      gap: 6px;
       .visualization-entry {
         position: relative;
         display: flex;
@@ -408,7 +402,7 @@
   
           .large-button-blue {
             font-size: 16px;
-            padding: 12px 24px;
+            padding: 12px 12px;
             min-width: 200px;
             height: auto;
             transition: all 0.3s ease;
@@ -432,7 +426,7 @@
   
           .large-button-blue {
             font-size: 20px;
-            padding: 12px 24px;
+            padding: 12px 12px;
             min-width: 260px;
             height: auto;
             transition: all 0.3s ease;

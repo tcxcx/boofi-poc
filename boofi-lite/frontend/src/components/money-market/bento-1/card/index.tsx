@@ -1,4 +1,3 @@
-// frontend/src/components/money-market/MoneyMarketCard.tsx
 
 "use client";
 
@@ -14,7 +13,6 @@ import { ChainSelect } from "@/components/chain-select";
 import { BalanceDisplay } from "@/components/balance-display";
 import { getUSDCAddress } from "@/lib/utils";
 import { TransactionError } from "@/lib/types";
-
 export function MoneyMarketCard() {
   const { address } = useAccount();
   const {
@@ -27,6 +25,14 @@ export function MoneyMarketCard() {
     toChains,
   } = useChainSelection();
 
+  if (!fromChain && fromChains.length > 0) {
+    setFromChain(fromChains[0].chainId.toString());
+  }
+
+  if (!toChain && toChains.length > 0) {
+    setToChain(toChains[0].chainId.toString());
+  }
+
   const { switchChain } = useSwitchChain();
   const [amount, setAmount] = useState("");
   const [transactionHistory, setTransactionHistory] = useState<
@@ -34,7 +40,6 @@ export function MoneyMarketCard() {
   >([]);
 
   const chainId = fromChain ? Number(fromChain) : 84532;
-
   const usdcAddress = getUSDCAddress(chainId!);
   const usdcDecimals = 6; // USDC has 6 decimals
 
@@ -120,7 +125,7 @@ export function MoneyMarketCard() {
               symbol="USDC"
             />
           </div>
-          <div className="w-1/2 pl-2">
+          <div className="w-1/2 p-4">
             <TransferWrapper
               amount={amount}
               onSuccess={handleTransactionSuccess}
@@ -135,5 +140,3 @@ export function MoneyMarketCard() {
     </div>
   );
 }
-
-export default MoneyMarketCard;

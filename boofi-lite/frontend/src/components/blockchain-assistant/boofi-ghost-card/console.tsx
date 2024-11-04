@@ -678,11 +678,10 @@ export function BooFiConsole() {
    * Render the application
    */
   return (
- 
     <LayoutAuthCardAiAssistant>
-        <div className="content-logs">
-        {/* Disconnect Icon on Top Right When Connected */}
-        <div className="absolute top-2 right-2 cursor-pointer">
+      <div className="relative content-logs">
+    {/* Disconnect Icon on Top Right When Connected */}
+        <div className="absolute top-1 right-1 cursor-pointer">
             <Button
               label={isConnected ? 'Disconnect' : 'Connect'}
               iconPosition={isConnected ? 'end' : 'start'}
@@ -695,11 +694,12 @@ export function BooFiConsole() {
             
           {!isConnected && (
             <>
-                <div className="flex justify-center group">
+                <div className="flex justify-center group pt-6">
                     <MotionLink
                     href="#"
                     whileHover={{ scale: 1.15, rotate: 4 }}
                     whileTap={{ scale: 1.05, rotate: 2 }}
+                    onClick={isConnected ? disconnectConversation : connectConversation}
                     >
                     <div className="flex items-center cursor-pointer">
                         <SparklesText>
@@ -924,15 +924,15 @@ export function BooFiConsole() {
           <div className="content-actions flex flex-col items-center justify-center flex-grow">
             {isConnected && canPushToTalk && (
               <Button
-                // label={isRecording ? 'Release to send' : 'Press to speak'}  
-                label={isRecording ? 'Suelta para enviar' : 'Presiona para hablar'}
+                label={isRecording ? 'Release to send' : 'Press to speak'}  
+                // label={isRecording ? 'Suelta para enviar' : 'Presiona para hablar'}
                 buttonStyle={isRecording ? 'alert' : 'regular'}
                 disabled={!isConnected || !canPushToTalk}
                 onMouseDown={startRecording}
                 onMouseUp={stopRecording}
                 onTouchStart={startRecording}
                 onTouchEnd={stopRecording}
-                className={`mb-4 ${isRecording ? 'large-button' : 'large-button-blue'} select-none touch-none`}
+                className={` ${isRecording ? 'large-button' : 'large-button-blue'} select-none touch-none`}
                 style={{
                   WebkitTouchCallout: 'none',
                   WebkitUserSelect: 'none',
