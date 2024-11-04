@@ -73,6 +73,9 @@ BooFi’s payment and bridging solutions ensure seamless and secure transactions
 ## 🙏 Verify our [contract deployments](https://github.com/tcxcx/boofi-poc/blob/private-blockchain/boofi-lite/contracts/contract-deployments.md) by taking a look at the following document
 
 
+## Smart contract architecture
+![Architecture](boofi-architecture-extended.png)
+
 ## 🙏 Acknowledgments
 
 We extend our gratitude to the following organizations and communities for their support and inspiration:
