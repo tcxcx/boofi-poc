@@ -1,6 +1,6 @@
 
 
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import {TokenSender, TokenReceiver, IWormholeRelayerSend, IWormhole, ITokenBridge} from "../../upgradeable-wormhole-solidity-sdk/src/WormholeRelayerSDK.sol";
@@ -19,6 +19,9 @@ import "./HubInterestUtilities.sol";
 import "../HubSpokeEvents.sol";
 import "../wormhole/TokenReceiverWithCCTP.sol";
 import "../wormhole/TokenBridgeUtilities.sol";
+
+import {Error} from "../../libraries/Error.sol";
+import "../../libraries/Constant.sol";
 
 /**
  * @title Hub
@@ -40,22 +43,6 @@ contract Hub is
     bytes32 public destinationBlockchainID;
     address public destinationAddress;
 
-    string private constant ERROR_UNREGISTERED_ASSET = "UnregisteredAsset";
-    string private constant ERROR_VAULT_INSUFFICIENT_ASSETS = "VaultInsufficientAssets";
-    string private constant ERROR_GLOBAL_INSUFFICIENT_ASSETS = "GlobalInsufficientAssets";
-    string private constant ERROR_PAUSED = "HubPaused";
-    string private constant ERROR_MSG_VALUE = "InsufficientMsgValue";
-
-    error TransferFailed();
-    error MustSendEther();
-    error RenounceOwnershipDisabled();
-    error ZeroAddress();
-    error InvalidAction();
-    error UnusedParameterMustBeZero();
-    error InsufficientMsgValue();
-    error InvalidPayloadOrVaa();
-    
-    
     event MessageSentToPrivateChain(
         string actionType,
         address indexed vault,
@@ -98,7 +85,7 @@ function initialize(
         );
 
         if (args.interestAccrualIndexPrecision < 1e18) {
-            revert InvalidPrecision();
+            revert Error.InvalidPrecision();
         }
 
         _state.interestAccrualIndexPrecision = args.interestAccrualIndexPrecision;
@@ -253,29 +240,29 @@ function initialize(
 
         if (sendingTokens(data.action)) {
             if (additionalVaas.length > 0) {
-                revert InvalidPayloadOrVaa();
+                revert Error.InvalidPayloadOrVaa();
             }
             data.wrappedAsset = withCCTP && _state.isUsingCCTP
                 ? USDC
                 : tokenBridge.wrappedAsset(sourceChain, toWormholeFormat(data.wrappedAsset));
         } else {
             if (additionalVaas.length != 1) {
-                revert InvalidPayloadOrVaa();
+                revert Error.InvalidPayloadOrVaa();
             }
 
             if (withCCTP) {
                 if (data.amount != redeemUSDC(additionalVaas[0])) {
-                    revert InvalidPayloadOrVaa();
+                    revert Error.InvalidPayloadOrVaa();
                 }
                 data.wrappedAsset = USDC;
             } else {
                 IWormhole.VM memory parsed = wormhole.parseVM(additionalVaas[0]);
                 if (parsed.emitterAddress != tokenBridge.bridgeContracts(parsed.emitterChainId)) {
-                    revert InvalidPayloadOrVaa();
+                    revert Error.InvalidPayloadOrVaa();
                 }
                 ITokenBridge.TransferWithPayload memory transfer = tokenBridge.parseTransferWithPayload(parsed.payload);
                 if (transfer.to != toWormholeFormat(address(this)) || transfer.toChain != wormhole.chainId()) {
-                    revert InvalidPayloadOrVaa();
+                    revert Error.InvalidPayloadOrVaa();
                 }
 
                 tokenBridge.completeTransferWithPayload(additionalVaas[0]);
@@ -283,7 +270,7 @@ function initialize(
                 data.wrappedAsset = getTokenAddressOnThisChain(transfer.tokenChain, transfer.tokenAddress);
 
                 if (data.amount != TokenBridgeUtilities.denormalizeAmount(transfer.amount, getDecimals(data.wrappedAsset))) {
-                    revert InvalidPayloadOrVaa();
+                    revert Error.InvalidPayloadOrVaa();
                 }
             }
         }
@@ -297,11 +284,11 @@ function initialize(
 
     function hubInitiatedAction(HubSpokeStructs.Action action, address asset, uint256 amount, uint32 targetChain, bool unwrap) external payable whenNotPaused {
         bytes32 spokeAddress = registeredSenders[targetChain];
-        if (spokeAddress == bytes32(0)) revert ZeroAddress();
+        if (spokeAddress == bytes32(0)) revert Error.ZeroAddress();
     
 
         if (action != HubSpokeStructs.Action.Withdraw && action != HubSpokeStructs.Action.Borrow) {
-            revert InvalidAction();
+            revert Error.InvalidAction();
         }
 
         TokenBridgeUtilities.requireAssetAmountValidForTokenBridge(asset, amount);
@@ -321,9 +308,9 @@ function initialize(
      */
     function userActions(HubSpokeStructs.Action action, address asset, uint256 amount) public payable whenNotPaused {
         if (action == HubSpokeStructs.Action.RepayNative || action == HubSpokeStructs.Action.DepositNative) {
-            if (msg.value == 0) revert MustSendEther();
-            if (asset != address(0)) revert UnusedParameterMustBeZero();
-            if (amount != 0) revert UnusedParameterMustBeZero();
+            if (msg.value == 0) revert Error.MustSendEther();
+            if (asset != address(0)) revert Error.UnusedParameterMustBeZero();
+            if (amount != 0) revert Error.UnusedParameterMustBeZero();
 
             IWETH weth = _state.assetRegistry.WETH();
             asset = address(weth);
@@ -377,7 +364,7 @@ function initialize(
         } else if (action == HubSpokeStructs.Action.Borrow) {
             _state.priceUtilities.checkAllowedToBorrow(msg.sender, asset, amount, true);
         } else {
-            revert InvalidAction();
+            revert Error.InvalidAction();
         }
 
         _updateVaultAmounts(action, msg.sender, asset, amount);
@@ -543,7 +530,7 @@ function initialize(
 
         if ((valid && tokensOut) || (!valid && !tokensOut)) {
             if (msg.value < getCostForReturnDelivery(sourceChain)) {
-                revert InsufficientMsgValue();
+                revert Error.InsufficientMsgValue();
             }
 
             if (data.wrappedAsset == USDC && _state.isUsingCCTP) {
@@ -598,7 +585,7 @@ function initialize(
     function _sendNative(uint256 amount, IWETH weth) internal {
         weth.withdraw(amount);
         (bool success,) = payable(msg.sender).call{value: amount}("");
-        if (!success) revert TransferFailed();
+        if (!success) revert Error.TransferFailed();
     }
 
     /**
@@ -733,7 +720,7 @@ function initialize(
      */
     function withdrawReserves(address wrappedAsset, address destination, uint256 amount) external onlyOwner {
         if (destination == address(0)) {
-            revert ZeroAddress();
+            revert Error.ZeroAddress();
         }
 
         uint256 reserveBalance = wrappedAsset == address(0) ? address(this).balance : getReserveAmount(wrappedAsset);
@@ -745,7 +732,7 @@ function initialize(
 
         if (wrappedAsset == address(0)) {
             (bool success,) = payable(destination).call{value: amount}("");
-            if (!success) revert TransferFailed();
+            if (!success) revert Error.TransferFailed();
         } else {
             // transfer reserve balance to destination
             IERC20(wrappedAsset).safeTransfer(destination, amount);
@@ -763,7 +750,7 @@ function initialize(
     }
 
     function renounceOwnership() public view override onlyOwner {
-        revert RenounceOwnershipDisabled();
+        revert Error.RenounceOwnershipDisabled();
     }
 
     /**
@@ -774,7 +761,7 @@ function initialize(
      */
     function getReserveAmount(address asset) public view returns (uint256) {
         if (asset == address(0)) {
-            revert ZeroAddress();
+            revert Error.ZeroAddress();
         }
         HubSpokeStructs.DenormalizedVaultAmount memory globalAmounts = getGlobalAmounts(asset);
         return IERC20(asset).balanceOf(address(this)) + globalAmounts.borrowed - globalAmounts.deposited;
