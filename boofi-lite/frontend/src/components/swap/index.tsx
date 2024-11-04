@@ -21,14 +21,14 @@ import { BigNumberish, ethers } from "ethers";
 import { SwapButton } from "./components/swapButton";
 import { Button } from "../ui/button";
 import { CCIPTransferAbi } from "@/lib/abi/CCIP";
-import { useEthersSigner } from "@/lib/ethers";
-import { toBigInt } from "ethers";
+import { useEthersSigner } from "@/lib/wagmi/wagmi";
+import { parseUnits } from "viem"; 
 
 export default function TokenSwap() {
   const { address } = useAccount();
   const chainId = useChainId();
   const tokens = testnetTokensByChainId(chainId);
-  const [fromToken, setFromToken] = useState<Token>(tokens[0]); // Token from
+  const [fromToken, setFromToken] = useState<Token>(tokens[0]);
   const [fromAmount, setFromAmount] = useState<string>("");
   const [selectedToken, setSelectedToken] = useState<string>("");
   const [toAmount, setToAmount] = useState<string>("");
@@ -82,7 +82,7 @@ export default function TokenSwap() {
   // }
   const signer = useEthersSigner();
   async function sendCCIPTransfer() {
-    const amount = ethers.parseUnits(toAmount, tokens[0]?.decimals);
+    const amount = parseUnits(toAmount, tokens[0]?.decimals);
     if (!destinationChainInfo?.ccipChainId) return;
     try {
       const contractApprove = new ethers.Contract(

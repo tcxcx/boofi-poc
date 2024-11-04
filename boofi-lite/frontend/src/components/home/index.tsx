@@ -4,7 +4,7 @@ import React, { Suspense, useState, useEffect } from "react";
 import { Translations } from "@/lib/types/translations";
 import { useAccount } from "wagmi";
 import { NotConnectedHome } from "../tab-content/not-connected";
-import { PaymentLinkTabContent } from "../tab-content/peanut-tab";
+import { PaymentLinkTabContent } from "../tab-content/payments-tab";
 import {
   Tabs,
   TabsContent,

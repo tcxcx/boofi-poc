@@ -17,7 +17,7 @@ import { getChainsForEnvironment } from "@/store/supportedChains";
 import { Token } from "@/lib/types";
 import { TokenChip } from "@coinbase/onchainkit/token";
 import { toast } from "../ui/use-toast";
-import { formatUnits } from "ethers";
+import { formatUnits } from "viem";
 import { useTokenBalance } from "@/hooks/use-token-balance";
 
 interface CurrencyDisplayerProps {
