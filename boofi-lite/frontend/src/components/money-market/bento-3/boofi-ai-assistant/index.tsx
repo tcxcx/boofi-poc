@@ -8,10 +8,9 @@ import SparklesText from "@/components/magicui/sparkles-text";
 import { Separator } from "@radix-ui/react-select";
 import LayoutAuthCardAiAssistant from "./layout-auth-card";
 import { SkeletonGradient } from "@/components/ui/skeleton-gradient";
-import BlockchainAssistant from "@/components/blockchain-assistant";
+import {BooFiConsole } from "@/components/blockchain-assistant/boofi-ghost-card/console";
 
 const BooFiAiAssistant: React.FC = () => {
-  const MotionLink = motion(Link);
 
   // State management
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +57,7 @@ const BooFiAiAssistant: React.FC = () => {
   if (authStatus === 'success') {
     return (
       <LayoutAuthCardAiAssistant>
-        <BlockchainAssistant />
+        <BooFiConsole/>
       </LayoutAuthCardAiAssistant>
     );
   }
@@ -72,41 +71,7 @@ const BooFiAiAssistant: React.FC = () => {
   // }
 
   // Default render: Login UI
-  return (
-    <LayoutAuthCardAiAssistant>
-      <div className="flex justify-center group">
-        <MotionLink
-          href="#"
-          whileHover={{ scale: 1.15, rotate: 4 }}
-          whileTap={{ scale: 1.05, rotate: 2 }}
-          onClick={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
-        >
-          <div className="flex items-center cursor-pointer">
-            <SparklesText>
-              <Image
-                src="/images/ai-boofi.png"
-                alt="AI Assistant"
-                width={100}
-                height={100}
-              />
-            </SparklesText>
-            <span className="absolute mt-28 sm:mt-20 z-100 opacity-0 group-hover:opacity-100 group-hover:-rotate-12 transition-all duration-300">
-              <span className="inline-block font-clash bg-gradient-to-r text-3xl from-indigo-300 via-purple-400 to-cyan-300 bg-clip-text text-transparent my-4 pt-2">
-                Assistant
-              </span>
-            </span>
-          </div>
-        </MotionLink>
-      </div>
-      <Separator className="h-6 mb-2" />
-      <p className="text-gray-600 dark:text-gray-300 text-xs font-nupower mb-4">
-        Unlock AI-driven financial insights with BooFi premium. Get personalized advice and strategies.
-      </p>
-    </LayoutAuthCardAiAssistant>
-  );
+
 };
 
 export default BooFiAiAssistant;
