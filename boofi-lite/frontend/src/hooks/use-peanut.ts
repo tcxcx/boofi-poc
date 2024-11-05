@@ -364,7 +364,6 @@ export const useDeezNuts = () => {
           slippage: 1,
         });
 
-        console.log(claimedLinkResponse.txHash);
         toast({
           title: "Cross-chain transaction sent",
           description: `Your transaction was claimed with hash ${claimedLinkResponse.txHash}. This may take a few minutes to confirm.`,
