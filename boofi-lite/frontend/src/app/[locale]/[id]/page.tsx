@@ -2,7 +2,10 @@
 
 import CoinBaseIdentity from "@/components/CoinBaseIdentity";
 import { useParams } from "next/navigation";
-import { getWormHoleContractsByNetworkName } from "@/utils/contracts";
+import {
+  getWormHoleContractsByNetworkName,
+  wormholeContractAddress,
+} from "@/utils/contracts";
 import { crossChainSenderAbi } from "@/lib/abi/CrossChainSender";
 import {
   Transaction,
@@ -19,16 +22,14 @@ import PresetAmountButtons from "@/components/preset-amounts/index";
 
 import { useChainSelection } from "@/hooks/use-chain-selection";
 import { getTokensByChainId, testnetTokensByChainId } from "@/utils/tokens";
-
 import { chains } from "@/utils/contracts";
 import { Button } from "@/components/ui/button";
-
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TokenChip } from "@coinbase/onchainkit/token";
 import CurrencyDisplayerPay from "@/components/currency-pay";
-import { currencyAddresses } from "@/utils/currencyAddresses";
 import { getAddress } from "@coinbase/onchainkit/identity";
+import { tokenBridge } from "@/components/wormhole/index";
+import { useEthersSigner } from "@/lib/wagmi/wagmi";
 
 interface WormholeContracts {
   CrossChainSender: string;
@@ -38,7 +39,7 @@ interface WormholeContracts {
 export default function PayId() {
   const params = useParams();
   const [selectedToken, setSelectedToken] = useState<string>("ETH");
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<number>(1);
   const [receiver, setReceiver] = useState<string>("");
   const [chainId, setChainId] = useState<string>("84532");
   const [ensNotFound, setEnsNotFound] = useState<boolean>(false);
@@ -47,11 +48,12 @@ export default function PayId() {
   const { writeContract, error, data, isIdle, isError } = useWriteContract();
   const id = params.id; ///// recipient address
   const address = useAccount();
+  const signer = useEthersSigner();
 
   ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
   ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
   const targetContract = "0x84f597AEcC19925070974c8EeDAa38E535430c5e"; //// target contract address in avalanche fuji
-  
+
   async function getEnsAddress() {
     setLoading(true);
     try {
@@ -105,6 +107,31 @@ export default function PayId() {
     setAmount(amount);
   }
 
+  const handleSwap = async (
+    value: number
+    // sourceChain: "BaseSepolia" | "OptimismSepolia"
+  ) => {
+    setLoading(true);
+
+    if (address.address) {
+      try {
+        await tokenBridge(value, address.address);
+        // } else {
+        //   await tokenBridgeReverse(
+        //     value,
+        //     anchorWallet,
+        //     walletContext.wallet,
+        //     address,
+        //     getBridgeConnection()
+        //   );
+        // }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
   return (
     <div className="flex flex-col items-center w-full p-4">
       <div className="flex flex-col w-full max-w-l">
@@ -141,21 +168,23 @@ export default function PayId() {
             />
 
             <div className="flex flex-col w-full space-y-2 pt-4">
-              {!sameTargetChain ? (
+              {sameTargetChain ? (
                 <>
                   <Transaction
                     chainId={Number(chainId)}
                     calls={[
                       {
-                        to: tokenFind?.address as Hex,
+                        to: "0x5425890298aed601595a70AB815c96711a31Bc65" as Hex,
                         data: encodeFunctionData({
                           abi: erc20Abi,
                           functionName: "approve",
-                          args: [contracts.CrossChainSender as Hex, BigInt(1000000000000000000)],
+                          args: [wormholeContractAddress, BigInt(100000)],
                         }),
                       },
                     ]}
-                    onSuccess={(response: TransactionResponse) => console.log(response, "response")}
+                    onSuccess={(response: TransactionResponse) =>
+                      console.log(response, "response")
+                    }
                     onError={(error) => console.log(error)}
                   >
                     <TransactionButton
@@ -169,21 +198,7 @@ export default function PayId() {
                   </Transaction>
 
                   <Button
-                    onClick={() =>
-                      writeContract({
-                        address: contracts.CrossChainSender as Hex,
-                        value: cost,
-                        abi: crossChainSenderAbi,
-                        functionName: "sendCrossChainDeposit",
-                        args: [
-                          6,
-                          targetContract as Hex,
-                          receiver as Hex,
-                          BigInt(1000000),
-                          selectedToken as Hex,
-                        ],
-                      })
-                    }
+                    onClick={() => handleSwap(amount)}
                     className="w-full bg-green-500 hover:bg-green-600"
                   >
                     Transfer
@@ -191,13 +206,14 @@ export default function PayId() {
                 </>
               ) : (
                 <Button
-                  onClick={() =>
-                    writeContract({
-                      address: tokenFind.address as Hex,
-                      abi: erc20Abi,
-                      functionName: "transfer",
-                      args: [receiver as Hex, BigInt(1000000)],
-                    })
+                  onClick={
+                    () => handleSwap(amount)
+                    //   writeContract({
+                    //     address: tokenFind.address as Hex,
+                    //     abi: erc20Abi,
+                    //     functionName: "transfer",
+                    //     args: [receiver as Hex, BigInt(1000000)],
+                    //   })
                   }
                   className="w-full bg-green-500 hover:bg-green-600"
                 >
@@ -215,4 +231,3 @@ export default function PayId() {
     </div>
   );
 }
-

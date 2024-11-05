@@ -16,6 +16,9 @@ import { Chain } from "viem/chains";
 import Image from "next/image";
 import { chainIdMapping, chainIcons } from "@/components/forms/payment-details";
 import { ExtendedPaymentInfo, IGetLinkDetailsResponse } from "@/lib/types";
+import { chains } from "@/utils/contracts";
+import { ChainSelect } from "../chain-select";
+import { useChainId, useSwitchChain } from "wagmi";
 
 const BLOCKSCOUT_EXPLORERS: Record<number, string> = {
   1: "https://eth.blockscout.com",
@@ -65,12 +68,14 @@ export default function ClaimForm({
   const [paymentInfo, setPaymentInfo] = useState<ExtendedPaymentInfo | null>(
     null
   );
+  const [chainId, setChainId] = useState<string>("");
   const [inProgress, setInProgress] = useState(false);
   const [currentText, setCurrentText] = useState("Ready to claim your link");
 
   const [destinationChainId, setDestinationChainId] = useState<string>(""); // To store selected chain ID
   const [details, setDetails] = useState<IGetLinkDetailsResponse | null>(null);
   const [isMultiChain, setIsMultiChain] = useState(false);
+  const { switchChain } = useSwitchChain();
 
   const fetchLinkDetails = async (link: string) => {
     try {
@@ -235,9 +240,20 @@ export default function ClaimForm({
       )}
 
       {isMultiChain && !paymentInfo?.claimed && (
-        <NetworkSelector
-          currentChainId={paymentInfo?.chainId.toString() || ""}
-          onSelect={(chainId: string) => setDestinationChainId(chainId)}
+        // <NetworkSelector
+        //   currentChainId={paymentInfo?.chainId.toString() || ""}
+        //   onSelect={(chainId: string) => setDestinationChainId(chainId)}
+        // />
+        <ChainSelect
+          value={chainId}
+          onChange={(value) => {
+            console.log({ value });
+            setDestinationChainId(value);
+            switchChain({ chainId: Number(value) });
+            setChainId(value);
+          }}
+          chains={chains}
+          label="Select Chain"
         />
       )}
     </section>

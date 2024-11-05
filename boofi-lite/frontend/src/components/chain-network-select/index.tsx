@@ -30,7 +30,7 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
     id: number;
     name: string;
   } | null>(null);
-
+  console.log({ currentChainId });
   /**
    * Updates the current network based on the connected account's chain.
    */
@@ -71,6 +71,8 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
       const selectedChain = chains.find(
         (chain: any) => chain.id === selectedChainId
       );
+      console.log({ selectedChain });
+      console.log("entererrr");
       const supportedChain = supportedBridgeTokensDictionary.find(
         (chain: SupportedChain) =>
           parseInt(chain.chainId, 10) === selectedChainId
@@ -78,8 +80,7 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
 
       if (selectedChain && supportedChain) {
         try {
-          // Type Casting if necessary
-          await switchChain(selectedChainId as any);
+          switchChain(selectedChainId as any);
           setCurrentNetwork({ id: selectedChain.id, name: selectedChain.name });
           onSelect?.(networkId);
           toast({
@@ -129,7 +130,7 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
       <Select
         onValueChange={handleNetworkChange}
         value={currentNetwork?.id.toString() || ""}
-        disabled={!isConnected} // Disable if not connected
+        disabled={!isConnected}
       >
         <SelectTrigger className="w-full border-transparent flex justify-between">
           <SelectValue>

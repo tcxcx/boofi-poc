@@ -137,3 +137,6 @@ export const getWormHoleContractsByNetworkName = ({
 }) => {
   return wormHoleContracts[chainId];
 };
+
+export const wormholeContractAddress =
+  "0x61E44E506Ca5659E6c0bba9b678586fA2d729756";
