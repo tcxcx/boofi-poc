@@ -354,10 +354,9 @@ export const useDeezNuts = () => {
           throw new Error("Wallet not connected.");
         }
 
-        console.log({ destinationChainId });
         const claimedLinkResponse = await peanut.claimLinkXChainGasless({
           link,
-          APIKey: "nIidGvk9Vh5yxyktHEYgLJeWhIpYZGen",
+          APIKey: PEANUTAPIKEY as string,
           recipientAddress: address as `0x${string}`,
           //     destinationChainId,
           destinationChainId: "11155111",
