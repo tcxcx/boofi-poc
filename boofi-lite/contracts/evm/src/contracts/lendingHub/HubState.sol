@@ -7,15 +7,15 @@ import "../../interfaces/ILiquidationCalculator.sol";
 import "../../interfaces/IHubPriceUtilities.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../HubSpokeStructs.sol";
-import "../HubSpokeEvents.sol";
+import {Event} from "../../libraries/Event.sol";
+import {Error} from "../../libraries/Error.sol";
+
 
 /**
  * @title HubState
  * @notice Contract holding state variable for the Hub contract
  */
-abstract contract HubState is OwnableUpgradeable, HubSpokeEvents {
-
-    error InvalidPrecision();
+abstract contract HubState is OwnableUpgradeable {
 
     HubSpokeStructs.HubState _state;
 
@@ -94,11 +94,11 @@ abstract contract HubState is OwnableUpgradeable, HubSpokeEvents {
      */
     function setLiquidationFee(uint256 _liquidationFee, uint256 _precision) public onlyOwner {
         if (_liquidationFee > _precision) {
-            revert InvalidPrecision();
+            revert Error.InvalidPrecision();
         }
         _state.liquidationFee = _liquidationFee;
         _state.liquidationFeePrecision = _precision;
-        emit SetLiquidationFee(_liquidationFee, _precision);
+        emit Event.SetLiquidationFee(_liquidationFee, _precision);
     }
 
     /**

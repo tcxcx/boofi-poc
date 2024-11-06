@@ -44,7 +44,7 @@
   "devDependencies": {
     "@certusone/wormhole-sdk": "^0.10.3",
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
-    "@nomicfoundation/hardhat-foundry": "^1.0.2",
+    "@nomicfoundation/hardhat-foundry": "^1.1.2",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@openzeppelin/hardhat-upgrades": "^3.5.0",
@@ -89,7 +89,8 @@
     "csv-parser": "^3.0.0",
     "dotenv": "^16.3.1",
     "forge-std": "^1.1.2",
-    "hardhat-gas-reporter": "^1.0.8",
+    "hardhat-foundry": "^0.0.5",
+    "hardhat-gas-reporter": "^2.2.1",
     "json2csv": "^6.0.0-alpha.2",
     "merkletreejs": "^0.3.10",
     "readline-sync": "^1.4.10",

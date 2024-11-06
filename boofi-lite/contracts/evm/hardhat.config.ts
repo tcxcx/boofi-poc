@@ -1,8 +1,11 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "@tenderly/hardhat-tenderly";
+//import "@tenderly/hardhat-tenderly";
 import * as dotenv from "dotenv";
 import "@nomiclabs/hardhat-ethers";
+import "hardhat-gas-reporter";
+import "@nomicfoundation/hardhat-foundry";
+
 
 dotenv.config();
 require("@nomiclabs/hardhat-ethers");
@@ -74,10 +77,17 @@ const config: HardhatUserConfig = {
       // Additional hardhat network settings can be added here
     },
   },
+  /*
   tenderly: {
     username: "criptopoeta",
     project: "boofi",
-  },
+  }
+  */
+  gasReporter: {
+    enabled: (process.env.REPORT_GAS) ? true : false,
+    currency: "USD",
+    trackGasDeltas: true
+  }
   // Optional: Etherscan configuration for additional verifications
   // etherscan: {
   //   apiKey: {

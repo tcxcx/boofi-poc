@@ -19,3 +19,6 @@
 [submodule "boofi-lite/contracts/new-contracts/lib/ccip"]
 	path = boofi-lite/contracts/new-contracts/lib/ccip
 	url = https://github.com/smartcontractkit/ccip
+[submodule "boofi-lite/contracts/evm/lib/forge-std"]
+	path = boofi-lite/contracts/evm/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

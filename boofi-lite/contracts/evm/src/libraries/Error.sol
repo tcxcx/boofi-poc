@@ -15,4 +15,10 @@ library Error {
     error VaultInsufficientAssets();
     error GlobalInsufficientAssets();
     error HubPaused();
+    error InvalidSignature();
+    error DepositCollateralizationRatioTooLow();
+    error BorrowCollateralizationRatioTooLow();
+    error AssetAlreadyRegistered();
+    error AssetNotRegistered();
+    error TooManyDecimalsInAnAsset();
 }

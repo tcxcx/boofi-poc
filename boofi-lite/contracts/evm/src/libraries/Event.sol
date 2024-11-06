@@ -4,10 +4,10 @@ pragma solidity ^0.8.0;
 import "../interfaces/ILiquidationCalculator.sol";
 
 /**
- * @title HubSpokeEvents
+ * @title Global Events from the system
  * @notice Events emitted by the Hub and Spoke contracts
  */
-contract HubSpokeEvents {
+library Event {
     event Liquidation(address indexed liquidator, address indexed vault, ILiquidationCalculator.DenormalizedLiquidationAsset[] liquidationAssets);
     event Deposit(address indexed vault, address indexed asset, uint256 amount, uint256 vaultTotalDeposited);
     event Withdraw(address indexed vault, address indexed asset, uint256 amount, uint256 vaultTotalDeposited);
@@ -42,4 +42,8 @@ contract HubSpokeEvents {
     event SetLiquidationFee(uint256 value, uint256 precision);
     event AssetPythIdChanged(address asset, bytes32 oldPythId, bytes32 newPythId);
     event AccrualIndexUpdated(address indexed asset, uint256 deposit, uint256 borrow, uint256 timestamp);
+    event MessageSentToPrivateChain(string actionType,address indexed vault,address indexed assetAddress,uint256 amount,uint256 timestamp);
+    event DisclaimerSet(string disclaimer);
+
+
 }

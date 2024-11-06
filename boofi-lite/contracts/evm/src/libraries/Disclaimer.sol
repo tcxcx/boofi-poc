@@ -5,6 +5,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
+import {Event} from "./Event.sol";
+import {Error} from "./Error.sol";
+
 /**
  * @title Disclaimer
  * @notice Library for verifying a disclaimer
@@ -12,18 +15,14 @@ import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 library Disclaimer {
     using MessageHashUtils for bytes;
 
-    event DisclaimerSet(string disclaimer);
-
-    error InvalidSignature();
-
     /**
-     * @notice Allows the contract owner to set the disclaimer. The signed message hash is saved in the contract
+     * @notice Allows the contract oewner to set the disclaimer. The signed message hash is saved in the contract
      * for recoveries
      * @param _disclaimer The new disclaimer
      */
     function getDisclaimerMessageHash(string calldata _disclaimer) internal returns (bytes32 disclaimerMessageHash) {
         disclaimerMessageHash = bytes(_disclaimer).toEthSignedMessageHash();
-        emit DisclaimerSet(_disclaimer);
+        emit Event.DisclaimerSet(_disclaimer);
     }
 
     /**
@@ -36,7 +35,7 @@ library Disclaimer {
         view
     {
         if (!SignatureChecker.isValidSignatureNow(signer, disclaimerMessageHash, signature)) {
-            revert InvalidSignature();
+            revert Error.InvalidSignature();
         }
     }
 }

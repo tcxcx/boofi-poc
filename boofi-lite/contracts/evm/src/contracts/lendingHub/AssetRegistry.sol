@@ -7,10 +7,11 @@ import {IWETH} from "../../upgradeable-wormhole-solidity-sdk/src/interfaces/IWET
 import "../../interfaces/IERC20decimals.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../HubSpokeStructs.sol";
-import "../HubSpokeEvents.sol";
+import {Event} from "../../libraries/Event.sol";
+import {Error} from "../../libraries/Error.sol";
 
+contract AssetRegistry is IAssetRegistry, Ownable {
 
-contract AssetRegistry is IAssetRegistry, HubSpokeEvents, Ownable {
     uint8 public constant PROTOCOL_MAX_DECIMALS = 18;
 
     mapping(address => AssetInfo) assetInfos;
@@ -20,12 +21,6 @@ contract AssetRegistry is IAssetRegistry, HubSpokeEvents, Ownable {
     uint256 maxLiquidationPortionPrecision;
 
     IWETH public WETH;
-
-    error DepositCollateralizationRatioTooLow();
-    error BorrowCollateralizationRatioTooLow();
-    error AssetAlreadyRegistered();
-    error AssetNotRegistered();
-    error TooManyDecimalsInAnAsset();
 
     constructor(uint256 _collateralizationRatioPrecision, uint256 _maxLiquidationPortionPrecision, IWETH _WETH) Ownable(msg.sender) {
         collateralizationRatioPrecision = _collateralizationRatioPrecision;
@@ -61,19 +56,19 @@ contract AssetRegistry is IAssetRegistry, HubSpokeEvents, Ownable {
         uint256 maxLiquidationBonus
     ) external override onlyOwner {
         if (assetInfos[assetAddress].exists) {
-            revert AssetAlreadyRegistered();
+            revert Error.AssetAlreadyRegistered();
         }
 
         if (collateralizationRatioDeposit < collateralizationRatioPrecision) {
-            revert DepositCollateralizationRatioTooLow();
+            revert Error.DepositCollateralizationRatioTooLow();
         }
         if (collateralizationRatioBorrow < collateralizationRatioPrecision) {
-            revert BorrowCollateralizationRatioTooLow();
+            revert Error.BorrowCollateralizationRatioTooLow();
         }
 
         uint8 decimals = IERC20decimals(assetAddress).decimals();
         if(decimals > PROTOCOL_MAX_DECIMALS) {
-            revert TooManyDecimalsInAnAsset();
+            revert Error.TooManyDecimalsInAnAsset();
         }
 
         assetInfos[assetAddress] = AssetInfo({
@@ -90,7 +85,7 @@ contract AssetRegistry is IAssetRegistry, HubSpokeEvents, Ownable {
 
         registeredAssets.push(assetAddress);
 
-        emit AssetRegistered(
+        emit Event.AssetRegistered(
             assetAddress,
             collateralizationRatioDeposit,
             collateralizationRatioBorrow,
@@ -126,9 +121,7 @@ contract AssetRegistry is IAssetRegistry, HubSpokeEvents, Ownable {
     ) external override onlyOwner {
         AssetInfo storage assetInfo = assetInfos[assetAddress];
 
-        if (!assetInfos[assetAddress].exists) {
-            revert AssetNotRegistered();
-        }
+        if (!assetInfos[assetAddress].exists) revert Error.AssetNotRegistered();
 
         if (borrowLimit > 0) {
             assetInfo.borrowLimit = borrowLimit;
@@ -150,7 +143,7 @@ contract AssetRegistry is IAssetRegistry, HubSpokeEvents, Ownable {
             assetInfo.interestRateCalculator = interestRateCalculatorAddress;
         }
 
-        emit SetAssetParams(
+        emit Event.SetAssetParams(
             assetAddress,
             borrowLimit,
             supplyLimit,
@@ -162,22 +155,22 @@ contract AssetRegistry is IAssetRegistry, HubSpokeEvents, Ownable {
 
     function setCollateralizationRatios(address _asset, uint256 _deposit, uint256 _borrow) external override onlyOwner {
         if (_deposit < collateralizationRatioPrecision) {
-            revert DepositCollateralizationRatioTooLow();
+            revert Error.DepositCollateralizationRatioTooLow();
         }
 
         if (_borrow < collateralizationRatioPrecision) {
-            revert BorrowCollateralizationRatioTooLow();
+            revert Error.BorrowCollateralizationRatioTooLow();
         }
 
         AssetInfo storage assetInfo = assetInfos[_asset];
         if (!assetInfo.exists) {
-            revert AssetNotRegistered();
+            revert Error.AssetNotRegistered();
         }
 
         assetInfo.collateralizationRatioDeposit = _deposit;
         assetInfo.collateralizationRatioBorrow = _borrow;
 
-        emit CollateralizationRatiosChanged(_asset, _deposit, _borrow);
+        emit Event.CollateralizationRatiosChanged(_asset, _deposit, _borrow);
     }
 
     function getRegisteredAssets() external view override returns (address[] memory) {

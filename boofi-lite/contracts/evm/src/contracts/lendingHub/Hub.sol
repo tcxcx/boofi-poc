@@ -16,12 +16,13 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import "../../teleporter/interface/ITeleporterMessenger.sol";
 
 import "./HubInterestUtilities.sol";
-import "../HubSpokeEvents.sol";
 import "../wormhole/TokenReceiverWithCCTP.sol";
 import "../wormhole/TokenBridgeUtilities.sol";
 
 import {Error} from "../../libraries/Error.sol";
+import {Event} from "../../libraries/Event.sol";
 import "../../libraries/Constant.sol";
+
 
 /**
  * @title Hub
@@ -42,14 +43,6 @@ contract Hub is
 
     bytes32 public destinationBlockchainID;
     address public destinationAddress;
-
-    event MessageSentToPrivateChain(
-        string actionType,
-        address indexed vault,
-        address indexed assetAddress,
-        uint256 amount,
-        uint256 timestamp
-    );
 
      /**
      * @notice Hub constructor; prevent initialize() from being invoked on the implementation contract, we change this to a constructor
@@ -127,7 +120,7 @@ function initialize(
     function registerSpoke(uint32 chainId, address spokeContractAddress) external onlyOwner {
         setRegisteredSender(chainId, toWormholeFormat(spokeContractAddress));
 
-        emit SpokeRegistered(chainId, spokeContractAddress);
+        emit Event.SpokeRegistered(chainId, spokeContractAddress);
     }
 
     /**
@@ -183,7 +176,7 @@ function initialize(
             }
         }
 
-        emit Liquidation(msg.sender, input.vault, input.assets);
+        emit Event.Liquidation(msg.sender, input.vault, input.assets);
     }
 
     /**
@@ -214,11 +207,11 @@ function initialize(
      * @param deliveryHash - the delivery hash of the tokens
      */
     function receiveWormholeMessages(
-          bytes memory payload,
-          bytes[] memory additionalVaas,
-          bytes32 sourceAddress,
-          uint32 sourceChain,
-          bytes32 deliveryHash
+        bytes memory payload,
+        bytes[] memory additionalVaas,
+        bytes32 sourceAddress,
+        uint32 sourceChain,
+        bytes32 deliveryHash
     )
     external
     payable
@@ -497,7 +490,7 @@ function initialize(
         if (valid) {
             _updateVaultAmounts(data.action, data.sender, data.wrappedAsset, data.amount);
         } else {
-            emit LogError(target.addressWhFormat, target.chainId, target.deliveryHash, err);
+            emit Event.LogError(target.addressWhFormat, target.chainId, target.deliveryHash, err);
         }
 
         if (revertOnInvalid && !valid) {
@@ -604,21 +597,21 @@ function initialize(
             vaultAmounts.deposited += amount;
             globalAmounts.deposited += amount;
 
-            emit Deposit(vault, assetAddress, amount, vaultAmounts.deposited);
+            emit Event.Deposit(vault, assetAddress, amount, vaultAmounts.deposited);
             _sendMessageToPrivateChain("Deposit", vault, assetAddress, amount);
 
         } else if (action == HubSpokeStructs.Action.Withdraw) {
             vaultAmounts.deposited -= amount;
             globalAmounts.deposited -= amount;
 
-            emit Withdraw(vault, assetAddress, amount, vaultAmounts.deposited);
+            emit Event.Withdraw(vault, assetAddress, amount, vaultAmounts.deposited);
             _sendMessageToPrivateChain("Withdraw", vault, assetAddress, amount);
 
         } else if (action == HubSpokeStructs.Action.Borrow) {
             vaultAmounts.borrowed += amount;
             globalAmounts.borrowed += amount;
 
-            emit Borrow(vault, assetAddress, amount, vaultAmounts.borrowed);
+            emit Event.Borrow(vault, assetAddress, amount, vaultAmounts.borrowed);
             _sendMessageToPrivateChain("Borrow", vault, assetAddress, amount);
 
         } else if (action == HubSpokeStructs.Action.Repay || action == HubSpokeStructs.Action.RepayNative) {
@@ -628,7 +621,7 @@ function initialize(
             vaultAmounts.borrowed -= amount;
             globalAmounts.borrowed -= amount;
 
-            emit Repay(vault, assetAddress, amount, vaultAmounts.borrowed);
+            emit Event.Repay(vault, assetAddress, amount, vaultAmounts.borrowed);
             _sendMessageToPrivateChain("Repay", vault, assetAddress, amount);
 
         }
@@ -676,7 +669,7 @@ function initialize(
             })
         );
 
-        emit MessageSentToPrivateChain(actionType, vault, assetAddress, amount, block.timestamp);
+        emit Event.MessageSentToPrivateChain(actionType, vault, assetAddress, amount, block.timestamp);
     }
 
     /**
@@ -738,7 +731,7 @@ function initialize(
             IERC20(wrappedAsset).safeTransfer(destination, amount);
         }
 
-        emit ReservesWithdrawn(wrappedAsset, amount, destination);
+        emit Event.ReservesWithdrawn(wrappedAsset, amount, destination);
     }
 
     function transferOwnership(address newOwner) public virtual override onlyOwner {

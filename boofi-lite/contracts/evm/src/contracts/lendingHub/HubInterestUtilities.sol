@@ -21,7 +21,7 @@ contract HubInterestUtilities is HubState {
         HubSpokeStructs.AccrualIndices memory accrualIndices = getCurrentAccrualIndices(assetAddress);
         setInterestAccrualIndices(assetAddress, accrualIndices);
         setLastActivityBlockTimestamp(assetAddress, block.timestamp);
-        emit AccrualIndexUpdated(assetAddress, accrualIndices.deposited, accrualIndices.borrowed, block.timestamp);
+        emit Event.AccrualIndexUpdated(assetAddress, accrualIndices.deposited, accrualIndices.borrowed, block.timestamp);
     }
 
     /**
