@@ -4,11 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { SwapToggleButton } from "./components/swapToggleButton";
 import { SwapAmountInput } from "./components/swapAmountInput";
-import {
-  useAccount,
-  useChainId,
-  useSwitchChain,
-} from "wagmi";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import type { Token } from "@coinbase/onchainkit/token";
 import { ETHToken, testnetTokensByChainId, USDCToken } from "@/utils/tokens";
 import { cn } from "@/utils";
@@ -21,7 +17,7 @@ import { SwapButton } from "./components/swapButton";
 import { Button } from "../ui/button";
 import { CCIPTransferAbi } from "@/lib/abi/CCIP";
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
-import { parseUnits } from "viem"; 
+import { parseUnits } from "viem";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function TokenSwap() {
@@ -43,9 +39,6 @@ export default function TokenSwap() {
 
   const actualChain = getCCIPChainByChainId({ chainId });
 
-  console.log({ actualChain });
-  console.log({ destinationChainInfo });
-
   if (!address) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -62,98 +55,66 @@ export default function TokenSwap() {
     setToAmount(amount);
   };
 
-
   function handleToggle() {
     if (sourceChain && destinationChain && sourceChain === destinationChain) {
       console.warn("Source and destination chains cannot be the same.");
       return; // Exit the function early if they are the same
     }
-  
+
     if (sourceChain && destinationChain && sourceChain !== destinationChain) {
       const currentSource = sourceChain;
       const currentDestination = destinationChain;
-  
+
       // Find the name of the network for the current destination chain
-      const destinationChainName = chains.find(
-        (chain) => chain.chainId === Number(currentDestination)
-      )?.name || `Chain ID ${currentDestination}`;
-  
+      const destinationChainName =
+        chains.find((chain) => chain.chainId === Number(currentDestination))
+          ?.name || `Chain ID ${currentDestination}`;
+
       // Display a toast before switching networks
       toast({
         title: "Switching Network",
         description: `Switching network to ${destinationChainName}. Please check your wallet to allow network change.`,
       });
-  
+
       setSourceChain(currentDestination);
       setDestinationChain(currentSource);
-  
-      // Switch chain to the new source chain
+
       switchChain({ chainId: Number(currentDestination) });
     } else {
-      // Reset to initial state if toggling results in the same chain
       setSourceChain(String(chainId));
       setDestinationChain(null);
     }
   }
-  
-
-  // function approveToken() {
-  //   if (!fromAmount) return;
-  //   const amount = ethers.parseUnits(fromAmount, fromToken.decimals);
-  //   writeContract({
-  //     address: fromToken.address as Hex,
-  //     abi: erc20Abi,
-  //     functionName: "approve",
-  //     args: [actualChain?.address as Hex, amount],
-  //   });
-  // }
 
   const signer = useEthersSigner();
   async function sendCCIPTransfer() {
     const amount = parseUnits(toAmount, tokens[0]?.decimals);
     if (!destinationChainInfo?.ccipChainId) return;
     try {
-      const contractApprove = new ethers.Contract(
+      const contractERC20 = new ethers.Contract(
         tokens[0]?.address as Hex,
         erc20Abi,
         signer
       );
-
-      const allowance = await contractApprove.allowance(
-        address,
-        actualChain?.address as Hex
-      );
-
-      if (allowance < amount) {
-        const txApprove = await contractApprove.approve(
-          actualChain?.address as Hex,
-          amount
-        );
-        await txApprove.wait();
-        console.log({ txApprove });
-      }
 
       const contract = new ethers.Contract(
         actualChain?.address as Hex,
         CCIPTransferAbi,
         signer
       );
-      console.log(destinationChainInfo.ccipChainId);
-      console.log(destinationChainInfo?.ccipChainId);
-      console.log(address, "address");
-      console.log(tokens[0]?.address, "token address");
-      console.log(amount, "amount");
+      const allowance = await contractERC20.allowance(
+        address,
+        actualChain?.address as Hex
+      );
 
-      // const populateTransaction =
-      //   await contract.transferTokensPayLINK.populateTransaction(
-      //     BigInt(destinationChainInfo?.ccipChainId),
-      //     address,
-      //     tokens[0]?.address,
-      //     amount
-      //   );
-      // console.log({ populateTransaction });
-      // const estimateGas = await signer?.estimateGas(populateTransaction);
-      // console.log({ estimateGas });
+      if (allowance < amount) {
+        const txApprove = await contractERC20.approve(
+          actualChain?.address as Hex,
+          amount
+        );
+        await txApprove.wait();
+      }
+
       const tx = await contract.transferTokensPayLINK(
         destinationChainInfo?.ccipChainId,
         address,
@@ -161,7 +122,11 @@ export default function TokenSwap() {
         amount
       );
 
-      console.log({ tx });
+      toast({
+        title: "Transaction sent",
+        description: "Transaction sent successfully",
+        variant: "default",
+      });
     } catch (error) {
       console.log({ error });
     }
@@ -214,39 +179,12 @@ export default function TokenSwap() {
           "mb-2 p-4 bg-card dark:bg-darkCard border-2 border-border dark:border-darkBorder rounded-md",
           "focus-within:shadow-light dark:focus-within:shadow-dark"
         )}
-        address={address || ''}
+        address={address || ""}
         handleAmountChange={handleFromAmountChange}
-        amountUSD={"100"} // Reemplaza con la lógica para convertir la cantidad a USD
+        amountUSD={"100"}
         loading={false}
       />
 
-      {/* <SwapAmountInput
-        label="Buy"
-        swappableTokens={swappableTokens}
-        token={toToken}
-        setToken={setToToken}
-        amount={toAmount}
-        setAmount={setToAmount}
-        className={cn(
-          "p-4 bg-card dark:bg-darkCard border-2 border-border dark:border-darkBorder rounded-md",
-          "focus-within:shadow-light dark:focus-within:shadow-dark"
-        )}
-        address={address}
-        handleAmountChange={handleToAmountChange}
-        amountUSD={"100"}
-        loading={false}
-      /> */}
-
-      {/* <SwapButton
-        address={address}
-        to={toToken}
-        from={fromToken}
-        setFrom={setFromToken}
-        setTo={setToToken}
-        handleAmountChange={handleFromAmountChange}
-        lifecycleStatus={{ statusName: "transactionPending" }}
-        className="mt-4 bg-main border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-      /> */}
       <Button variant={"brutalism"} onClick={sendCCIPTransfer}>
         Bridge
       </Button>

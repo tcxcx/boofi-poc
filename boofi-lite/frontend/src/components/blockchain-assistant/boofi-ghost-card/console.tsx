@@ -76,14 +76,14 @@ export function BooFiConsole() {
   // });
 
   const USDC_ADDRESS = useGetTokenByChain({
-    chainId: baseSepolia.id,
+    chainId: chainId,
     tokenName: "USDC",
   });
 
   const getUsdcBalance = useTokenBalance({
     address: address as Hex,
     tokenAddress: USDC_ADDRESS?.address as Hex,
-    chainId: baseSepolia.id,
+    chainId: chainId,
     signer: signer,
     setBalance: setUsdcBalance,
   });

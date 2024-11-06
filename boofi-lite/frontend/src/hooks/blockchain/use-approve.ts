@@ -1,35 +1,37 @@
 import { ethers } from "ethers";
 import { useEffect } from "react";
 import { erc20Abi, Hex } from "viem";
-export const useTokenBalance = ({
+export const useApprove = ({
   address,
   tokenAddress,
   chainId,
   signer,
-  setBalance,
+  targetAddress,
+  setApprove,
 }: {
   address: Hex;
   tokenAddress: Hex;
   chainId: number;
   signer: ethers.Signer | undefined;
-  setBalance: (balance: string) => void;
+  targetAddress: Hex;
+  setApprove: (approve: bigint) => void;
 }) => {
   useEffect(() => {
     if (!signer || !address || !tokenAddress) return;
 
     const erc20Contract = new ethers.Contract(tokenAddress, erc20Abi, signer);
 
-    async function getBalance() {
+    async function getApprove() {
       try {
-        const balance = await erc20Contract.balanceOf(address);
+        const approve = await erc20Contract.approve(targetAddress, 1);
         const decimals = await erc20Contract.decimals();
-        const formattedBalance = ethers.utils.formatUnits(balance, decimals);
-        setBalance(formattedBalance);
+        const formattedApprove = ethers.utils.formatUnits(approve, decimals);
+        setApprove(BigInt(formattedApprove));
       } catch (error) {
-        console.error("Error in getBalance", error);
+        console.error("Error in getApprove", error);
       }
     }
 
-    getBalance();
-  }, [address, tokenAddress, chainId, signer, setBalance]);
+    getApprove();
+  }, [address, tokenAddress, chainId, signer, setApprove, targetAddress]);
 };
