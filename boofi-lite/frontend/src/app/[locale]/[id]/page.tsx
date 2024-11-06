@@ -85,16 +85,6 @@ export default function PayId() {
     args: [6],
   });
 
-  const { data: approveCost } = useReadContract({
-    address: selectedToken as Hex,
-    abi: erc20Abi,
-    functionName: "allowance",
-    args: [
-      (address.address as Hex) || "0x0",
-      contracts.CrossChainSender as Hex,
-    ],
-  });
-
   const sameTargetChain = chainId === "43113";
 
   if (loading) return <Skeleton className="w-full h-full" />;
