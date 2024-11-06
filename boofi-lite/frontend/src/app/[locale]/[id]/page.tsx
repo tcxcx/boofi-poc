@@ -25,9 +25,7 @@ import { Button } from "@/components/ui/button";
 
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TokenChip } from "@coinbase/onchainkit/token";
 import CurrencyDisplayerPay from "@/components/currency-pay";
-import { currencyAddresses } from "@/utils/currencyAddresses";
 import { getAddress } from "@coinbase/onchainkit/identity";
 
 interface WormholeContracts {
@@ -51,7 +49,7 @@ export default function PayId() {
   ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
   ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
   const targetContract = "0x84f597AEcC19925070974c8EeDAa38E535430c5e"; //// target contract address in avalanche fuji
-  
+
   async function getEnsAddress() {
     setLoading(true);
     try {
@@ -151,11 +149,16 @@ export default function PayId() {
                         data: encodeFunctionData({
                           abi: erc20Abi,
                           functionName: "approve",
-                          args: [contracts.CrossChainSender as Hex, BigInt(1000000000000000000)],
+                          args: [
+                            contracts.CrossChainSender as Hex,
+                            BigInt(1000000000000000000),
+                          ],
                         }),
                       },
                     ]}
-                    onSuccess={(response: TransactionResponse) => console.log(response, "response")}
+                    onSuccess={(response: TransactionResponse) =>
+                      console.log(response, "response")
+                    }
                     onError={(error) => console.log(error)}
                   >
                     <TransactionButton
@@ -215,4 +218,3 @@ export default function PayId() {
     </div>
   );
 }
-

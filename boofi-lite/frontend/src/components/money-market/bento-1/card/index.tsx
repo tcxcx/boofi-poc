@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -7,14 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import TransferWrapper from "@/components/money-market/transfer-wrapper";
 import { TransactionHistoryItem } from "@/lib/types";
-import { useTokenBalance } from "@/hooks/use-token-balance";
+import { useTokenBalance } from "@/hooks/blockchain/use-token-balance";
 import { useChainSelection } from "@/hooks/use-chain-selection";
 import { ChainSelect } from "@/components/chain-select";
 import { BalanceDisplay } from "@/components/balance-display";
 import { getUSDCAddress } from "@/lib/utils";
 import { TransactionError } from "@/lib/types";
+import { useEthersSigner } from "@/lib/wagmi/wagmi";
 export function MoneyMarketCard() {
   const { address } = useAccount();
+  const [usdcBalance, setUsdcBalance] = useState<string | undefined>(undefined);
   const {
     currentViewTab,
     fromChain,
@@ -24,6 +25,7 @@ export function MoneyMarketCard() {
     fromChains,
     toChains,
   } = useChainSelection();
+  const signer = useEthersSigner();
 
   if (!fromChain && fromChains.length > 0) {
     setFromChain(fromChains[0].chainId.toString());
@@ -43,14 +45,13 @@ export function MoneyMarketCard() {
   const usdcAddress = getUSDCAddress(chainId!);
   const usdcDecimals = 6; // USDC has 6 decimals
 
-  const { balance: usdcBalance, isLoading: isBalanceLoading } = useTokenBalance(
-    {
-      tokenAddress: usdcAddress as `0x${string}`,
-      chainId: chainId!,
-      accountAddress: address as `0x${string}`,
-      decimals: usdcDecimals,
-    }
-  );
+  const getUsdcBalance = useTokenBalance({
+    tokenAddress: usdcAddress as `0x${string}`,
+    chainId: chainId!,
+    address: address as `0x${string}`,
+    signer: signer,
+    setBalance: setUsdcBalance,
+  });
 
   const transferActions = {
     lend: { functionName: "depositCollateral", buttonText: "Deposit USDC" },
@@ -120,8 +121,8 @@ export function MoneyMarketCard() {
               className="text-4xl font-bold h-16 w-full"
             />
             <BalanceDisplay
-              balance={usdcBalance}
-              isLoading={isBalanceLoading}
+              balance={usdcBalance || "0"}
+              isLoading={!usdcBalance}
               symbol="USDC"
             />
           </div>
