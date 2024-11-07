@@ -14,7 +14,9 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-
+import { useAccount } from "wagmi";
+import { base } from "viem/chains";
+import { useEnsName } from "@/hooks/use-ens-name";
 interface Position {
   asset: string;
   amount: number;
@@ -27,7 +29,12 @@ const PositionSummary: React.FC = () => {
   const [positions, setPositions] = useState<Position[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [ensName, setEnsName] = useState<string | null>(null);
+  const address = useAccount();
+  const { ensName, isLoading } = useEnsName({
+    address: address.address as `0x${string}`,
+    chain: base,
+  });
+  console.log({ ensName });
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -35,16 +42,16 @@ const PositionSummary: React.FC = () => {
       setError(null);
       try {
         // Simulating API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         // Mock data - replace with actual API call
-        const mockPositions: Position[] = currentViewTab === 'lend' || currentViewTab === 'withdraw'
-          ? [
-            { asset: "USDC", amount: 1000, value: 1000, apy: 5.2 },
-            { asset: "ETH", amount: 0.5, value: 1250, apy: 3.8 },
-          ]
-          : [];
+        const mockPositions: Position[] =
+          currentViewTab === "lend" || currentViewTab === "withdraw"
+            ? [
+                { asset: "USDC", amount: 1000, value: 1000, apy: 5.2 },
+                { asset: "ETH", amount: 0.5, value: 1250, apy: 3.8 },
+              ]
+            : [];
         setPositions(mockPositions);
-        setEnsName("user.eth"); // Mock ENS name - replace with actual ENS resolution
       } catch (error) {
         console.error("Error fetching positions:", error);
         setError("Failed to load positions.");
@@ -58,21 +65,26 @@ const PositionSummary: React.FC = () => {
 
   const getBgColorClass = (tab: string) => {
     switch (tab) {
-      case 'lend':
-        return 'bg-blue-50 dark:bg-blue-950';
-      case 'withdraw':
-        return 'bg-green-50 dark:bg-green-950';
-      case 'borrow':
-        return 'bg-purple-50 dark:bg-purple-950';
-      case 'repay':
-        return 'bg-orange-50 dark:bg-orange-950';
+      case "lend":
+        return "bg-blue-50 dark:bg-blue-950";
+      case "withdraw":
+        return "bg-green-50 dark:bg-green-950";
+      case "borrow":
+        return "bg-purple-50 dark:bg-purple-950";
+      case "repay":
+        return "bg-orange-50 dark:bg-orange-950";
       default:
-        return 'bg-background';
+        return "bg-background";
     }
   };
 
   const renderSkeleton = () => (
-    <div className={cn("rounded-lg shadow p-2 space-y-2 text-xs", getBgColorClass(currentViewTab))}>
+    <div
+      className={cn(
+        "rounded-lg shadow p-2 space-y-2 text-xs",
+        getBgColorClass(currentViewTab)
+      )}
+    >
       <div className="flex justify-between items-center">
         <Skeleton className="h-4 w-24" />
         <Skeleton className="h-4 w-24" />
@@ -90,10 +102,17 @@ const PositionSummary: React.FC = () => {
   }
 
   return (
-    <div className={cn("rounded-lg shadow p-4 space-y-4 text-xs", getBgColorClass(currentViewTab))}>
+    <div
+      className={cn(
+        "rounded-lg shadow p-4 space-y-4 text-xs",
+        getBgColorClass(currentViewTab)
+      )}
+    >
       <div className="flex justify-between items-center">
         <h2 className="text-sm font-medium">Your Positions</h2>
-        {ensName && <span className="text-xs text-muted-foreground">{ensName}</span>}
+        {ensName && (
+          <span className="text-xs text-muted-foreground">{ensName}</span>
+        )}
       </div>
 
       {positions.length === 0 ? (
@@ -114,10 +133,18 @@ const PositionSummary: React.FC = () => {
             <TableBody>
               {positions.map((position) => (
                 <TableRow key={position.asset}>
-                  <TableCell className="text-xs font-medium">{position.asset}</TableCell>
-                  <TableCell className="text-xs text-right">{position.amount.toFixed(2)}</TableCell>
-                  <TableCell className="text-xs text-right">${position.value.toFixed(2)}</TableCell>
-                  <TableCell className="text-xs text-right">{position.apy.toFixed(2)}%</TableCell>
+                  <TableCell className="text-xs font-medium">
+                    {position.asset}
+                  </TableCell>
+                  <TableCell className="text-xs text-right">
+                    {position.amount.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-xs text-right">
+                    ${position.value.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-xs text-right">
+                    {position.apy.toFixed(2)}%
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
