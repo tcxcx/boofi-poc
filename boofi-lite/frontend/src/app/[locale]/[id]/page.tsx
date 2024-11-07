@@ -89,16 +89,6 @@ export default function PayId() {
     args: [6],
   });
 
-  const { data: approveCost } = useReadContract({
-    address: selectedToken as Hex,
-    abi: erc20Abi,
-    functionName: "allowance",
-    args: [
-      (address.address as Hex) || "0x0",
-      contracts.CrossChainSender as Hex,
-    ],
-  });
-
   const sameTargetChain = chainId === "43113";
 
   if (loading) return <Skeleton className="w-full h-full" />;
@@ -178,7 +168,11 @@ export default function PayId() {
                         data: encodeFunctionData({
                           abi: erc20Abi,
                           functionName: "approve",
-                          args: [wormholeContractAddress, BigInt(100000)],
+                          args: [
+                            contracts.CrossChainSender as Hex,
+                            BigInt(1000000000000000000),
+                          ],
+
                         }),
                       },
                     ]}

@@ -2,20 +2,26 @@ import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCopyToClipboard } from "@/hooks/peanut-protocol/use-clipboard";
 import { Button } from "@/components/ui/button";
-import { Translations } from "@/lib/types/translations";
-import { XIcon } from "lucide-react";
-import { useEnsName } from "@/actions/use-ens-name.actions";
-import { base } from 'viem/chains';
+
+import { useEnsName } from "@/hooks/use-ens-name";
+import { base } from "viem/chains";
 import { OverlayPayName } from "./overlay-pay";
 import { BaseNameDialogAlertProps } from "@/lib/types";
 import { useLocale } from "next-intl";
 
-export const BaseNameDialogAlert = ({ translations, address }: BaseNameDialogAlertProps) => {
+export const BaseNameDialogAlert = ({
+  translations,
+  address,
+}: BaseNameDialogAlertProps) => {
   const [copiedText, copy] = useCopyToClipboard();
   const [overlayVisible, setOverlayVisible] = useState(false);
-  const { ensName, isLoading, ensNotFound } = useEnsName({ address, chain: base });
+  const { ensName, isLoading, ensNotFound } = useEnsName({
+    address,
+    chain: base,
+  });
   const locale = useLocale(); // Get the current locale
-  
+  console.log({ ensName });
+
   // Dynamically generate the base URL using window.location and include the locale
   const getBaseUrl = () => {
     if (typeof window !== "undefined") {
@@ -36,16 +42,20 @@ export const BaseNameDialogAlert = ({ translations, address }: BaseNameDialogAle
    * Shares the payment link on WhatsApp.
    */
   const shareOnWhatsApp = () => {
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(link)}`;
-    window.open(whatsappUrl, '_blank');
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      link
+    )}`;
+    window.open(whatsappUrl, "_blank");
   };
 
   /**
    * Shares the payment link on Telegram.
    */
   const shareOnTelegram = () => {
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('Check out my BooFi payment link!')}`;
-    window.open(telegramUrl, '_blank');
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(
+      link
+    )}&text=${encodeURIComponent("Check out my BooFi payment link!")}`;
+    window.open(telegramUrl, "_blank");
   };
 
   const handleToggleOverlay = () => {
@@ -53,10 +63,10 @@ export const BaseNameDialogAlert = ({ translations, address }: BaseNameDialogAle
   };
 
   const onClickLinkBaseNames = () => {
-    const url = ensName 
-      ? `https://www.base.org/names/${ensName}` 
+    const url = ensName
+      ? `https://www.base.org/names/${ensName}`
       : `https://www.base.org/names/?address=${address}`;
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   };
 
   return (
@@ -69,22 +79,25 @@ export const BaseNameDialogAlert = ({ translations, address }: BaseNameDialogAle
             <>
               <div className="flex items-center gap-1 inline-block justify-center">
                 <div className="flex flex-col items-center justify-center">
-                  <h1 className="text-center">    
-                    <span className="font-clash"> Hi {ensName}! </span> 
+                  <h1 className="text-center">
+                    <span className="font-clash"> Hi {ensName}! </span>
                   </h1>
-                  <Button 
+                  <Button
                     variant="link"
                     size="noPadding"
-                    onClick={handleToggleOverlay} 
+                    onClick={handleToggleOverlay}
                     className="text-center cursor-pointer text-blue-500 text-xs hover:underline"
                   >
-                    <span> Send and receive payments with your BooFi link name</span>
+                    <span>
+                      {" "}
+                      Send and receive payments with your BooFi link name
+                    </span>
                   </Button>
                 </div>
               </div>
 
               {overlayVisible && (
-                <OverlayPayName 
+                <OverlayPayName
                   handleToggleOverlay={handleToggleOverlay}
                   copyLink={copyLink}
                   link={link}
@@ -95,10 +108,10 @@ export const BaseNameDialogAlert = ({ translations, address }: BaseNameDialogAle
             </>
           ) : (
             <div className="flex items-center inline-block justify-center">
-              <Button 
+              <Button
                 variant="link"
                 size="noPadding"
-                onClick={onClickLinkBaseNames} 
+                onClick={onClickLinkBaseNames}
                 className="flex items-center gap-1 cursor-pointer text-blue-500 text-xs hover:underline"
               >
                 <span>Create your Base Name</span>

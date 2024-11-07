@@ -24,7 +24,7 @@ fastify.register(fastifyWs);
 
 // Register CORS plugin
 fastify.register(fastifyCors, {
-  origin: ['http://localhost:3000'], // Add your frontend origin(s) here
+  origin: ['http://defi.boofi.xyz'], // Add your frontend origin(s) here
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 });

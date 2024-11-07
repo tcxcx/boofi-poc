@@ -17,8 +17,9 @@ import { getChainsForEnvironment } from "@/store/supportedChains";
 import { Token } from "@/lib/types";
 import { TokenChip } from "@coinbase/onchainkit/token";
 import { toast } from "../ui/use-toast";
-import { formatUnits } from "viem";
-import { useTokenBalance } from "@/hooks/use-token-balance";
+import { formatUnits, Hex } from "viem";
+import { useTokenBalance } from "@/hooks/blockchain/use-token-balance";
+import { useEthersSigner } from "@/lib/wagmi/wagmi";
 
 interface CurrencyDisplayerProps {
   tokenAmount: number;
@@ -53,6 +54,8 @@ const CurrencyDisplayerPay = ({
     initialAmount.toFixed(3)
   );
   const chainId = useChainId();
+  const [balance, setBalance] = useState<string>("0");
+  const signer = useEthersSigner();
 
   const { address } = useAccount();
   const { data: balanceETH, isLoading: wagmiLoading } = useBalance({
@@ -120,11 +123,12 @@ const CurrencyDisplayerPay = ({
     return baseSymbol;
   };
   const token = availableTokens.find((token) => token.name === selectedToken);
-  const { balance: balance, isLoading: isBalanceLoading } = useTokenBalance({
+  const getBalance = useTokenBalance({
     tokenAddress: token?.address as `0x${string}`,
     chainId: chainId!,
-    accountAddress: address as `0x${string}`,
-    decimals: Number(token?.decimals),
+    address: address as Hex,
+    signer: signer,
+    setBalance: setBalance,
   });
 
   const getAvailableBalance = () => {

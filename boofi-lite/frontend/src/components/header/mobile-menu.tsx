@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { Suspense, useEffect } from "react";
 import Link from "next/link";
@@ -10,24 +10,23 @@ import { useWindowSize } from "@/hooks/use-window-size";
 import SparklesText from "@/components/magicui/sparkles-text";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAccount } from 'wagmi';
-import { Identity, Avatar, Name, Badge, Address } from '@coinbase/onchainkit/identity';
+import { useAccount } from "wagmi";
+import {
+  Identity,
+  Avatar,
+  Name,
+  Badge,
+  Address,
+} from "@coinbase/onchainkit/identity";
 import { BlackCreateWalletButton } from "../base-onboard/black-create-wallet-button";
-import { useConditionalName } from '@/hooks/use-conditional-name';
-import { baseSepolia } from 'viem/chains';
+import { useConditionalName } from "@/hooks/use-conditional-name";
+import { baseSepolia } from "viem/chains";
 
 const Header: React.FC = () => {
   const { width } = useWindowSize();
   const MotionLink = motion(Link);
 
-  // Check for wallet connection status
   const { address, isConnected } = useAccount();
-
-  // Get ENS or other identity information
-  const { data: name, isLoading: nameIsLoading, error: nameError } = useConditionalName(
-    { address },
-    { cacheTime: 50 * 60 * 1000 }
-  );
 
   return (
     <header className="bg-transparent relative pb-6">
@@ -50,12 +49,7 @@ const Header: React.FC = () => {
           >
             <div className="flex items-center">
               <SparklesText>
-                <Image
-                  src="/appicon.png"
-                  alt="Logo"
-                  width={100}
-                  height={100}
-                />
+                <Image src="/appicon.png" alt="Logo" width={100} height={100} />
               </SparklesText>{" "}
               <span className="absolute mt-28 sm:mt-20 z-100 opacity-0 group-hover:opacity-100 group-hover:-rotate-12  transition-all duration-300">
                 <span className="inline-block font-clash bg-gradient-to-r text-3xl from-indigo-300 via-purple-400 to-cyan-300 bg-clip-text text-transparent">
