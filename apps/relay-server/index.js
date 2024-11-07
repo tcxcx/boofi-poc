@@ -18,7 +18,7 @@ if (!DOMAIN || !OPENAI_API_KEY ) {
 
 
 // Initialize Fastify
-const fastify = Fastify();
+const fastify = Fastify({ logger: true });
 fastify.register(fastifyFormBody);
 fastify.register(fastifyWs);
 
