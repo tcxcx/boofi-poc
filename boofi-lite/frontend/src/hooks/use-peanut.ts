@@ -13,7 +13,7 @@ import { useAccount, useChainId } from "wagmi";
 import { getChainsForEnvironment } from "@/store/supportedChains";
 import { useTransactionStore } from "@/store/transactionStore";
 import { useToast } from "@/components/ui/use-toast";
-import { AbstractSigner, AbstractTransaction } from '@/lib/types';
+import { AbstractSigner, AbstractTransaction } from "@/lib/types";
 import { currencyAddresses } from "@/utils/currencyAddresses";
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
 
@@ -21,8 +21,6 @@ const PEANUTAPIKEY = process.env.NEXT_PUBLIC_DEEZ_NUTS_API_KEY;
 if (!PEANUTAPIKEY) {
   throw new Error("Peanut API key not found in environment variables");
 }
-
-
 
 export const useDeezNuts = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -38,7 +36,9 @@ export const useDeezNuts = () => {
   const getChainConfig = useCallback((chainId: number) => {
     const supportedChains = getChainsForEnvironment();
     console.log("Retrieving chain configuration for Chain ID:", chainId);
-    const chainConfig = supportedChains.find((c: { id: number }) => c.id === chainId);
+    const chainConfig = supportedChains.find(
+      (c: { id: number }) => c.id === chainId
+    );
     if (!chainConfig) {
       throw new Error(`Unsupported chain ID: ${chainId}`);
     }
@@ -64,20 +64,23 @@ export const useDeezNuts = () => {
   /**
    * Determines token details based on its address.
    */
-  const getTokenDetails = useCallback((tokenAddress: string) => {
-    console.log("Getting token details for tokenAddress:", tokenAddress);
-    if (tokenAddress === "0x0000000000000000000000000000000000000000") {
-      return { tokenType: 0, tokenDecimals: 18 }; // Native token (e.g., ETH)
-    } else if (
-      tokenAddress.toLowerCase() ===
-      currencyAddresses[chainId]?.USDC.address.toLowerCase()
-    ) {
-      return { tokenType: 1, tokenDecimals: 6 }; // USDC
-    } else {
-      // Add other ERC20 tokens here if needed
-      return { tokenType: 1, tokenDecimals: 18 }; // Default ERC20
-    }
-  }, [chainId]);
+  const getTokenDetails = useCallback(
+    (tokenAddress: string) => {
+      console.log("Getting token details for tokenAddress:", tokenAddress);
+      if (tokenAddress === "0x0000000000000000000000000000000000000000") {
+        return { tokenType: 0, tokenDecimals: 18 }; // Native token (e.g., ETH)
+      } else if (
+        tokenAddress.toLowerCase() ===
+        currencyAddresses[chainId]?.USDC.address.toLowerCase()
+      ) {
+        return { tokenType: 1, tokenDecimals: 6 }; // USDC
+      } else {
+        // Add other ERC20 tokens here if needed
+        return { tokenType: 1, tokenDecimals: 18 }; // Default ERC20
+      }
+    },
+    [chainId]
+  );
 
   /**
    * Generates link details required for creating a payment link.
@@ -203,31 +206,25 @@ export const useDeezNuts = () => {
           password: password,
         });
 
-        const transactionHashes: string[] = [];
-        console.log("Sending prepared transactions...");
+        const tokenType = tokenAddress === "0x000000000000000000" ? 0 : 1;
 
-        for (const unsignedTx of preparedTransactions.unsignedTxs) {
-          const abstractTx: AbstractTransaction = {
-            to: unsignedTx.to as string,
-            data: unsignedTx.data as string,
-            value: unsignedTx.value ? BigInt(unsignedTx.value.toString()) : undefined,
-          };
+        const { link, txHash } = await peanut.createLink({
+          structSigner: {
+            signer: signer,
+          },
+          linkDetails: {
+            chainId: chainId.toString(),
+            tokenAmount: parseFloat(amount),
+            tokenType: tokenType,
+            tokenAddress: tokenAddress,
+            tokenDecimals: 18,
+          },
+        });
 
-          console.log("Sending abstract transaction:", abstractTx);
-
-          const txResponse = await signer.sendTransaction(abstractTx);
-          const txHash = txResponse.hash;
-          console.log("Transaction sent, txHash:", txHash);
-          transactionHashes.push(txHash);
-          onInProgress?.();
-        }
-      
         const { links } = await peanut.getLinksFromTx({
           linkDetails: linkDetails,
           passwords: [password],
-          txHash: transactionHashes[
-            transactionHashes.length - 1
-          ] as `0x${string}`,
+          txHash: txHash,
         });
 
         toast({
@@ -236,7 +233,7 @@ export const useDeezNuts = () => {
         });
         onSuccess?.();
         return {
-          transactionHash: transactionHashes[transactionHashes.length - 1],
+          transactionHash: txHash,
           paymentLink: links[0],
         };
       } catch (error: any) {
@@ -347,7 +344,7 @@ export const useDeezNuts = () => {
       onSuccess?: () => void,
       onFailed?: (error: Error) => void,
       onFinished?: () => void
-    ) => {  
+    ) => {
       setIsLoading(true);
       setLoading(true);
       setError(null);
@@ -361,13 +358,12 @@ export const useDeezNuts = () => {
           link,
           APIKey: PEANUTAPIKEY as string,
           recipientAddress: address as `0x${string}`,
-          destinationChainId, // ID of the destination chain
-          destinationToken, // Address of the token on the destination chain
-          isMainnet: true,
+          //     destinationChainId,
+          destinationChainId: "11155111",
+          isMainnet: false,
           slippage: 1,
         });
 
-        console.log(claimedLinkResponse.txHash);
         toast({
           title: "Cross-chain transaction sent",
           description: `Your transaction was claimed with hash ${claimedLinkResponse.txHash}. This may take a few minutes to confirm.`,
