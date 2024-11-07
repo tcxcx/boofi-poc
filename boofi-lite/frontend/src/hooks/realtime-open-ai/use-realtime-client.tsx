@@ -12,6 +12,7 @@ import { RealtimeClient } from '@openai/realtime-api-beta'
  * This will also require you to set OPENAI_API_KEY= in a `.env` file
  * You can run it with `npm run relay`, in parallel with `npm start`
  */
+
 export const LOCAL_RELAY_SERVER_URL: string =
   process.env.NEXT_PUBLIC_APP_LOCAL_RELAY_SERVER_URL || '';
 

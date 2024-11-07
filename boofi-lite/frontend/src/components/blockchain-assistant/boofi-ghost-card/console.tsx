@@ -38,8 +38,6 @@ interface RealtimeEvent {
   event: { [key: string]: any };
 }
 
-
-
 const USDC_CONTRACT_ADDRESS = '0x036cbd53842c5426634e7929541ec2318f3dcf7e';
 const BLOCKSCOUT_URL = 'https://base-sepolia.blockscout.com';
 
