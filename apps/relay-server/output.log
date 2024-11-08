@@ -1,0 +1,17 @@
+nohup: ignoring input
+218 |     }
+219 | 
+220 |     server.once('error', wrap)
+221 |     if (!this[kState].closing) {
+222 |       server.once('listening', wrap)
+223 |       server.listen(listenOptions)
+      ^
+EADDRINUSE: Failed to start server. Is port 8080 in use?
+ syscall: "listen"
+
+      at serve (native:1:1)
+      at node:http:346:16
+      at listen (node:http:303:9)
+      at /home/tomas/coding_dojo/boofi-poc/node_modules/fastify/lib/server.js:223:14
+      at processTicksAndRejections (unknown:7:39)
+
