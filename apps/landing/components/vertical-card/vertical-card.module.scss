@@ -1,0 +1,212 @@
+
+  .card {
+    position: absolute;
+    top: 150%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    width: 40%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    border-radius: 1em;
+    will-change: transform;
+    overflow: hidden;
+  }
+  
+  #card-1 {
+    background: url(/card-1.png) no-repeat 50% 50%;
+    background-size: cover;
+    border: 2px solid rgba(236, 183, 76, 0.35);
+  }
+  
+  #card-2 {
+    background: url(/card-2.png) no-repeat 50% 50%;
+    background-size: cover;
+    border: 2px solid rgba(125, 216, 205, 0.35);
+  }
+  
+  #card-3 {
+    background: url(/card-3.png) no-repeat 50% 50%;
+    background-size: cover;
+    border: 2px solid rgba(224, 255, 87, 0.35);
+  }
+  
+  #card-4 {
+    background: url(/card-4.png) no-repeat 50% 50%;
+    background-size: cover;
+    border: 2px solid rgba(125, 216, 205, 0.35);
+  }
+  
+  .card-phase {
+    position: absolute;
+    top: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.125em 0.25em;
+    border-radius: 0.25em;
+    color: #000;
+  }
+  
+  .card-phase p {
+    font-size: 24px;
+  }
+  
+  #card-1 .card-phase {
+    background-color: #ecb74c;
+  }
+  #card-2 .card-phase {
+    background-color: #7dd8cd;
+  }
+  #card-3 .card-phase {
+    background-color: #e0ff57;
+  }
+  #card-4 .card-phase {
+    background-color: #7dd8cd;
+  }
+  
+  .card-title {
+    text-align: center;
+  }
+  
+  .card-title p {
+    font-size: 36px;
+  }
+  
+  .card-title h1 {
+    font-size: 80px;
+    font-weight: lighter;
+    line-height: 90%;
+  }
+  
+  #card-1 .card-title {
+    color: #ecb74c;
+  }
+  #card-2 .card-title {
+    color: #7dd8cd;
+  }
+  #card-3 .card-title {
+    color: #e0ff57;
+  }
+  #card-4 .card-title {
+    color: #7dd8cd;
+  }
+  
+  .card-title h1 span {
+    color: transparent;
+    -webkit-text-stroke: 1.25px #fff;
+  }
+  
+  .progress-bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 100%;
+    background-color: #fff;
+    opacity: 0;
+  }
+  
+  .progress-bar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(0, 0, 0);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0) 20%,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0) 80%,
+      rgba(0, 0, 0, 1) 100%
+    );
+  }
+  
+  .progress {
+    width: 100%;
+    height: 0%;
+    background-color: #353531;
+  }
+  
+  .indices {
+    position: absolute;
+    top: 0;
+    right: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4em;
+    opacity: 0;
+  }
+  
+  .index {
+    text-align: right;
+    opacity: 0.25;
+  }
+  
+  .index p {
+    text-decoration: line-through;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+  }
+  
+  .index p:nth-child(1) {
+    font-family: "Absolut Sans 2021";
+    font-size: 0.95rem;
+  }
+  
+  .index p:nth-child(2) {
+    font-family: "Absolut Headline Web 2021";
+    font-size: 1.125rem;
+  }
+  
+  #index-1 p {
+    color: #ecb74c;
+  }
+  #index-2 p {
+    color: #7dd8cd;
+  }
+  #index-3 p {
+    color: #e0ff57;
+  }
+  #index-4 p {
+    color: #7dd8cd;
+  }
+  
+  @media (max-width: 900px) {
+    .card {
+      width: 75%;
+      height: 40%;
+    }
+  
+    .card-phase p {
+      font-size: 18px;
+    }
+  
+    .card-title p {
+      font-size: 24px;
+    }
+  
+    .card-title h1 {
+      font-size: 40px;
+    }
+  
+    .card-title h1 span {
+      -webkit-text-stroke: 0.75px #fff;
+    }
+  
+    .indices {
+      right: 15px;
+    }
+  
+    .index p:nth-child(1),
+    .index p:nth-child(2) {
+      display: none;
+    }
+  }
+  
