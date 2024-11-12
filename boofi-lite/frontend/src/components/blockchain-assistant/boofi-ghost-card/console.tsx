@@ -466,6 +466,7 @@ export function BooFiConsole() {
               type: "string",
               description:
                 "The recipient address or Basename (e.g., name.base.eth)",
+
             },
             amount: {
               type: "string",
@@ -646,9 +647,6 @@ export function BooFiConsole() {
         }        
       });
     });
-
-    
-
     client.on("error", (event: any) => console.error(event));
     client.on("conversation.interrupted", async () => {
       const trackSampleOffset = await wavStreamPlayer.interrupt();
