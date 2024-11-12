@@ -465,7 +465,8 @@ export function BooFiConsole() {
             to: {
               type: "string",
               description:
-                "The recipient address or Basename (e.g., gonzalomelov.base.eth)",
+                "The recipient address or Basename (e.g., name.base.eth)",
+
             },
             amount: {
               type: "string",
@@ -639,15 +640,13 @@ export function BooFiConsole() {
       setRealtimeEvents((realtimeEvents) => {
         const lastEvent = realtimeEvents[realtimeEvents.length - 1];
         if (lastEvent?.event.type === realtimeEvent.event.type) {
-          // if we receive multiple events in a row, aggregate them for display purposes
-          lastEvent.count = (lastEvent.count || 0) + 1;
+          lastEvent.count = (lastEvent.count ?? 0) + 1;
           return realtimeEvents.slice(0, -1).concat(lastEvent);
         } else {
           return realtimeEvents.concat(realtimeEvent);
-        }
+        }        
       });
     });
-
     client.on("error", (event: any) => console.error(event));
     client.on("conversation.interrupted", async () => {
       const trackSampleOffset = await wavStreamPlayer.interrupt();
@@ -1004,36 +1003,6 @@ export function BooFiConsole() {
         </div>
       </div>
       <div className="content-right" style={{ display: "none" }}>
-        {/* <div className="content-right"> */}
-        {/*
-          <div className="content-block map">
-            <div className="content-block-title">get_weather()</div>
-            <div className="content-block-title bottom">
-              {marker?.location || 'not yet retrieved'}
-              {!!marker?.temperature && (
-                <>
-                  <br />
-                  🌡️ {marker.temperature.value} {marker.temperature.units}
-                </>
-              )}
-              {!!marker?.wind_speed && (
-                <>
-                  {' '}
-                  🍃 {marker.wind_speed.value} {marker.wind_speed.units}
-                </>
-              )}
-            </div>
-            <div className="content-block-body full">
-              {coords && (
-                <Map
-                  center={[coords.lat, coords.lng]}
-                  location={coords.location}
-                />
-              )}
-            </div>
-          </div>
-          */}
-
         <div className="content-block onchain" style={{ display: "none" }}>
           {/* <div className="content-block onchain"> */}
           <div className="content-block-title">OnchainKit</div>

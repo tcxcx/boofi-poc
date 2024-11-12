@@ -172,7 +172,6 @@ export default function PayId() {
                             contracts.CrossChainSender as Hex,
                             BigInt(1000000000000000000),
                           ],
-
                         }),
                       },
                     ]}
