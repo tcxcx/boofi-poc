@@ -2,12 +2,9 @@
 
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import Link from 'next/link';
-import { HeroTextIn } from 'pages/home';
 import cn from 'clsx'
 import s from './flip.module.scss'
 import { GitCompareArrows } from 'lucide-react';
-import Header from './header';
 
 const ROWS = 6;
 const COLS = 6;

@@ -1,6 +1,5 @@
 import { useFrame, useRect } from '@darkroom.engineering/hamo'
 import cn from 'clsx'
-import Image from 'next/image'
 import { Button } from 'components/button'
 import { Card } from 'components/card'
 import { Title } from 'components/intro'
