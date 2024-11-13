@@ -30,8 +30,8 @@ export default function ActionBanner() {
           transition={{ duration: 0.5 }}
           className="relative w-full overflow-hidden"
         >
-        <div className="absolute inset-0 bg-gradient-to-bl from-pink-300 via-purple-300 to-indigo-400 opacity-50 blur-xl dark:bg-gradient-to-r dark:from-gray-700 dark:via-gray-900 dark:to-black"></div>
-        <div className="relative z-10 px-3 py-2 flex items-center justify-between backdrop-blur-md bg-white/10">
+          <div className="absolute inset-0 bg-gradient-to-bl from-purple-700/60 to-teal-600/80 dark:from-indigo-900 dark:via-purple-900 dark:to-cyan-900  opacity-50 blur-xl dark:bg-gradient-to-r"></div>
+          <div className="relative z-10 px-3 py-2 flex items-center justify-between backdrop-blur-md bg-white/10">
             <Link
               href="https://discord.gg/"
               target="_blank"
@@ -58,13 +58,13 @@ export default function ActionBanner() {
                   />
                 </svg>
               </motion.div>
-              
+
               <p className="font-clash text-xs text-center transition-transform duration-300 ease-in-out group-hover:scale-105">
-                <span className="inline-block font-clash bg-gradient-to-r from-indigo-300 via-purple-400 to-cyan-300 bg-clip-text text-transparent mx-4">
-                    Join our thriving community on Discord. Connect, learn, and grow with us!
+                <span className="inline-block font-clash bg-gradient-to-r dark:from-indigo-300 dark:via-purple-400 dark:to-cyan-400 from-indigo-700 via-purple-600 to-cyan-700 bg-clip-text text-transparent mx-4">
+                  Join our thriving community on Discord. Connect, learn, and grow with us!
                 </span>
               </p>
-              
+
               <motion.div
                 animate={{ x: isHovered ? 5 : 0 }}
                 transition={{ duration: 0.3 }}
