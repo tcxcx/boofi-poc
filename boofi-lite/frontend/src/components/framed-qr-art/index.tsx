@@ -36,18 +36,20 @@ export const FramedQRCode = ({ image, link, frameText, copyLink }: FramedQRCodeP
     };
 
     useEffect(() => {
-        const loadImage = async () => {
-            setIsLoading(true);
-            const base64 = await convertImageToBase64(image);
-            setLogoBase64(base64);
-            setIsLoading(false);
-        };
+        if (typeof window !== "undefined") { // Check if window is available
+            const loadImage = async () => {
+                setIsLoading(true);
+                const base64 = await convertImageToBase64(image);
+                setLogoBase64(base64);
+                setIsLoading(false);
+            };
 
-        if (image.startsWith("data:")) {
-            setLogoBase64(image);
-            setIsLoading(false);
-        } else {
-            loadImage();
+            if (image.startsWith("data:")) {
+                setLogoBase64(image);
+                setIsLoading(false);
+            } else {
+                loadImage();
+            }
         }
     }, [image]);
 
