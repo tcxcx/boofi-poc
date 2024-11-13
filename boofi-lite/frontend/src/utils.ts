@@ -161,7 +161,7 @@ export function formUrlQuery({ params, key, value }: UrlQueryParams) {
 
   return qs.stringifyUrl(
     {
-      url: window.location.pathname,
+      url: window?.location?.pathname,
       query: currentUrl,
     },
     { skipNull: true }

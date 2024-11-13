@@ -17,7 +17,7 @@ export const useConditionalName = (
   return useName(
     {
       address: isValidAddress ? (address as `0x${string}`) : '0x0000000000000000000000000000000000000000',
-      chain,
+      chain: base,
     },
     {
       enabled: isValidAddress,

@@ -304,3 +304,20 @@ export interface WormholeContracts {
   CrossChainSender: string;
   wormholeChainId: number;
 }
+
+
+export interface WagmiActionButtonProps {
+  abi: any[];
+  address: `0x${string}`;
+  functionName: string;
+  args?: any[];
+  buttonText?: string;
+  loadingText?: string;
+  successText?: string;
+  variant?: 'default' | 'brutalism' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'fito' | 'paez' | 'charly' | 'canterby';
+  size?: 'default' | 'noPadding' | 'xs' | 'sm' | 'lg' | 'icon';
+  className?: string;
+  chainId: number;
+  onSuccess?: () => void;
+  onError?: (error: Error) => void;
+}

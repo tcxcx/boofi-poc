@@ -1,28 +1,39 @@
 "use client";
-import { OnchainKitProvider } from "@coinbase/onchainkit";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { ReactNode } from "react";
-import { base } from "viem/chains";
-import { Config, WagmiProvider } from "wagmi";
-import { NEXT_PUBLIC_CDP_API_KEY } from "@/lib/wagmi/config";
-import { useWagmiConfig } from "@/lib/wagmi/wagmi";
 
-type Props = { children: ReactNode };
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { ReactNode, useState } from "react";
+import { Config, WagmiProvider, State } from "wagmi";
+import { useWagmiConfig } from "@/lib/wagmi/wagmi";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
+import { EthereumWalletConnectors } from '@dynamic-labs/ethereum';
+import { GlobalWalletExtension } from "@dynamic-labs/global-wallet";
+import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
+
+
+type Props = { children: ReactNode, initialState?: State };
 
 const queryClient = new QueryClient();
 
-function OnchainProviders({ children }: Props) {
+
+function OnchainProviders({ children, initialState }: Props) {
   const wagmiConfig = useWagmiConfig();
 
   return (
-    <WagmiProvider config={wagmiConfig as Config}>
-      <QueryClientProvider client={queryClient}>
-        <OnchainKitProvider apiKey={NEXT_PUBLIC_CDP_API_KEY} chain={base}>
-          {children}
-        </OnchainKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <DynamicContextProvider
+      settings={{
+        environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENV_ID as string,
+        walletConnectors: [EthereumWalletConnectors],
+        walletConnectorExtensions: [GlobalWalletExtension],
+      }}
+    >
+      <WagmiProvider config={wagmiConfig as Config} initialState={initialState}>
+        <QueryClientProvider client={queryClient}>
+          <DynamicWagmiConnector>
+            {children}
+          </DynamicWagmiConnector>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </DynamicContextProvider>
   );
 }
 

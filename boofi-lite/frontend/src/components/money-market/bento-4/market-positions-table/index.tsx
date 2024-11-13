@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { useAccount } from "wagmi";
 import { base } from "viem/chains";
 import { useEnsName } from "@/hooks/use-ens-name";
+
 interface Position {
   asset: string;
   amount: number;
@@ -30,7 +31,7 @@ const PositionSummary: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const address = useAccount();
-  const { ensName, isLoading } = useEnsName({
+  const { ensName } = useEnsName({
     address: address.address as `0x${string}`,
     chain: base,
   });
@@ -47,9 +48,9 @@ const PositionSummary: React.FC = () => {
         const mockPositions: Position[] =
           currentViewTab === "lend" || currentViewTab === "withdraw"
             ? [
-                { asset: "USDC", amount: 1000, value: 1000, apy: 5.2 },
-                { asset: "ETH", amount: 0.5, value: 1250, apy: 3.8 },
-              ]
+              { asset: "USDC", amount: 1000, value: 1000, apy: 5.2 },
+              { asset: "ETH", amount: 0.5, value: 1250, apy: 3.8 },
+            ]
             : [];
         setPositions(mockPositions);
       } catch (error) {

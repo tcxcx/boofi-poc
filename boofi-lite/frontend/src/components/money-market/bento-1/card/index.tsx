@@ -1,10 +1,7 @@
-"use client";
-
 import { useState } from "react";
-import { useAccount, useSwitchChain } from "wagmi";
+import { useAccount, useSwitchChain, useReadContract } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import TransferWrapper from "@/components/money-market/transfer-wrapper";
 import { TransactionHistoryItem } from "@/lib/types";
 import { useTokenBalance } from "@/hooks/blockchain/use-token-balance";
 import { useChainSelection } from "@/hooks/use-chain-selection";
@@ -13,6 +10,11 @@ import { BalanceDisplay } from "@/components/balance-display";
 import { getUSDCAddress } from "@/lib/utils";
 import { TransactionError } from "@/lib/types";
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
+import { WagmiActionButton } from "@/components/wagmi-buttons/action-button";
+import { spokeAbi } from "@/utils/abis";
+import { Abi, parseUnits } from "viem";
+import { currencyAddresses } from "@/utils/currencyAddresses";
+
 export function MoneyMarketCard() {
   const { address } = useAccount();
   const [usdcBalance, setUsdcBalance] = useState<string | undefined>(undefined);
@@ -26,49 +28,75 @@ export function MoneyMarketCard() {
     toChains,
   } = useChainSelection();
   const signer = useEthersSigner();
-
-  if (!fromChain && fromChains.length > 0) {
-    setFromChain(fromChains[0].chainId.toString());
-  }
-
-  if (!toChain && toChains.length > 0) {
-    setToChain(toChains[0].chainId.toString());
-  }
-
-  const { switchChain } = useSwitchChain();
   const [amount, setAmount] = useState("");
-  const [transactionHistory, setTransactionHistory] = useState<
-    TransactionHistoryItem[]
-  >([]);
+  const [transactionHistory, setTransactionHistory] = useState<TransactionHistoryItem[]>([]);
 
   const chainId = fromChain ? Number(fromChain) : 84532;
-  const usdcAddress = getUSDCAddress(chainId!);
-  const usdcDecimals = 6; // USDC has 6 decimals
+  const usdcAddress = getUSDCAddress(chainId);
+  const assetAmount = parseUnits(amount || "0", 6);
+  const spokeContract = currencyAddresses[chainId]?.USDC?.spokeContract;
 
-  const getUsdcBalance = useTokenBalance({
-    tokenAddress: usdcAddress as `0x${string}`,
-    chainId: chainId!,
-    address: address as `0x${string}`,
-    signer: signer,
-    setBalance: setUsdcBalance,
-  });
+  const {
+    data: deliveryCost,
+    isLoading: isLoadingDeliveryCost,
+  } = useReadContract({
+    address: spokeContract as `0x${string}`,
+    abi: spokeAbi,
+    functionName: "getDeliveryCostRoundtrip",
+    args: [1n, true],
+    query: {
+      enabled: !!spokeContract,
+    }
+  }) as { data: bigint | undefined; isLoading: boolean };
 
-  const transferActions = {
-    lend: { functionName: "depositCollateral", buttonText: "Deposit USDC" },
-    withdraw: {
-      functionName: "withdrawCollateral",
-      buttonText: "Withdraw USDC",
-    },
-    borrow: { functionName: "borrow", buttonText: "Borrow USDC" },
-    repay: { functionName: "repay", buttonText: "Repay USDC" },
+  const costForReturnDelivery = deliveryCost || 1000000n;
+
+  // Get action configuration based on current tab
+  const getActionConfig = () => {
+    const baseValue = costForReturnDelivery;
+
+    switch (currentViewTab) {
+      case 'lend':
+        return {
+          functionName: "depositCollateral",
+          buttonText: "Deposit USDC",
+          loadingText: "Depositing...",
+          args: [usdcAddress, assetAmount, baseValue],
+          value: baseValue
+        };
+      case 'withdraw':
+        return {
+          functionName: "withdrawCollateral",
+          buttonText: "Withdraw USDC",
+          loadingText: "Withdrawing...",
+          args: [usdcAddress, assetAmount, baseValue],
+          value: baseValue
+        };
+      case 'borrow':
+        return {
+          functionName: "borrow",
+          buttonText: "Borrow USDC",
+          loadingText: "Borrowing...",
+          args: [usdcAddress, assetAmount, baseValue],
+          value: baseValue
+        };
+      case 'repay':
+        return {
+          functionName: "repay",
+          buttonText: "Repay USDC",
+          loadingText: "Repaying...",
+          args: [usdcAddress, assetAmount, baseValue],
+          value: baseValue
+        };
+      default:
+        return null;
+    }
   };
 
-  const action =
-    transferActions[currentViewTab as keyof typeof transferActions] || {};
-  const { functionName, buttonText } = action;
+  const actionConfig = getActionConfig();
 
-  const handleTransactionSuccess = (txHash: string) => {
-    console.log("Transaction successful:", txHash);
+  const handleTransactionSuccess = () => {
+    console.log("Transaction successful");
     setTransactionHistory((prev) => [
       ...prev,
       {
@@ -79,7 +107,7 @@ export function MoneyMarketCard() {
     ]);
   };
 
-  const handleTransactionError = (error: TransactionError) => {
+  const handleTransactionError = (error: Error) => {
     console.error("Transaction failed:", error);
     setTransactionHistory((prev) => [
       ...prev,
@@ -90,6 +118,8 @@ export function MoneyMarketCard() {
       },
     ]);
   };
+
+  if (!actionConfig) return null;
 
   return (
     <div className="w-full max-w-3xl mx-auto">
@@ -127,12 +157,18 @@ export function MoneyMarketCard() {
             />
           </div>
           <div className="w-1/2 p-4">
-            <TransferWrapper
-              amount={amount}
+            <WagmiActionButton
+              abi={spokeAbi as unknown as Abi[]}
+              address={spokeContract as `0x${string}`}
+              functionName={actionConfig.functionName}
+              args={actionConfig.args}
+              buttonText={actionConfig.buttonText}
+              loadingText={actionConfig.loadingText}
+              chainId={chainId}
               onSuccess={handleTransactionSuccess}
               onError={handleTransactionError}
-              functionName={functionName}
-              buttonText={buttonText}
+              variant="brutalism"
+              className="w-full p-4 justify-center bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
             />
           </div>
         </div>

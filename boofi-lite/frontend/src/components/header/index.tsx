@@ -12,6 +12,7 @@ import SparklesText from "@/components/magicui/sparkles-text";
 import { motion } from "framer-motion";
 import { Skeleton } from "../ui/skeleton";
 import ActionBanner from "./action-banner";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 const song = "/sounds/anime-wow-sound-effect.mp3";
 
@@ -76,7 +77,7 @@ const Header: React.FC = () => {
           <span className="h-px flex-grow bg-black"></span>
           <Suspense fallback={<Skeleton className="h-4 w-[250px]" />}>
             <div className="flex items-center gap-3 z-20">
-              <LoginButton className='bg-clr-blue text-black dark:text-black hover:bg-clr-blue/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none' />
+              <DynamicWidget variant='modal' />
             </div>
           </Suspense>
         </div>

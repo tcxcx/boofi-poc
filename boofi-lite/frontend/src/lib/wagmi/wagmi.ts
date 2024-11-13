@@ -7,6 +7,7 @@ import {
 } from '@rainbow-me/rainbowkit/wallets';
 import { useMemo } from 'react';
 import {
+  base,
   baseSepolia,
   avalancheFuji
 } from "wagmi/chains";
@@ -41,9 +42,9 @@ export function useWagmiConfig() {
         projectId,
       },
     );
-
     const wagmiConfig = createConfig({
       chains: [
+        base,
         baseSepolia,
         avalancheFuji
       ],
@@ -53,6 +54,7 @@ export function useWagmiConfig() {
       transports: {
         [avalancheFuji.id]: http(),
         [baseSepolia.id]: http(),
+        [base.id]: http(),
       },
     });
     return wagmiConfig;
