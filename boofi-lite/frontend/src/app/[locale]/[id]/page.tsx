@@ -45,14 +45,11 @@ export default function PayId() {
   const [ensNotFound, setEnsNotFound] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const { toChain } = useChainSelection();
-  const { writeContract, error, data, isIdle, isError } = useWriteContract();
   const id = params.id; ///// recipient address
   const address = useAccount();
-  const signer = useEthersSigner();
 
   ////TODO: WHAT IF THE TOKEN IS NOT SUPPORTED?
   ////TODO: WHAT IF THE CHAIN IS THE SAME AS THE SOURCE CHAIN?
-  const targetContract = "0x84f597AEcC19925070974c8EeDAa38E535430c5e"; //// target contract address in avalanche fuji
 
   async function getEnsAddress() {
     setLoading(true);

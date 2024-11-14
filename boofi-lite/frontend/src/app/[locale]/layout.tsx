@@ -77,18 +77,18 @@ export default function RootLayout({
                   "[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]"
                 )}
               />
-                <Header />
-                  <div className="custom-scrollbar">
-                    <div className="mx-auto px-4 relative flex flex-col justify-center overflow-hidden">
-                    <Container>
-                      <div className="relative">
+              <Header />
+              <div className="custom-scrollbar">
+                <div className="mx-auto px-4 relative flex flex-col justify-center overflow-hidden">
+                  <Container>
+                    <div className="relative">
                       <div className="w-full flex flex-col items-center">
                         {children}
-                        </div>
                       </div>
-                    </Container>
-                  </div>
+                    </div>
+                  </Container>
                 </div>
+              </div>
               {isDev && <GridDebugger />}
               <LayoutMusic />
             </main>

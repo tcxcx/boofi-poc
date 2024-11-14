@@ -1,26 +1,22 @@
-'use client';
-import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+"use client";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
   metaMaskWallet,
   rainbowWallet,
-} from '@rainbow-me/rainbowkit/wallets';
-import { useMemo } from 'react';
-import {
-  baseSepolia,
-  avalancheFuji
-} from "wagmi/chains";
-import { NEXT_PUBLIC_WC_PROJECT_ID } from './config';
+} from "@rainbow-me/rainbowkit/wallets";
+import { useMemo } from "react";
+import { baseSepolia, avalancheFuji } from "wagmi/chains";
+import { NEXT_PUBLIC_WC_PROJECT_ID } from "./config";
 import type { Account, Chain, Client, Transport } from "viem";
 import { providers } from "ethers";
 import { http, useConnectorClient, Config, createConfig } from "wagmi";
 
-
 export function useWagmiConfig() {
-  const projectId = NEXT_PUBLIC_WC_PROJECT_ID ?? '';
+  const projectId = NEXT_PUBLIC_WC_PROJECT_ID ?? "";
   if (!projectId) {
     const providerErrMessage =
-      'To connect to all Wallets you need to provide a NEXT_PUBLIC_WC_PROJECT_ID env variable';
+      "To connect to all Wallets you need to provide a NEXT_PUBLIC_WC_PROJECT_ID env variable";
     throw new Error(providerErrMessage);
   }
 
@@ -28,25 +24,22 @@ export function useWagmiConfig() {
     const connectors = connectorsForWallets(
       [
         {
-          groupName: 'Recommended Wallet',
+          groupName: "Recommended Wallet",
           wallets: [coinbaseWallet],
         },
         {
-          groupName: 'Other Wallets',
+          groupName: "Other Wallets",
           wallets: [rainbowWallet, metaMaskWallet],
         },
       ],
       {
-        appName: 'BooFi',
+        appName: "BooFi",
         projectId,
-      },
+      }
     );
 
     const wagmiConfig = createConfig({
-      chains: [
-        baseSepolia,
-        avalancheFuji
-      ],
+      chains: [baseSepolia, avalancheFuji],
       multiInjectedProviderDiscovery: false,
       connectors,
       ssr: true,
