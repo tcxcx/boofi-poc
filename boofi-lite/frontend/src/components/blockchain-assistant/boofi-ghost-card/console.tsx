@@ -20,13 +20,9 @@ import {
   useChainId,
 } from "wagmi";
 import { parseEther, Hex } from "viem";
-import { getAddress } from "@coinbase/onchainkit/identity";
 import { baseSepolia } from "viem/chains";
-import LoginButton from "@/components/onchain-kit/WalletWrapper";
 import SignupButton from "./SignUpButton";
-import TransactionWrapper from "./TransactionWrapper";
-import WalletWrapper from "./WalletWrapper";
-import TransferUsdcWrapper from "./TransferUsdcWrapper";
+
 import ApproveUsdcWrapper from "./ApproveUsdcWrapper";
 
 import Link from "next/link";
@@ -466,7 +462,6 @@ export function BooFiConsole() {
               type: "string",
               description:
                 "The recipient address or Basename (e.g., name.base.eth)",
-
             },
             amount: {
               type: "string",
@@ -484,14 +479,14 @@ export function BooFiConsole() {
         try {
           // Resolve Basename to address
           let recipientAddress = to;
-          if (to.endsWith(".base.eth")) {
-            const resolvedAddress = await getAddress({ name: to });
-            if (resolvedAddress) {
-              recipientAddress = resolvedAddress;
-            } else {
-              return { error: "Unable to resolve Basename" };
-            }
-          }
+          // if (to.endsWith(".base.eth")) {
+          //   const resolvedAddress = await getAddress({ name: to });
+          //   if (resolvedAddress) {
+          //     recipientAddress = resolvedAddress;
+          //   } else {
+          //     return { error: "Unable to resolve Basename" };
+          //   }
+          // }
 
           const amountInWei = parseEther(amount);
           const transaction = await sendTransaction({
@@ -644,7 +639,7 @@ export function BooFiConsole() {
           return realtimeEvents.slice(0, -1).concat(lastEvent);
         } else {
           return realtimeEvents.concat(realtimeEvent);
-        }        
+        }
       });
     });
     client.on("error", (event: any) => console.error(event));
@@ -1011,17 +1006,17 @@ export function BooFiConsole() {
               <section className="mb-4 flex w-full flex-row items-center justify-between">
                 <div className="flex items-center gap-3">
                   <SignupButton />
-                  {!address && <LoginButton />}
+                  {/* {!address && <LoginButton />} */}
                 </div>
               </section>
               <section className="flex grow flex-col items-center justify-center gap-4 rounded-xl bg-gray-100 p-4">
                 {address ? (
                   <>
-                    <TransactionWrapper address={address} />
+                    {/* <TransactionWrapper address={address} />
                     <TransferUsdcWrapper
                       recipientAddress="0x361fd8769c1295Eb75F4E8f51015bc074Eb937B2"
                       amount="0.01"
-                    />
+                    /> */}
                     <ApproveUsdcWrapper
                       spenderAddress="0x361fd8769c1295Eb75F4E8f51015bc074Eb937B2"
                       amount="0.01"
@@ -1034,10 +1029,11 @@ export function BooFiConsole() {
                       /> */}
                   </>
                 ) : (
-                  <WalletWrapper
-                    className="w-full"
-                    text="Sign in to transact"
-                  />
+                  // <WalletWrapper
+                  //   className="w-full"
+                  //   text="Sign in to transact"
+                  // />
+                  <></>
                 )}
                 {showBalance && balance && (
                   <div className="text-sm">

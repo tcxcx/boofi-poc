@@ -1,4 +1,4 @@
-import { Avatar, Identity, Name, Badge } from "@coinbase/onchainkit/identity";
+// import { Avatar, Identity, Name, Badge } from "@coinbase/onchainkit/identity";
 import { Button } from "@/components/ui/button";
 import { base } from "wagmi/chains";
 import { useDeezNuts } from "@/hooks/use-peanut";
@@ -29,7 +29,7 @@ export default function CoinBaseIdentity({
       }
     >
       {label && <p className="text-sm text-gray-500">{label}</p>}
-      <Identity
+      {/* <Identity
         className="rounded-3xl flex flex-row items-center justify-center p-4"
         address={address as `0x${string}`}
         chain={base}
@@ -61,7 +61,8 @@ export default function CoinBaseIdentity({
         <Button size="sm" variant="link">
           {truncateHash(address)}
         </Button>
-      </Identity>
+      </Identity> */}
+      <></>
     </div>
   );
 }

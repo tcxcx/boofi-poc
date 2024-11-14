@@ -1,6 +1,5 @@
 // boofi-lite/frontend/src/actions/use-ens-name.actions.ts
 import { useEnsName as useEnsNameWagmi } from "wagmi";
-import { useName } from "@coinbase/onchainkit/identity";
 import { truncateAddress } from "@/utils/truncateAddress";
 interface UseEnsNameOptions {
   address: string;
@@ -9,7 +8,6 @@ interface UseEnsNameOptions {
 
 interface UseEnsNameResult {
   ensName: string | null;
-  isLoading: boolean;
   ensNotFound: boolean;
 }
 
@@ -25,22 +23,16 @@ export function useEnsName({
     address: address as `0x${string}`,
     chainId: chain.id,
   });
-  const { data: name, isLoading } = useName({
-    address: address as `0x${string}`,
-    chain,
-  });
 
-  const ensNotFound = !isLoading && name === null;
+  const ensNotFound = !result.isLoading && result.data === null;
 
   if (result.data) {
     ensName = result.data;
-  } else if (name) {
-    ensName = name;
   } else {
     ensName = truncateAddress(address);
   }
 
-  return { ensName, isLoading, ensNotFound };
+  return { ensName, ensNotFound };
 }
 
 export default useEnsName;

@@ -11,15 +11,8 @@ import SparklesText from "@/components/magicui/sparkles-text";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAccount } from "wagmi";
-import {
-  Identity,
-  Avatar,
-  Name,
-  Badge,
-  Address,
-} from "@coinbase/onchainkit/identity";
+
 import { BlackCreateWalletButton } from "../base-onboard/black-create-wallet-button";
-import { useConditionalName } from "@/hooks/use-conditional-name";
 import { baseSepolia } from "viem/chains";
 
 const Header: React.FC = () => {
@@ -68,20 +61,21 @@ const Header: React.FC = () => {
             {width && width >= 1024 ? (
               // Show identity info if wallet is connected
               isConnected && address ? (
-                <Identity
-                  address={address as `0x${string}`}
-                  chain={baseSepolia}
-                >
-                  <div className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg">
-                    <Avatar />
-                    <div>
-                      <Name className="text-lg font-semibold">
-                        <Badge />
-                      </Name>
-                      <Address />
-                    </div>
-                  </div>
-                </Identity>
+                // <Identity
+                //   address={address as `0x${string}`}
+                //   chain={baseSepolia}
+                // >
+                //   <div className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg">
+                //     <Avatar />
+                //     <div>
+                //       <Name className="text-lg font-semibold">
+                //         <Badge />
+                //       </Name>
+                //       <Address />
+                //     </div>
+                //   </div>
+                // </Identity>
+                <></>
               ) : (
                 // If no wallet is connected, show MobileMenu or a connect button
                 <BlackCreateWalletButton />

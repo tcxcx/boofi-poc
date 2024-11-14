@@ -4,10 +4,10 @@ import { useValue } from "@/hooks/use-value";
 import { getRoundedAmount } from "@/utils/getRoundedAmount";
 import { isValidAmount } from "@/utils/isValidAmount";
 import { background, cn, color, pressable, text } from "../styles/theme";
-import { TokenChip, TokenSelectDropdown } from "@coinbase/onchainkit/token";
-import type { Token } from "@coinbase/onchainkit/token";
 import { useChainId, useReadContract } from "wagmi";
 import { erc20Abi, formatUnits } from "viem";
+import { Token } from "@/lib/types";
+import { TokenChip } from "@/components/Token/Chip";
 
 export function SwapAmountInput({
   className,
@@ -125,7 +125,7 @@ export function SwapAmountInput({
           onChange={handleChange}
           inputValidator={isValidAmount}
         />
-        {sourceTokenOptions.length > 0 ? (
+        {/* {sourceTokenOptions.length > 0 ? (
           <TokenSelectDropdown
             token={token}
             setToken={handleSetToken}
@@ -133,7 +133,8 @@ export function SwapAmountInput({
           />
         ) : (
           token && <TokenChip className={pressable.inverse} token={token} />
-        )}
+        )} */}
+        <TokenChip token={token} />
       </div>
       <div className="mt-4 flex w-full justify-between">
         {/* <div className="flex items-center">

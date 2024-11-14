@@ -14,9 +14,9 @@ import {
   SupportedChain,
   Token,
 } from "@/data/supportedBridgeTokensDictionary";
-import { TokenChip } from "@coinbase/onchainkit/token";
 import { useToast } from "@/components/ui/use-toast";
 import { NetworkSelectorProps } from "@/lib/types";
+import { TokenChip } from "../Token/Chip";
 
 const NetworkSelector: React.FC<NetworkSelectorProps> = ({
   onSelect,
@@ -24,16 +24,14 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
 }) => {
   const { address, isConnected } = useAccount();
   const { switchChain } = useSwitchChain();
-  const chains = useChains(); // Corrected usage
+  const chains = useChains();
   const { toast } = useToast();
   const [currentNetwork, setCurrentNetwork] = useState<{
     id: number;
     name: string;
   } | null>(null);
   console.log({ currentChainId });
-  /**
-   * Updates the current network based on the connected account's chain.
-   */
+
   const updateCurrentNetwork = useCallback(() => {
     if (isConnected && address) {
       const chainIdHex = window.ethereum?.chainId;
@@ -147,7 +145,7 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
                     return (
                       <TokenChip
                         token={{
-                          address: token.address as `0x${string}` | "",
+                          address: token.address as `0x${string}`,
                           chainId: token.chainId as number,
                           symbol: token.symbol as string,
                           name: token.name as string,

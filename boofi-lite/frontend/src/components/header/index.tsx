@@ -6,12 +6,12 @@ import Image from "next/image";
 import LocalSwitcher from "@/components/locale-switcher";
 import { ModeToggle } from "@/components/theme-toggle";
 import { useWindowSize } from "@/hooks/use-window-size";
-import { useAccount } from 'wagmi';
-import LoginButton from "@/components/onchain-kit/WalletWrapper";
+import { useAccount } from "wagmi";
 import SparklesText from "@/components/magicui/sparkles-text";
 import { motion } from "framer-motion";
 import { Skeleton } from "../ui/skeleton";
 import ActionBanner from "./action-banner";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 const song = "/sounds/anime-wow-sound-effect.mp3";
 
@@ -38,7 +38,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-transparent relative pb-6">
-      <ActionBanner/>
+      <ActionBanner />
       <div className="container mx-auto grid grid-cols-3 items-center">
         <div className="flex items-center space-x-2">
           <Suspense fallback={<Skeleton className="h-4 w-[250px]" />}>
@@ -76,7 +76,8 @@ const Header: React.FC = () => {
           <span className="h-px flex-grow bg-black"></span>
           <Suspense fallback={<Skeleton className="h-4 w-[250px]" />}>
             <div className="flex items-center gap-3 z-20">
-              <LoginButton className='bg-clr-blue text-black dark:text-black hover:bg-clr-blue/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none' />
+              {/* <LoginButton className="bg-clr-blue text-black dark:text-black hover:bg-clr-blue/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none" /> */}
+              <DynamicWidget />
             </div>
           </Suspense>
         </div>

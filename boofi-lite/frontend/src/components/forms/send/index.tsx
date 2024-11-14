@@ -1,6 +1,6 @@
 // frontend/src/components/forms/send.tsx
 
-'use client';
+"use client";
 
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,14 +17,14 @@ import { encodeFunctionData, erc20Abi, Hex } from "viem";
 import { crossChainSenderAbi } from "@/lib/abi/CrossChainSender";
 import { currencyAddresses } from "@/utils/currencyAddresses";
 import { chains } from "@/utils/contracts";
-import {
-  Transaction,
-  TransactionButton,
-  TransactionResponse,
-  TransactionStatus,
-  TransactionStatusAction,
-  TransactionStatusLabel,
-} from "@coinbase/onchainkit/transaction";
+// import {
+//   Transaction,
+//   TransactionButton,
+//   TransactionResponse,
+//   TransactionStatus,
+//   TransactionStatusAction,
+//   TransactionStatusLabel,
+// } from "@coinbase/onchainkit/transaction";
 import MultiChainToggle from "@/components/multichain-toggle";
 import ChainSelectSkeleton from "@/components/forms/send/skeletons/chain-select-skeleton";
 import CurrencyDisplayerSkeleton from "@/components/forms/send/skeletons/currency-displayer-skeleton";
@@ -46,9 +46,14 @@ export default function SendPayment() {
     chainId: chainId,
   });
 
-  const tokenFind = tokens.find((token) => token.name === selectedToken) || tokens[1];
+  const tokenFind =
+    tokens.find((token) => token.name === selectedToken) || tokens[1];
 
-  const { data: cost, isLoading: isCostLoading, error: costError } = useReadContract({
+  const {
+    data: cost,
+    isLoading: isCostLoading,
+    error: costError,
+  } = useReadContract({
     address: contracts.CrossChainSender as Hex,
     abi: crossChainSenderAbi,
     functionName: "quoteCrossChainDeposit",
@@ -116,10 +121,9 @@ export default function SendPayment() {
               tokenAmount={amount}
               onValueChange={(newAmount) => setAmount(newAmount)}
               availableTokens={Object.fromEntries(
-                Object.entries(currencyAddresses[Number(chainId)] || {}).map(([key, value]) => [
-                  key,
-                  value.address,
-                ])
+                Object.entries(currencyAddresses[Number(chainId)] || {}).map(
+                  ([key, value]) => [key, value.address]
+                )
               )}
               onTokenSelect={(value) => setSelectedToken(value)}
               currentNetwork={Number(chainId)}
@@ -131,7 +135,7 @@ export default function SendPayment() {
             <TransactionSectionSkeleton />
           ) : (
             <div className="flex flex-col w-full space-y-2 pt-4">
-              <Transaction
+              {/* <Transaction
                 chainId={Number(chainId)}
                 calls={contractCalls}
                 onSuccess={(response: TransactionResponse) =>
@@ -155,7 +159,7 @@ export default function SendPayment() {
                   <TransactionStatusLabel />
                   <TransactionStatusAction />
                 </TransactionStatus>
-              </Transaction>
+              </Transaction> */}
 
               <Button
                 onClick={() => {

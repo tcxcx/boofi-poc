@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@coinbase/onchainkit": "^0.35.3",
+    "@dynamic-labs/ethereum": "^3.6.2",
+    "@dynamic-labs/sdk-react-core": "^3.6.2",
+    "@dynamic-labs/wagmi-connector": "^3.6.2",
     "@ethersproject/providers": "^5.7.2",
     "@heroicons/react": "^2.1.5",
     "@hookform/resolvers": "^3.9.0",

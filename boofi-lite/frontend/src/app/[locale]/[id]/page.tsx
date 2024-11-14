@@ -7,14 +7,14 @@ import {
   wormholeContractAddress,
 } from "@/utils/contracts";
 import { crossChainSenderAbi } from "@/lib/abi/CrossChainSender";
-import {
-  Transaction,
-  TransactionButton,
-  TransactionResponse,
-  TransactionStatus,
-  TransactionStatusAction,
-  TransactionStatusLabel,
-} from "@coinbase/onchainkit/transaction";
+// import {
+//   Transaction,
+//   TransactionButton,
+//   TransactionResponse,
+//   TransactionStatus,
+//   TransactionStatusAction,
+//   TransactionStatusLabel,
+// } from "";
 import { erc20Abi, Hex, encodeFunctionData } from "viem";
 import { useEffect, useState } from "react";
 import { ChainSelect } from "@/components/chain-select";
@@ -27,9 +27,8 @@ import { Button } from "@/components/ui/button";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { Skeleton } from "@/components/ui/skeleton";
 import CurrencyDisplayerPay from "@/components/currency-pay";
-import { getAddress } from "@coinbase/onchainkit/identity";
+// import { getAddress } from "@coinbase/onchainkit/identity";
 import { tokenBridge } from "@/components/wormhole/index";
-import { useEthersSigner } from "@/lib/wagmi/wagmi";
 
 interface WormholeContracts {
   CrossChainSender: string;
@@ -54,9 +53,8 @@ export default function PayId() {
   async function getEnsAddress() {
     setLoading(true);
     try {
-      const address = await getAddress({ name: id as string });
-      setReceiver(address as Hex);
-      setEnsNotFound(!address);
+      setReceiver(address.address as Hex);
+      setEnsNotFound(!address.address);
     } finally {
       setLoading(false);
     }
@@ -157,7 +155,7 @@ export default function PayId() {
             <div className="flex flex-col w-full space-y-2 pt-4">
               {sameTargetChain ? (
                 <>
-                  <Transaction
+                  {/* <Transaction
                     chainId={Number(chainId)}
                     calls={[
                       {
@@ -185,7 +183,7 @@ export default function PayId() {
                       <TransactionStatusLabel />
                       <TransactionStatusAction />
                     </TransactionStatus>
-                  </Transaction>
+                  </Transaction> */}
 
                   <Button
                     onClick={() => handleSwap(amount)}

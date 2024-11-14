@@ -1,16 +1,5 @@
 "use client";
 
-import {
-  Transaction,
-  TransactionButton,
-  TransactionStatus,
-  TransactionStatusAction,
-  TransactionStatusLabel,
-} from "@coinbase/onchainkit/transaction";
-import type {
-  TransactionError,
-  TransactionResponse,
-} from "@coinbase/onchainkit/transaction";
 import { parseUnits, encodeFunctionData, erc20Abi } from "viem";
 import { spokeAbi } from "@/utils/abis";
 import type { Address, Hex } from "viem";
@@ -19,7 +8,6 @@ import { currencyAddresses } from "@/utils/currencyAddresses";
 import type { TransferWrapperProps } from "@/lib/types";
 import { useReadContract, useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
-import { useWagmiConfig } from "@/lib/wagmi/wagmi";
 
 const TransferWrapper: React.FC<TransferWrapperProps> = ({
   amount,
@@ -123,7 +111,6 @@ const TransferWrapper: React.FC<TransferWrapperProps> = ({
       <Button
         variant="brutalism"
         className="w-full p-4 justify-center bg-clr-blue text-black dark:text-black hover:bg-blue-600/80 border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-
         onClick={() =>
           writeContract({
             address: "0xA8f6Db88D79bcA5F1990C93b6a6eA5866722d198",

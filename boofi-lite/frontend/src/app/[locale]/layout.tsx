@@ -1,6 +1,5 @@
 // app/layout.tsx
 import "@/css/global.scss";
-import "@coinbase/onchainkit/styles.css";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
@@ -12,12 +11,11 @@ import LayoutMusic from "@/components/layout-music";
 import { ThemeProvider } from "@/components/theme-provider";
 import { IBM_Plex_Serif, Inconsolata } from "@next/font/google";
 import GridPattern from "@/components/magicui/grid-pattern";
-import OnchainProviders from "@/components/base-onboard/onchain-providers";
+// import OnchainProviders from "@/components/base-onboard/onchain-providers";
 import { cn } from "@/utils";
 import Header from "@/components/header";
 import Container from "@/components/container";
-import { headers } from "next/headers";
-import ReownContextProvider from "@/contexts/ReownContext";
+import DynamicContext from "@/contexts/DynamicContext";
 
 const GridDebugger = dynamic(() => import("@/lib/debug/grid-debugger"), {
   ssr: false,
@@ -55,54 +53,49 @@ export default function RootLayout({
   children,
   params: { locale },
 }: RootLayoutProps) {
-  const cookies = headers().get("cookie");
-
   return (
     <html
       lang={locale}
       className={`${GeistSans.variable} ${GeistMono.variable} ${ibmPlexSerif.variable} ${inconsolata.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >
-      {" "}
-      <ReownContextProvider cookies={cookies}>
-        <body className="h-full">
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <OnchainProviders>
-              <main className="rounded-md bg-gradient-to-br from-indigo-100 via-violet-200 to-cyan-300 bg-no-repeat font-nubase dark:bg-gradient-to-r dark:from-gray-900 dark:via-indigo-400 dark:to-gray-800">
-                <GridPattern
-                  width={20}
-                  height={20}
-                  x={-1}
-                  y={-1}
-                  className={cn(
-                    "[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]"
-                  )}
-                />
-                <Header />
-                <div className="custom-scrollbar">
-                  <div className="mx-auto px-4 relative flex flex-col justify-center overflow-hidden">
-                    <Container>
-                      <div className="relative">
-                        <div className="w-full flex flex-col items-center">
-                          {children}
-                        </div>
+      <body className="h-full">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <DynamicContext>
+            <main className="rounded-md bg-gradient-to-br from-indigo-100 via-violet-200 to-cyan-300 bg-no-repeat font-nubase dark:bg-gradient-to-r dark:from-gray-900 dark:via-indigo-400 dark:to-gray-800">
+              <GridPattern
+                width={20}
+                height={20}
+                x={-1}
+                y={-1}
+                className={cn(
+                  "[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]"
+                )}
+              />
+              <Header />
+              <div className="custom-scrollbar">
+                <div className="mx-auto px-4 relative flex flex-col justify-center overflow-hidden">
+                  <Container>
+                    <div className="relative">
+                      <div className="w-full flex flex-col items-center">
+                        {children}
                       </div>
-                    </Container>
-                  </div>
+                    </div>
+                  </Container>
                 </div>
-                {isDev && <GridDebugger />}
-                <LayoutMusic />
-              </main>
-              <Toaster />
-            </OnchainProviders>
-          </ThemeProvider>
-        </body>
-      </ReownContextProvider>
+              </div>
+              {isDev && <GridDebugger />}
+              <LayoutMusic />
+            </main>
+            <Toaster />
+          </DynamicContext>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

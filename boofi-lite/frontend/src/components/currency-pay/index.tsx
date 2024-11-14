@@ -15,11 +15,11 @@ import { useAccount, useBalance, useChainId, useSwitchChain } from "wagmi";
 import { getChainsForEnvironment } from "@/store/supportedChains";
 
 import { Token } from "@/lib/types";
-import { TokenChip } from "@coinbase/onchainkit/token";
 import { toast } from "../ui/use-toast";
 import { formatUnits, Hex } from "viem";
 import { useTokenBalance } from "@/hooks/blockchain/use-token-balance";
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
+import { TokenChip } from "../Token/Chip";
 
 interface CurrencyDisplayerProps {
   tokenAmount: number;

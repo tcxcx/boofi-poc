@@ -1,11 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from "react";
 import { useMarketStore } from "@/store/marketStore";
 import { currencyAddresses } from "@/utils/currencyAddresses";
-import { CurrencyInfo } from "@/lib/types";
-import { Token } from '@coinbase/onchainkit/token';
-import { TokenSelectDropdown } from '@coinbase/onchainkit/token';
+import { CurrencyInfo, Token } from "@/lib/types";
+// import { TokenSelectDropdown } from "@";
 import { tokens } from "@/utils/tokens";
 
 export function AssetSelector() {
@@ -14,10 +13,10 @@ export function AssetSelector() {
   const options = useMemo(() => {
     const uniqueAssets = new Set<string>();
 
-    const tokenMap = new Map(tokens.map(token => [token.symbol, token]));
+    const tokenMap = new Map(tokens.map((token) => [token.symbol, token]));
 
     return Object.entries(currencyAddresses)
-      .flatMap(([chainId, currencies]) => 
+      .flatMap(([chainId, currencies]) =>
         Object.entries(currencies).map(([symbol, info]) => {
           const currencyInfo = info as CurrencyInfo;
           const tokenInfo = tokenMap.get(symbol);
@@ -30,7 +29,8 @@ export function AssetSelector() {
             address: currencyInfo.address as `0x${string}`,
             symbol: symbol,
             decimals: currencyInfo.decimals || 18,
-            image: tokenInfo?.image || `/assets/tokens/${symbol.toLowerCase()}.png`,
+            image:
+              tokenInfo?.image || `/assets/tokens/${symbol.toLowerCase()}.png`,
             chainId: parseInt(chainId),
           };
         })
@@ -50,11 +50,11 @@ export function AssetSelector() {
 
   return (
     <div className="w-[200px]">
-      <TokenSelectDropdown
+      {/* <TokenSelectDropdown
         token={selectedAsset as Token}
         setToken={handleAssetChange}
         options={options as Token[]}
-      />
+      /> */}
     </div>
   );
 }

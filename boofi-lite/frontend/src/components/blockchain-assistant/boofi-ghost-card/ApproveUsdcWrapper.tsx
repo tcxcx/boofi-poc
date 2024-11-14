@@ -1,47 +1,50 @@
-'use client';
-import {
-  Transaction,
-  TransactionButton,
-  TransactionStatus,
-  TransactionStatusAction,
-  TransactionStatusLabel,
-} from '@coinbase/onchainkit/transaction';
-import type {
-  TransactionError,
-  TransactionResponse,
-} from '@coinbase/onchainkit/transaction';
-import type { Address, ContractFunctionParameters } from 'viem';
-import { erc20Abi, parseUnits } from 'viem';
-import { baseSepolia } from 'viem/chains';
+"use client";
+// import {
+//   Transaction,
+//   TransactionButton,
+//   TransactionStatus,
+//   TransactionStatusAction,
+//   TransactionStatusLabel,
+// } from '@coinbase/onchainkit/transaction';
+// import type {
+//   TransactionError,
+//   TransactionResponse,
+// } from '@coinbase/onchainkit/transaction';
+import type { Address, ContractFunctionParameters } from "viem";
+import { erc20Abi, parseUnits } from "viem";
+import { baseSepolia } from "viem/chains";
 
-const USDC_ADDRESS = '0x036cbd53842c5426634e7929541ec2318f3dcf7e'; // USDC contract address on Base Sepolia
+const USDC_ADDRESS = "0x036cbd53842c5426634e7929541ec2318f3dcf7e"; // USDC contract address on Base Sepolia
 
 interface ApproveUsdcWrapperProps {
   spenderAddress: Address;
   amount: string;
 }
 
-export default function ApproveUsdcWrapper({ spenderAddress, amount }: ApproveUsdcWrapperProps) {
-  const contracts = [
-    {
-      address: USDC_ADDRESS,
-      abi: erc20Abi,
-      functionName: 'approve',
-      args: [spenderAddress, parseUnits(amount, 6)],
-    },
-  ] as unknown as ContractFunctionParameters[];
+export default function ApproveUsdcWrapper({
+  spenderAddress,
+  amount,
+}: ApproveUsdcWrapperProps) {
+  // const contracts = [
+  //   {
+  //     address: USDC_ADDRESS,
+  //     abi: erc20Abi,
+  //     functionName: "approve",
+  //     args: [spenderAddress, parseUnits(amount, 6)],
+  //   },
+  // ] as unknown as ContractFunctionParameters[];
 
-  const handleError = (err: TransactionError) => {
-    console.error('USDC approval error:', err);
-  };
+  // const handleError = (err: TransactionError) => {
+  //   console.error("USDC approval error:", err);
+  // };
 
-  const handleSuccess = (response: TransactionResponse) => {
-    console.log('USDC approval successful', response);
-  };
+  // const handleSuccess = (response: TransactionResponse) => {
+  //   console.log("USDC approval successful", response);
+  // };
 
   return (
     <div className="flex w-[450px]" data-testid="approve-usdc-button">
-      <Transaction
+      {/* <Transaction
         contracts={contracts}
         className="w-[450px]"
         chainId={baseSepolia.id}
@@ -56,7 +59,8 @@ export default function ApproveUsdcWrapper({ spenderAddress, amount }: ApproveUs
           <TransactionStatusLabel />
           <TransactionStatusAction />
         </TransactionStatus>
-      </Transaction>
+      </Transaction> */}
+      <></>
     </div>
   );
 }

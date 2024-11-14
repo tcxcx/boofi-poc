@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { SwapToggleButton } from "./components/swapToggleButton";
 import { SwapAmountInput } from "./components/swapAmountInput";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
-import type { Token } from "@coinbase/onchainkit/token";
 import { ETHToken, testnetTokensByChainId, USDCToken } from "@/utils/tokens";
 import { cn } from "@/utils";
 import { getCCIPChainByChainId } from "@/utils/contracts";
@@ -19,6 +18,7 @@ import { CCIPTransferAbi } from "@/lib/abi/CCIP";
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
 import { parseUnits } from "viem";
 import { useToast } from "@/components/ui/use-toast";
+import { Token } from "@/lib/types";
 
 export default function TokenSwap() {
   const { address } = useAccount();

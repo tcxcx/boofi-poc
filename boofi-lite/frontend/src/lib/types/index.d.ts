@@ -1,5 +1,4 @@
 import type { Abi, Address, Hex } from "viem";
-import type { TransactionError } from "@coinbase/onchainkit/transaction";
 import React from "react";
 
 export interface CurrencyInfo {
@@ -90,7 +89,7 @@ type Call = {
 export interface TransactionWrapperPropsBase {
   chainId: number;
   onSuccess: (txHash: string) => void;
-  onError: (error: TransactionError) => void;
+  onError: (error: any) => void;
   children: React.ReactNode;
 }
 
@@ -170,7 +169,7 @@ export type RepayFunctionNames = "repay" | "repayNative";
 export interface TransferWrapperProps {
   amount: string;
   onSuccess: (txHash: string) => void;
-  onError: (error: TransactionError) => void;
+  onError: (error: any) => void;
   functionName: ValidFunctionNames;
   buttonText: string;
   argsExtra?: any[];
@@ -203,7 +202,7 @@ export interface ChainContextProps {
 }
 
 export interface Token {
-  address: Hex;
+  address: Hex | string | `0x${string}`;
   chainId: number;
   decimals: number;
   payable?: boolean;
@@ -219,8 +218,7 @@ export interface ChainSelectProps {
   label: string;
 }
 
-export type { TransactionError };
-
+export type { TransactionError as any };
 
 export interface TransactionDetails {
   transactionHash: string;
@@ -240,7 +238,6 @@ export type CurrencyAddresses = Record<
   number,
   Record<string, CurrencyAddressInfo>
 >;
-
 
 export interface LinkUiFormProps {
   tokenAmount: number;
