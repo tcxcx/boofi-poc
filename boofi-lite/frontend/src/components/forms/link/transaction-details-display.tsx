@@ -23,19 +23,19 @@ export default function TransactionDetailsDisplay({
             frameText="Send Crypto with this unique Link"
             copyLink={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
           />
-          
+
         </div>
-      {/* Copy Link Button */}
-      <div className="flex justify-center items-center mb-2">
-        <Button
-          size={"lg"}
-          className="flex items-center gap-2"
-          onClick={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
-        >
-          Copy Link
-          <CopyIcon className="size-4" />
-        </Button>
-      </div>
+        {/* Copy Link Button */}
+        <div className="flex justify-center items-center mb-2">
+          <Button
+            size={"lg"}
+            className="flex items-center gap-2"
+            onClick={() => handleCopy(transactionDetails.paymentLink, "Payment Link")}
+          >
+            Copy Link
+            <CopyIcon className="size-4" />
+          </Button>
+        </div>
         <div className="flex justify-center text-xs text-primary my-2">
           Send crypto with this secure vault link to your friends and family
         </div>

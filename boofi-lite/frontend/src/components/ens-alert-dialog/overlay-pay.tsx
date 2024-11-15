@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { OverlayPayNameProps } from "@/lib/types";
 import { FramedQRCode } from "@/components/framed-qr-art";
-import { NEXT_PUBLIC_URL } from "@/lib/wagmi/config";
+import { NEXT_PUBLIC_URL } from "@/constants/url";
 
 /**
  * OverlayPayName Component
@@ -27,7 +27,7 @@ export const OverlayPayName = ({
 }: OverlayPayNameProps) => {
     const locale = useLocale();
     const supportedLocales = ["en", "es", "pt"];
-    
+
     /**
      * Generates a localized link with the correct domain based on the environment.
      * 
@@ -39,7 +39,7 @@ export const OverlayPayName = ({
             // Use the NEXT_PUBLIC_URL as the base URL
             const urlObj = new URL(url, NEXT_PUBLIC_URL);
             const pathSegments = urlObj.pathname.split('/').filter(segment => segment);
-            
+
             // Check if the first segment is a supported locale
             if (pathSegments.length > 0 && supportedLocales.includes(pathSegments[0])) {
                 return urlObj.toString();
@@ -55,7 +55,7 @@ export const OverlayPayName = ({
     };
 
     const fullLocalizedLink = getLocalizedLink(link);
-    
+
     /**
      * Generates the display link by removing the protocol (https:// or http://).
      * 
@@ -65,13 +65,13 @@ export const OverlayPayName = ({
     const getDisplayLink = (url: string): string => {
         return url.replace(/^https?:\/\//, '');
     };
-    
+
     const displayLink = getDisplayLink(fullLocalizedLink);
 
     return (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
             <div className="relative bg-white dark:bg-secondaryBlack p-6 rounded-r-lg shadow-lg max-w-md w-full">
-                
+
                 {/* Close Button */}
                 <button
                     onClick={handleToggleOverlay}
@@ -83,7 +83,7 @@ export const OverlayPayName = ({
 
                 {/* Overlay Header */}
                 <h2 className="text-lg font-semibold mb-4 text-center">BooFi Payment Link</h2>
-                
+
                 {/* QR Code Section */}
                 <FramedQRCode
                     image="/images/BooFi-icon.png"
@@ -129,7 +129,7 @@ export const OverlayPayName = ({
                                 <p>Get paid on WhatsApp</p>
                             </TooltipContent>
                         </Tooltip>
-                        
+
                         {/* Share on Telegram */}
                         <Tooltip>
                             <TooltipTrigger asChild>

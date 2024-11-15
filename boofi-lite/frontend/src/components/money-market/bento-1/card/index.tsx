@@ -1,7 +1,5 @@
-"use client";
-
 import { useState } from "react";
-import { useAccount, useSwitchChain } from "wagmi";
+import { useAccount } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import TransferWrapper from "@/components/money-market/transfer-wrapper";
@@ -11,11 +9,9 @@ import { useChainSelection } from "@/hooks/use-chain-selection";
 import { ChainSelect } from "@/components/chain-select";
 import { BalanceDisplay } from "@/components/balance-display";
 import { getUSDCAddress } from "@/lib/utils";
-import { TransactionError } from "@/lib/types";
-import { useEthersSigner } from "@/lib/wagmi/wagmi";
+
 export function MoneyMarketCard() {
   const { address } = useAccount();
-  const [usdcBalance, setUsdcBalance] = useState<string | undefined>(undefined);
   const {
     currentViewTab,
     fromChain,
@@ -25,69 +21,45 @@ export function MoneyMarketCard() {
     fromChains,
     toChains,
   } = useChainSelection();
-  const signer = useEthersSigner();
 
-  if (!fromChain && fromChains.length > 0) {
-    setFromChain(fromChains[0].chainId.toString());
-  }
-
-  if (!toChain && toChains.length > 0) {
-    setToChain(toChains[0].chainId.toString());
-  }
-
-  const { switchChain } = useSwitchChain();
   const [amount, setAmount] = useState("");
-  const [transactionHistory, setTransactionHistory] = useState<
-    TransactionHistoryItem[]
-  >([]);
+  const [transactionHistory, setTransactionHistory] = useState<TransactionHistoryItem[]>([]);
 
   const chainId = fromChain ? Number(fromChain) : 84532;
   const usdcAddress = getUSDCAddress(chainId!);
-  const usdcDecimals = 6; // USDC has 6 decimals
 
-  const getUsdcBalance = useTokenBalance({
+  const { balance: usdcBalance, isLoading } = useTokenBalance({
     tokenAddress: usdcAddress as `0x${string}`,
     chainId: chainId!,
-    address: address as `0x${string}`,
-    signer: signer,
-    setBalance: setUsdcBalance,
+    accountAddress: address as `0x${string}`,
+    decimals: 6
   });
+
+  // Set initial chains
+  if (!fromChain && fromChains.length > 0) setFromChain(fromChains[0].chainId.toString());
+  if (!toChain && toChains.length > 0) setToChain(toChains[0].chainId.toString());
 
   const transferActions = {
     lend: { functionName: "depositCollateral", buttonText: "Deposit USDC" },
-    withdraw: {
-      functionName: "withdrawCollateral",
-      buttonText: "Withdraw USDC",
-    },
+    withdraw: { functionName: "withdrawCollateral", buttonText: "Withdraw USDC" },
     borrow: { functionName: "borrow", buttonText: "Borrow USDC" },
-    repay: { functionName: "repay", buttonText: "Repay USDC" },
+    repay: { functionName: "repay", buttonText: "Repay USDC" }
   };
 
-  const action =
-    transferActions[currentViewTab as keyof typeof transferActions] || {};
+  const action = transferActions[currentViewTab as keyof typeof transferActions] || {};
   const { functionName, buttonText } = action;
 
   const handleTransactionSuccess = (txHash: string) => {
-    console.log("Transaction successful:", txHash);
-    setTransactionHistory((prev) => [
+    setTransactionHistory(prev => [
       ...prev,
-      {
-        date: new Date().toLocaleString(),
-        amount: parseFloat(amount),
-        status: "Success",
-      },
+      { date: new Date().toLocaleString(), amount: parseFloat(amount), status: "Success" }
     ]);
   };
 
-  const handleTransactionError = (error: TransactionError) => {
-    console.error("Transaction failed:", error);
-    setTransactionHistory((prev) => [
+  const handleTransactionError = (error: any) => {
+    setTransactionHistory(prev => [
       ...prev,
-      {
-        date: new Date().toLocaleString(),
-        amount: parseFloat(amount),
-        status: "Failed",
-      },
+      { date: new Date().toLocaleString(), amount: parseFloat(amount), status: "Failed" }
     ]);
   };
 
@@ -122,7 +94,7 @@ export function MoneyMarketCard() {
             />
             <BalanceDisplay
               balance={usdcBalance || "0"}
-              isLoading={!usdcBalance}
+              isLoading={isLoading}
               symbol="USDC"
             />
           </div>

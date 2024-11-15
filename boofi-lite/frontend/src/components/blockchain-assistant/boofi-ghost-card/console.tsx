@@ -32,7 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import LayoutAuthCardAiAssistant from "@/components/money-market/bento-3/boofi-ai-assistant/layout-auth-card";
 import { useTokenBalance } from "@/hooks/blockchain/use-token-balance";
 import { useGetTokenByChain } from "@/hooks/blockchain/use-get-token-by-chain";
-import { useEthersSigner } from "@/lib/wagmi/wagmi";
+import { useEthersSigner } from "@/constants/wagmi";
 /**
  * Type for all event logs
  */

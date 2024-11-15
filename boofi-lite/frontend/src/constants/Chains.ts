@@ -1,57 +1,55 @@
 export const Base = {
-  chainId: 8453,
+  chainId: 84532,
   name: "Base",
   nativeCurrency: {
     name: "Base",
     symbol: "ETH",
     decimals: 18,
-    iconUrls: "https://base.org/favicon.ico",
+    iconUrls: ["https://app.dynamic.xyz/assets/networks/base.svg"],
   },
-
   rpcUrls: [
-    `https://base-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+    `https://base-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+
   ],
-  blockExplorerUrls: ["https://sepolia.basescan.org/"],
+  blockExplorerUrls: ["https://base-sepolia.blockscout.com"],
   chainName: "BaseSepolia",
-  vanityName: "BaseSepolia",
-  networkId: 8453,
-  iconsUrls: ["https://base.org/favicon.ico"],
+  vanityName: "Base Sepolia",
+  networkId: 84532,
+  iconUrls: ["https://app.dynamic.xyz/assets/networks/base.svg"],
 };
 
 export const Avalanche = {
-  chainId: 43114,
+  chainId: 43113,
   name: "Avalanche",
   blockExplorerUrls: ["https://fuji.snowtrace.io/"],
   nativeCurrency: {
     name: "Avalanche",
     symbol: "AVAX",
     decimals: 18,
-    iconUrls: "https://avalanche.org/favicon.ico",
+    iconUrls: ["https://app.dynamic.xyz/assets/networks/avax.svg"],
   },
-  rpcUrls: [
-    `https://avax-fuji.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
-  ],
-  vanityName: "AvalancheFuji",
+  rpcUrls: ["https://rpc.ankr.com/avalanche_fuji"],
+  vanityName: "Avalanche Fuji",
   chainName: "AvalancheFuji",
-  networkId: 43114,
-  iconsUrls: ["https://avalanche.org/favicon.ico"],
+  networkId: 43113,
+  iconUrls: ["https://app.dynamic.xyz/assets/networks/avax.svg"],
 };
 
 export const Arbitrum = {
-  chainId: 42161,
+  chainId: 421614,
   name: "Arbitrum",
   nativeCurrency: {
     name: "Arbitrum",
     symbol: "ARB",
     decimals: 18,
-    iconUrls: "https://arbitrum.org/favicon.ico",
+    iconUrls: ["https://app.dynamic.xyz/assets/networks/arbitrum.svg"],
   },
   rpcUrls: [
-    `https://arb-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+    `https://arb-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
   ],
-  blockExplorerUrls: ["https://sepolia.arbiscan.io/"],
-  vanityName: "ArbitrumSepolia",
+  blockExplorerUrls: ["https://sepolia-explorer.arbitrum.io/"],
+  vanityName: "Arbitrum Sepolia",
   chainName: "ArbitrumSepolia",
-  networkId: 42161,
-  iconsUrls: ["https://arbitrum.org/favicon.ico"],
+  networkId: 421614,
+  iconUrls: ["https://app.dynamic.xyz/assets/networks/arbitrum.svg"],
 };

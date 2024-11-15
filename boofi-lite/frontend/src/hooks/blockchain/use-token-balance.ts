@@ -1,35 +1,31 @@
-import { ethers } from "ethers";
-import { useEffect } from "react";
-import { erc20Abi, Hex } from "viem";
-export const useTokenBalance = ({
-  address,
+import { useTokenBalances } from "@dynamic-labs/sdk-react-core";
+import { formatUnits } from "viem";
+import { UseTokenBalanceProps } from "@/lib/types";
+
+export function useTokenBalance({
   tokenAddress,
   chainId,
-  signer,
-  setBalance,
-}: {
-  address: Hex;
-  tokenAddress: Hex;
-  chainId: number;
-  signer: ethers.Signer | undefined;
-  setBalance: (balance: string) => void;
-}) => {
-  useEffect(() => {
-    if (!signer || !address || !tokenAddress) return;
+  address,
+  setBalance: externalSetBalance,
+}: UseTokenBalanceProps) {
+  const { tokenBalances, isLoading, isError } = useTokenBalances({
+    accountAddress: address,
+    tokenAddresses: [tokenAddress],
+    networkId: chainId,
+  });
 
-    const erc20Contract = new ethers.Contract(tokenAddress, erc20Abi, signer);
+  const balance = tokenBalances?.[0]?.balance || '0';
+  const decimals = tokenBalances?.[0]?.decimals || 18;
+  const formattedBalance = formatUnits(BigInt(balance), decimals);
 
-    async function getBalance() {
-      try {
-        const balance = await erc20Contract.balanceOf(address);
-        const decimals = await erc20Contract.decimals();
-        const formattedBalance = ethers.utils.formatUnits(balance, decimals);
-        setBalance(formattedBalance);
-      } catch (error) {
-        console.error("Error in getBalance", error);
-      }
-    }
+  if (externalSetBalance) {
+    externalSetBalance(formattedBalance);
+  }
 
-    getBalance();
-  }, [address, tokenAddress, chainId, signer, setBalance]);
-};
+  return {
+    balance: formattedBalance,
+    isLoading,
+    error: isError,
+    refetch: null
+  };
+}

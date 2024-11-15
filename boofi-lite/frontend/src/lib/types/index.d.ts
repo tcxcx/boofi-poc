@@ -258,12 +258,11 @@ export interface TransactionDetailsDisplayProps {
 }
 
 export interface CurrencyDisplayerProps {
-  tokenAmount: number;
-  onValueChange: (usdAmount: number, tokenAmount: number) => void;
+  onValueChange: (value: number, formattedValue: number) => void;
   initialAmount?: number;
-  availableTokens: Record<string, string>;
-  onTokenSelect: (token: string) => void;
-  currentNetwork: number | null;
+  availableTokens: Token[];
+  onTokenSelect: (token: Token) => void;
+  currentNetwork: number;
 }
 
 export interface AbstractTransaction {
@@ -300,4 +299,13 @@ export interface FramedQRCodeProps {
 export interface WormholeContracts {
   CrossChainSender: string;
   wormholeChainId: number;
+}
+
+
+export interface UseTokenBalanceProps {
+  tokenAddress: `0x${string}`;
+  chainId: number;
+  address?: `0x${string}`;
+  signer?: any;
+  setBalance?: (balance: string) => void;
 }

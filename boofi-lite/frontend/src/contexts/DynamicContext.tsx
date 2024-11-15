@@ -1,4 +1,5 @@
 "use client";
+
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { WagmiProvider } from "wagmi";
@@ -11,16 +12,17 @@ import { Avalanche, Base, Arbitrum } from "@/constants/Chains";
 
 const queryClient = new QueryClient();
 const evmNetworks = [Avalanche, Base, Arbitrum];
+
 export default function DynamicContext({ children }: { children: ReactNode }) {
   return (
     <DynamicContextProvider
       settings={{
         environmentId: dynamicEnvironmentId,
-        walletConnectors: [EthereumWalletConnectors],
+        walletConnectors: [EthereumWalletConnectors as any],
         overrides: {
           evmNetworks: evmNetworks.map((network) => ({
             ...network,
-            iconUrls: network.iconsUrls,
+            iconUrls: network.iconUrls,
           })),
         },
       }}

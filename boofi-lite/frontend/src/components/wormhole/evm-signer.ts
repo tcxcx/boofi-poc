@@ -7,9 +7,8 @@ import {
   Wormhole,
 } from "@wormhole-foundation/sdk";
 import { SignerStuff } from "./type";
-
 import { sendTransaction } from "@wagmi/core";
-import { useWagmiConfig } from "@/lib/wagmi/wagmi";
+import { config } from "@/constants/wagmi";
 
 export function getEvmSigner(
   address: string,
@@ -25,15 +24,14 @@ export function getEvmSigner(
         const { description, transaction } = txn;
         console.log(`Signing ${description}`);
 
-        const txid = await sendTransaction(useWagmiConfig(), {
+        const txid = await sendTransaction(config, {
           data: transaction.data,
           to: transaction.to,
         });
 
-        if (!txid)
-          throw new Error(
-            "Could not determine if transaction was sign and sent"
-          );
+        if (!txid) {
+          throw new Error("Could not determine if transaction was signed and sent");
+        }
 
         txids.push(txid);
       }

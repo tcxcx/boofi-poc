@@ -14,7 +14,7 @@ import { SignerStuff } from "./type";
 import { getEvmSigner, getSignerStuff } from "./evm-signer";
 
 import { getWh, TOKEN_ADDRESS } from "./config";
-import { useEthersSigner } from "@/lib/wagmi/wagmi";
+import { useEthersSigner } from "@/constants/wagmi";
 
 export async function tokenBridge(amount: number, address: string) {
   const wh = await getWh();

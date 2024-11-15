@@ -1,5 +1,3 @@
-// useDeezNuts.ts
-
 import { useCallback, useState } from "react";
 import peanut, {
   getRandomString,
@@ -15,7 +13,7 @@ import { useTransactionStore } from "@/store/transactionStore";
 import { useToast } from "@/components/ui/use-toast";
 import { AbstractSigner, AbstractTransaction } from "@/lib/types";
 import { currencyAddresses } from "@/utils/currencyAddresses";
-import { useEthersSigner } from "@/lib/wagmi/wagmi";
+import { useEthersSigner } from "@/constants/wagmi";
 
 const PEANUTAPIKEY = process.env.NEXT_PUBLIC_DEEZ_NUTS_API_KEY;
 if (!PEANUTAPIKEY) {
