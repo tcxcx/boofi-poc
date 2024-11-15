@@ -21,7 +21,6 @@ import { ChainSelect } from "@/components/chain-select";
 import PresetAmountButtons from "@/components/preset-amounts/index";
 
 import { useChainSelection } from "@/hooks/use-chain-selection";
-import { getTokensByChainId, testnetTokensByChainId } from "@/utils/tokens";
 import { chains } from "@/utils/contracts";
 import { Button } from "@/components/ui/button";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
@@ -29,6 +28,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import CurrencyDisplayerPay from "@/components/currency-pay";
 // import { getAddress } from "@coinbase/onchainkit/identity";
 import { tokenBridge } from "@/components/wormhole/index";
+import { useGetTokenOrChainById } from "@/hooks/use-get-token-or-chain-by-id";
+import { Token } from "@/lib/types";
 
 interface WormholeContracts {
   CrossChainSender: string;
@@ -43,7 +44,6 @@ export default function PayId() {
   const [chainId, setChainId] = useState<string>("84532");
   const [ensNotFound, setEnsNotFound] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const { toChain } = useChainSelection();
   const id = params.id; ///// recipient address
   const address = useAccount();
 
@@ -68,11 +68,7 @@ export default function PayId() {
     chainId: chainId,
   });
 
-  const tokenFind =
-    getTokensByChainId({ chainId: chainId }).find(
-      (token) => token.name === selectedToken
-    ) || getTokensByChainId({ chainId: chainId })[1];
-
+  const tokens = useGetTokenOrChainById(Number(chainId), "token") as Token[];
   const {
     data: cost,
     isLoading,
@@ -146,7 +142,7 @@ export default function PayId() {
             <CurrencyDisplayerPay
               tokenAmount={amount}
               onValueChange={(value) => setAmount(value)}
-              availableTokens={testnetTokensByChainId(Number(chainId))}
+              availableTokens={tokens}
               onTokenSelect={(value) => setSelectedToken(value)}
               currentNetwork={Number(chainId)}
               currentToken={selectedToken}

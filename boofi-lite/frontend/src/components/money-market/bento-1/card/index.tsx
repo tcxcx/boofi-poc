@@ -5,14 +5,14 @@ import { useAccount, useSwitchChain } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import TransferWrapper from "@/components/money-market/transfer-wrapper";
-import { TransactionHistoryItem } from "@/lib/types";
+import { Token, TransactionHistoryItem } from "@/lib/types";
 import { useTokenBalance } from "@/hooks/blockchain/use-token-balance";
 import { useChainSelection } from "@/hooks/use-chain-selection";
 import { ChainSelect } from "@/components/chain-select";
 import { BalanceDisplay } from "@/components/balance-display";
-import { getUSDCAddress } from "@/lib/utils";
-import { TransactionError } from "@/lib/types";
+
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
+import { useGetTokenOrChainById } from "@/hooks/use-get-token-or-chain-by-id";
 export function MoneyMarketCard() {
   const { address } = useAccount();
   const [usdcBalance, setUsdcBalance] = useState<string | undefined>(undefined);
@@ -42,7 +42,9 @@ export function MoneyMarketCard() {
   >([]);
 
   const chainId = fromChain ? Number(fromChain) : 84532;
-  const usdcAddress = getUSDCAddress(chainId!);
+  const tokens = useGetTokenOrChainById(chainId, "token") as Token[];
+  const usdcAddress = tokens.filter((token) => token.symbol === "USDC")[0]
+    ?.address;
   const usdcDecimals = 6; // USDC has 6 decimals
 
   const getUsdcBalance = useTokenBalance({
@@ -79,7 +81,7 @@ export function MoneyMarketCard() {
     ]);
   };
 
-  const handleTransactionError = (error: TransactionError) => {
+  const handleTransactionError = (error: Error) => {
     console.error("Transaction failed:", error);
     setTransactionHistory((prev) => [
       ...prev,

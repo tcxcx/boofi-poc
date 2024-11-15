@@ -6,8 +6,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getBaseTokenByChainId } from "@/lib/utils";
-import { ChainSelectProps } from "@/lib/types";
+import { ChainSelectProps, Token } from "@/lib/types";
+import { useGetTokenOrChainById } from "@/hooks/use-get-token-or-chain-by-id";
 
 export const ChainSelect: React.FC<ChainSelectProps> = ({
   value,
@@ -17,7 +17,8 @@ export const ChainSelect: React.FC<ChainSelectProps> = ({
 }) => {
   const renderChainOption = (chainId: string | number) => {
     const chain = chains.find((c) => c.chainId === Number(chainId));
-    const baseToken = getBaseTokenByChainId(Number(chainId));
+    const tokens = useGetTokenOrChainById(Number(chainId), "token") as Token[];
+    const baseToken = tokens[0];
 
     if (!chain) {
       return null;

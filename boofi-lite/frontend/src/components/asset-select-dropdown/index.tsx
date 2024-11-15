@@ -5,11 +5,14 @@ import { useMarketStore } from "@/store/marketStore";
 import { currencyAddresses } from "@/utils/currencyAddresses";
 import { CurrencyInfo, Token } from "@/lib/types";
 // import { TokenSelectDropdown } from "@";
-import { tokens } from "@/utils/tokens";
+import { useChainId } from "wagmi";
+import { useGetTokenOrChainById } from "@/hooks/use-get-token-or-chain-by-id";
 
 export function AssetSelector() {
   const { selectedAsset, setSelectedAsset } = useMarketStore();
-
+  const chainId = useChainId();
+  const tokens = useGetTokenOrChainById(chainId, "token") as Token[];
+  console.log(tokens);
   const options = useMemo(() => {
     const uniqueAssets = new Set<string>();
 

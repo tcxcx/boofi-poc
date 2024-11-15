@@ -9,13 +9,13 @@ export const Base = {
   },
 
   rpcUrls: [
-    `https://base-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+    `https://base-sepolia.g.alchemy.com/v2/uWC8zD2gHJQeMeXiiBUBWhMsHPbUN-_O`,
   ],
   blockExplorerUrls: ["https://sepolia.basescan.org/"],
   chainName: "BaseSepolia",
   vanityName: "BaseSepolia",
   networkId: 8453,
-  iconsUrls: ["https://base.org/favicon.ico"],
+  iconUrls: ["https://base.org/favicon.ico"],
 };
 
 export const Avalanche = {
@@ -29,12 +29,12 @@ export const Avalanche = {
     iconUrls: "https://avalanche.org/favicon.ico",
   },
   rpcUrls: [
-    `https://avax-fuji.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+    `https://avax-fuji.g.alchemy.com/v2/uWC8zD2gHJQeMeXiiBUBWhMsHPbUN-_O`,
   ],
   vanityName: "AvalancheFuji",
   chainName: "AvalancheFuji",
   networkId: 43114,
-  iconsUrls: ["https://avalanche.org/favicon.ico"],
+  iconUrls: ["https://avalanche.org/favicon.ico"],
 };
 
 export const Arbitrum = {
@@ -47,11 +47,11 @@ export const Arbitrum = {
     iconUrls: "https://arbitrum.org/favicon.ico",
   },
   rpcUrls: [
-    `https://arb-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+    `https://arb-sepolia.g.alchemy.com/v2/uWC8zD2gHJQeMeXiiBUBWhMsHPbUN-_O`,
   ],
   blockExplorerUrls: ["https://sepolia.arbiscan.io/"],
   vanityName: "ArbitrumSepolia",
   chainName: "ArbitrumSepolia",
   networkId: 42161,
-  iconsUrls: ["https://arbitrum.org/favicon.ico"],
+  iconUrls: ["https://arbitrum.org/favicon.ico"],
 };

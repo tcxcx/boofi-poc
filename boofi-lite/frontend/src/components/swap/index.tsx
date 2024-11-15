@@ -5,27 +5,27 @@ import React, { useEffect, useState } from "react";
 import { SwapToggleButton } from "./components/swapToggleButton";
 import { SwapAmountInput } from "./components/swapAmountInput";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
-import { ETHToken, testnetTokensByChainId, USDCToken } from "@/utils/tokens";
 import { cn } from "@/utils";
 import { getCCIPChainByChainId } from "@/utils/contracts";
 import { ChainSelect } from "../chain-select";
 import { chains } from "@/utils/contracts";
 import { erc20Abi, Hex } from "viem";
-import { BigNumberish, ethers } from "ethers";
-import { SwapButton } from "./components/swapButton";
+import { ethers } from "ethers";
 import { Button } from "../ui/button";
 import { CCIPTransferAbi } from "@/lib/abi/CCIP";
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
 import { parseUnits } from "viem";
 import { useToast } from "@/components/ui/use-toast";
 import { Token } from "@/lib/types";
+import { useGetTokenOrChainById } from "@/hooks/use-get-token-or-chain-by-id";
 
 export default function TokenSwap() {
   const { address } = useAccount();
   const chainId = useChainId();
   const { toast } = useToast();
-  const tokens = testnetTokensByChainId(chainId);
-  const [fromToken, setFromToken] = useState<Token>(tokens[0]);
+  const tokens = useGetTokenOrChainById(chainId, "token") as Token[];
+  console.log({ tokens });
+  const [fromToken, setFromToken] = useState<Token>(tokens?.[0]);
   const [fromAmount, setFromAmount] = useState<string>("");
   const [selectedToken, setSelectedToken] = useState<string>("");
   const [toAmount, setToAmount] = useState<string>("");
@@ -88,7 +88,7 @@ export default function TokenSwap() {
 
   const signer = useEthersSigner();
   async function sendCCIPTransfer() {
-    const amount = parseUnits(toAmount, tokens[0]?.decimals);
+    const amount = parseUnits(toAmount, tokens?.[0]?.decimals);
     if (!destinationChainInfo?.ccipChainId) return;
     try {
       const contractERC20 = new ethers.Contract(
@@ -136,15 +136,18 @@ export default function TokenSwap() {
     <div className="flex flex-col items-center gap-10 text-nowrap">
       <div className="flex flex-col items-center gap-10 text-nowrap">
         <ChainSelect
-          value={sourceChain ? sourceChain : chainId}
+          value={chainId}
           onChange={(value) => {
             setSelectedToken("");
             setFromAmount("");
             if (chainId !== Number(value)) {
+              console.log({ value });
               switchChain({ chainId: Number(value) });
+              console.log("-----------------------");
               setDestinationChain(null);
               setSourceChain(value);
             }
+            console.log("-----------------------");
           }}
           chains={chains}
           label="Source Chain"

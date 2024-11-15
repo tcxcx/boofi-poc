@@ -11,18 +11,14 @@ import { Avalanche, Base, Arbitrum } from "@/constants/Chains";
 
 const queryClient = new QueryClient();
 const evmNetworks = [Avalanche, Base, Arbitrum];
+
 export default function DynamicContext({ children }: { children: ReactNode }) {
   return (
     <DynamicContextProvider
       settings={{
         environmentId: dynamicEnvironmentId,
         walletConnectors: [EthereumWalletConnectors],
-        overrides: {
-          evmNetworks: evmNetworks.map((network) => ({
-            ...network,
-            iconUrls: network.iconsUrls,
-          })),
-        },
+        overrides: { evmNetworks },
       }}
     >
       <WagmiProvider config={config}>

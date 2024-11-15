@@ -85,7 +85,7 @@ export const wormHoleContracts: {
     networkName: "Avalanche testnet fuji",
     CrossChainSender: "0x39E052d2e4B0805d56f26292C44eDFA0173C8E4C",
     wormholeChainId: 6,
-    CrossChainReceiver: "0x84f597AEcC19925070974c8EeDAa38E535430c5e", ////base receiver
+    CrossChainReceiver: "0x84f597AEcC19925070974c8EeDAa38E535430c5e",
   },
   "14": {
     networkName: "Celo Testnet",
@@ -97,7 +97,7 @@ export const wormHoleContracts: {
     networkName: "Sepolia - Base",
     CrossChainReceiver: "0x88Ab79411cDc6A17cA1D8233A505FC4d41BC7f80",
     wormholeChainId: 10004,
-    CrossChainSender: "0x30F396A426036dA0b2346185d3c1a19D78f86F13", /// avalanche sender
+    CrossChainSender: "0x30F396A426036dA0b2346185d3c1a19D78f86F13",
   },
 };
 //// todo unify chains arr and tokens arr

@@ -31,8 +31,9 @@ import SparklesText from "@/components/magicui/sparkles-text";
 import { Separator } from "@/components/ui/separator";
 import LayoutAuthCardAiAssistant from "@/components/money-market/bento-3/boofi-ai-assistant/layout-auth-card";
 import { useTokenBalance } from "@/hooks/blockchain/use-token-balance";
-import { useGetTokenByChain } from "@/hooks/blockchain/use-get-token-by-chain";
 import { useEthersSigner } from "@/lib/wagmi/wagmi";
+import { useGetTokenOrChainById } from "@/hooks/use-get-token-or-chain-by-id";
+import { Token } from "@/lib/types";
 /**
  * Type for all event logs
  */
@@ -66,11 +67,8 @@ export function BooFiConsole() {
   //   chainId: baseSepolia.id,
   // });
 
-  const USDC_ADDRESS = useGetTokenByChain({
-    chainId: chainId,
-    tokenName: "USDC",
-  });
-
+  const tokens = useGetTokenOrChainById(chainId, "token") as Token[];
+  const USDC_ADDRESS = tokens.filter((token) => token.symbol === "USDC")?.[0];
   const getUsdcBalance = useTokenBalance({
     address: address as Hex,
     tokenAddress: USDC_ADDRESS?.address as Hex,

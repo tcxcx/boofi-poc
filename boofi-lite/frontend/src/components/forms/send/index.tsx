@@ -4,7 +4,12 @@
 
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useReadContract, useWriteContract, useAccount } from "wagmi";
+import {
+  useReadContract,
+  useWriteContract,
+  useAccount,
+  useChainId,
+} from "wagmi";
 import { SendToInput } from "@/components/send-to-input/index";
 import { Button } from "@/components/ui/button";
 import { ChainSelect } from "@/components/chain-select";
@@ -12,7 +17,6 @@ import CurrencyDisplayer from "@/components/currency";
 import PresetAmountButtons from "@/components/preset-amounts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getWormHoleContractsByNetworkName } from "@/utils/contracts";
-import { tokens } from "@/utils/tokens";
 import { encodeFunctionData, erc20Abi, Hex } from "viem";
 import { crossChainSenderAbi } from "@/lib/abi/CrossChainSender";
 import { currencyAddresses } from "@/utils/currencyAddresses";
@@ -29,6 +33,8 @@ import MultiChainToggle from "@/components/multichain-toggle";
 import ChainSelectSkeleton from "@/components/forms/send/skeletons/chain-select-skeleton";
 import CurrencyDisplayerSkeleton from "@/components/forms/send/skeletons/currency-displayer-skeleton";
 import TransactionSectionSkeleton from "@/components/forms/send/skeletons/transaction-section-skeleton";
+import { useGetTokenOrChainById } from "@/hooks/use-get-token-or-chain-by-id";
+import { Token } from "@/lib/types";
 
 export default function SendPayment() {
   const [selectedToken, setSelectedToken] = useState<string>("ETH");
@@ -40,12 +46,13 @@ export default function SendPayment() {
 
   const { writeContract } = useWriteContract();
   const { toast } = useToast();
-  const { address } = useAccount();
+  const wagmiChainId = useChainId();
 
   const contracts = getWormHoleContractsByNetworkName({
     chainId: chainId,
   });
 
+  const tokens = useGetTokenOrChainById(wagmiChainId, "token") as Token[];
   const tokenFind =
     tokens.find((token) => token.name === selectedToken) || tokens[1];
 

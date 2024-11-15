@@ -1,5 +1,6 @@
 import type { Token } from "@/lib/types/index";
 import { Hex } from "viem";
+import { Avalanche, Base, Arbitrum } from "./Chains";
 
 export const AvalancheTokens: Token[] = [
   {
