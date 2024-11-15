@@ -6,6 +6,7 @@ import { Provider as Analytics } from "@midday/events/client";
 import { Toaster } from "@midday/ui/toaster";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
+import type { Viewport } from 'next'
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { Providers } from "./providers";
@@ -55,14 +56,14 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
   themeColor: [
-    { media: "(prefers-color-scheme: light)" },
-    { media: "(prefers-color-scheme: dark)" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
 };
 
